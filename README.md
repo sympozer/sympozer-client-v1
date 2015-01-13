@@ -1,4 +1,5 @@
 # sympozer-client-v1
+The sympozer client v1 is the client used in the first version of the conference management system "Sympozer". This client is built around Backbone.js, jQuery mobile and Requirejs and aims to be fully functionnal using semantic technologies such as SPARQL or embedded reasonning.  
 
 License
 -------
