@@ -1,0 +1,181 @@
+
+/********************  global **********************/
+
+body *{
+  text-shadow : none !important;
+}
+H1 , H2 {
+  font-size : 14pt !important;
+}
+
+H3, H4{
+  font-size : 13pt !important;
+}
+
+H4,H5{
+  margin-top:2pt;
+  margin-bottom:2pt;
+}
+
+.inline{
+  font-size : 12pt !important;
+  color: black;
+}
+
+a, span {
+  font-size : 10pt !important;
+
+}
+
+p{
+  font-size : 12pt !important;
+  color: black;
+}
+
+
+/**********************   Header ************************/
+#header {
+  background: #f3f6f6 !important;
+  color: #000000 !important;
+
+}
+
+#header * {
+  background: #f3f6f6 !important;
+  color: #000000 !important;
+}
+
+
+.logoContainer {
+  height: 60px;
+}
+
+.logoContainer a {
+  height : 100%;
+  width : 100%;
+}
+
+.logoContainer img {
+  height : 100%;
+  width : auto;
+}
+
+#uselessNav{
+  width : 0px;
+}
+
+#header-title{
+  text-align :center;
+}
+
+
+
+/**********************   Navbar ************************/
+#navBar{
+  background: #2b3435 !important;
+}
+
+#navBar *{
+  background: #2b3435 !important;
+  color: #f2f2f2 !important;
+}
+
+/**********************   Content ************************/
+.page{
+  background: #f3f6f6 !important;
+  text-shadow : none !important;
+  text-decoration : none !important;
+}
+
+.content h1,h2,h3,h4{
+  color: #c64c88 !important;
+}
+
+.ui-li-divider{
+  background: #2b3435 !important;
+  color: #f2f2f2 !important;
+}
+
+.ui-listview>li>a.ui-btn {
+  text-align: center;
+}
+
+/**********************   Footer ************************/
+#footer{
+  background: #2b3435 !important;
+}
+
+#footer *{
+  background: #2b3435 !important;
+  color: #f2f2f2 !important;
+}
+
+
+
+.button *{
+
+}
+
+.content .ui-btn{
+  background: #f2f2f2 !important;
+  color: #000000 !important;
+  border: 1px solid #c64c88 !important;
+}
+
+
+/*Special buttons*/
+a .swtich{
+  background : #9fc3db!important;
+}
+
+
+/* Schedule */
+
+#getConferenceSchedule .ui-btn-inner{
+  padding-top : 0!important;
+  padding-bottom : 0!important;
+
+}
+
+#getConferenceSchedule H2 {
+  padding-left:0.5em;
+  line-height:1.5em;
+}
+#getConferenceSchedule H2 span{
+  font-size : 10pt !important;
+}
+#getConferenceSchedule p.ui-li-desc{
+  font-size : 11pt !important;
+  margin-top : 0em!important;
+  margin-bottom : 0em!important;
+}
+
+#getConferenceSchedule H3.ui-li-heading{
+  white-space : normal;
+  overflow : visible;
+  text-overflow : visible;
+  font-size : 11pt !important;
+  margin-top : 0em!important;
+  margin-bottom : 0em!important;
+}
+
+
+/********************* Panel *******************/
+#settingsPanel {
+  width: 200px;
+  border: 1px solid #000;
+  border-right: none;
+  background: rgba(0,0,0,.5);
+  margin: -1px 0;
+  color: rgb(250, 252, 253);
+}
+
+#bonusPanel
+{
+  width: 200px;
+  border: 1px solid #000;
+  border-right: none;
+  background: rgba(0, 0, 0, .5);
+  margin: -1px 0;
+  color: rgb(250, 252, 253);
+}

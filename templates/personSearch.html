@@ -1,0 +1,7 @@
+<article id="personSearch">	
+	<section class="content">
+		<a href="#persons" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
+		<a href="#roles"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByRole %></a>
+		<% if(_.contains(modules, "publications")) { %><a href="#organizations"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByOrganization %></a> <% } %>
+	</section>
+</article>
