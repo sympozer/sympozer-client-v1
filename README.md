@@ -1,12 +1,18 @@
 # sympozer-client-v1
 The sympozer client v1 is the client used in the first version of the conference management system "Sympozer". This client is built around Backbone.js, jQuery mobile and Requirejs and aims to be fully functionnal using semantic technologies such as SPARQL or embedded reasonning.  
 
+Install
+-------
+
+The client doesn't require any web server since it is meant to work in an autonomous environnement such as a Cordava package.
+All the configurations can be controlled fron the js/config.js file that wil decide which request will be triggered on each view. 
+
 Architecture overview
 -------
 
-Backbone router: It is the central component and it communicates with all others during a requests processing in a way that respects the MVC logic and least knowledge principle. Also, one of its main role resides in the configuration JSON file interpretation which permits the identification of the requested resource type and related commands.
+Backbone router (js/router/AppRouter.js) : It is the central component and it communicates with all others during a requests processing in a way that respects the MVC logic and least knowledge principle. One of its main role resides in the configuration JSON file interpretation which permits the identification of the requested resource type and related commands (see further definition of a command).
 
-Configuration: The configuration component is represented by a plain old JSON file with a specific format. It includes conference informations such as the conference name, its URI and its logo path. It contains the datasources declaration including the URI of the endpoint and the cross domain method supported. To allow the router interpretation, it also provides the routes and their associated commands.
+Configuration (js/config.js): The configuration component is represented by a plain old JSON file with a specific format. It includes conference informations such as the conference name, its base URI and its logo path. It contains the datasources declaration including the URI of the endpoint and the cross domain method supported. To allow the router interpretation, it also provides the routes and their associated commands.
 
 Commands: a command is a particular component that explicit how to send, treat and render a request to a datasource. For instance, there will be a particular command to retrieve the publication corresponding to an URI on a specific datasource. Commands contain the following fields: name, HTTP request method and returned datatype, as well as three methods:
 
@@ -14,11 +20,12 @@ Commands: a command is a particular component that explicit how to send, treat a
 - modelCallback: handles the response from the datasource, performs calculations over the response data and transforms it to an internal JSON representation format.
 - viewCallback: is triggered by the router to integrate these formatted data into the views.
 
-AjaxLoader : the AjaxLoader is an Ajax centered component that is in charge of sending the requests in their related context. This context includes, the datasource URI and cross domain mode, the command HTTP request method and returned type, the query including the parameters and the model callback function.
+AjaxLoader (js/ajaxLoader) : the AjaxLoader is an Ajax centered component that is in charge of sending the requests in their related context. This context includes, the datasource URI and cross domain mode, the command HTTP request method and returned type, the query including the parameters and the model callback function.
 
 LocalStorageManager : A wrapper to jStorage.js, a local storage api. In order to cope with datasources heterogeneity problems, DataConf relies on an internal data representation that can differ from the data format contained in the response. For this, the model callback function that handles a response is limited to transforming the data into the appropriate common representation format (depending on its nature: title, author name, homepage…) and storing them using the LocalStorageManager component functionnalities. Moreover, this architecture allows caching data in the LocalStorage object and more complex data composition into the views, since the view callback functions can wait for several types of data to be ready before starting the rendering process.
 
-ViewAdapter: This component act as a wrapper to jQueryMobile. It exposes view rendering functionalities such as the page change management, widget generation and layout preparation. During application loading, it is setted up with the few templates needed to build a DataConf Backbone view, a footer, a navbar, a header and a draft view. The draft view represents an empty content block waiting to receive data that has to be fetched.
+ViewAdapter (js/view/viewAdapter.js): This component act as a wrapper to jQueryMobile. It exposes view rendering functionalities such as the page change management, widget generation and layout preparation. During application loading, it is setted up with the few templates needed to build a DataConf Backbone view, a footer, a navbar, a header and a draft view. The draft view represents an empty content block waiting to receive data that has to be fetched.
+
 
 Request workflow
 -------
