@@ -26,7 +26,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 				"acronym": "Livecon",
 				"logoUri": "img/logo.png",
 				"website": "http://live-con.com/",
-				"baseUri": "http://sparql.sympozer.com/resource/conference/60/6010th-eswc-2013",
+				"baseUri": "http://sparql.sympozer.com/resource/conference/38/3811th-eswc-2014",
 				//Local configuration
 //        "baseUri": "http://localhost:8080/resource/conference/1/1new-sympozer-conference",
 				"lang" : "EN",
@@ -309,10 +309,6 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "GoogleDataSource",
 							"name" : "getAuthorPersonalPage"
-            },
-						{
-							"datasource" : "eventDatasource",
-							"name" : "getPublicationsByAuthorId"
             },
 						{
 							"datasource" : "DblpDatasource",

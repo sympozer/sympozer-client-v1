@@ -10,31 +10,31 @@
 *   Tags:  JSON, SPARQL, AJAX
 **/
 define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterText', 'localStorage/localStorageManager','moment', 'lib/FileSaver', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, moment, FileSaver, labels){
-	var liveconSparqlCommandStore = { 
+	var liveconSparqlCommandStore = {
 
 		getAllTopics : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 	    		var prefix =   'PREFIX dc: <http://purl.org/dc/elements/1.1/> PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ';
-					
+
 				var query =	'SELECT DISTINCT ?topicLabel  WHERE  {\
 							 {	<'+parameters.uri+'>    swc:isSuperEventOf    ?eventUri.\
 							  	?eventUri dc:subject ?topicLabel.\
 							 } UNION { \
 							 	<'+parameters.uri+'>    swc:hasRelatedDocument ?publiUri.\
 							  	?publiUri dc:subject ?topicLabel.}\
-							 } ORDER BY ASC(?topicLabel) '; 
-	
+							 } ORDER BY ASC(?topicLabel) ';
+
 				var  ajaxData = { query : prefix + query, output : "json"};
-		     
-		      return ajaxData;     
+
+		      return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				$.each(dataJSON.results.bindings,function(i){  
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.uri = this.topicLabel ? this.topicLabel.value : null;
 					JSONToken.name =  this.topicLabel ? this.topicLabel.value : null;
@@ -44,7 +44,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				StorageManager.pushCommandToStorage(currentUri,"getAllTopics",JSONfile);
 				return JSONfile;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
@@ -59,32 +59,32 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "event : "+str["name"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getAllLocations : {
 
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 	    		var prefix =   'PREFIX dc: <http://purl.org/dc/elements/1.1/> PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ';
-					
+
 				var query =	'SELECT DISTINCT ?locationName  ?locationUri WHERE  {\
 							 <'+parameters.uri+'>    swc:isSuperEventOf    ?eventUri.\
 							  	?eventUri swc:hasLocation ?locationUri.\
 							  	?locationUri rdfs:label ?locationName.\
-							 } ORDER BY ASC(?locationName) '; 
-	
+							 } ORDER BY ASC(?locationName) ';
+
 				var  ajaxData = { query : prefix + query, output : "json"};
-		     
-		      return ajaxData;     
+
+		      return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				$.each(dataJSON.results.bindings,function(i){  
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.uri = this.locationUri ? this.locationUri.value  : null;
 					JSONToken.name =  this.locationName ? this.locationName.value : null;
@@ -94,12 +94,12 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				StorageManager.pushCommandToStorage(currentUri,"getAllTopics",JSONfile);
 				return JSONfile;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
 						if(parameters.mode == "text"){
-	
+
 							ViewAdapterText.appendList(parameters.JSONdata,
 													 {baseHref:'#schedule/',
 													  hrefCllbck:function(str){return Encoder.encode(str["name"])}
@@ -109,48 +109,48 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "event : "+str["name"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getAllEvents : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 		    	var prefix  =   'PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\
                     PREFIX swc:     <http://data.semanticweb.org/ns/swc/ontology#>\
                     PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>\
                     PREFIX event:   <http://purl.org/NET/c4dm/event.owl#> \
                     PREFIX ical: <http://www.w3.org/2002/12/cal/ical#> ';
-                  
+
 
                 var query  =   "SELECT DISTINCT  ?eventUri ?eventSummary WHERE {\
                     	<"+parameters.conference.baseUri+">    swc:isSuperEventOf    ?eventUri.\
                        ?eventUri     ical:summary 	?eventSummary.\
                     }";
-                    
-				
+
+
 				var  ajaxData = { query : prefix + query, output : "json" };
 		     	return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 
-				var JSONfile = {};			
-				$.each(dataJSON.results.bindings,function(i){  
+				var JSONfile = {};
+				$.each(dataJSON.results.bindings,function(i){
 						var JSONToken = {};
 						JSONToken.uri = this.eventUri.value || null;
 						JSONToken.name = this.eventSummary.value || null;
 						JSONfile[i] = JSONToken;
 				})
-				
+
 				StorageManager.pushCommandToStorage(currentUri,"getAllEvents",JSONfile);
 				return JSONfile;
 
 
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
@@ -164,31 +164,31 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "event : "+str["name"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getAllAuthors : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 
 				var prefix =   'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ';
 				var query =   'SELECT DISTINCT ?authorName  ?authorUri ?authorImg  WHERE  { ' +
-								'    <'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?uriPubli.' + 
-								'   ?authorUri foaf:made ?uriPubli.  ' +
-								'   ?authorUri foaf:name ?authorName.' +
+								'    <'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?uriPubli.' +
+								'   ?authorUri foaf:made ?uriPubli;  ' +
+								'   foaf:name ?authorName.' +
 								' OPTIONAL { ?authorUri foaf:img ?authorImg.}' +
-								'} ORDER BY ASC(?authorName) '; 
+								'} ORDER BY ASC(?authorName) ';
 				var  ajaxData = { query : prefix + query, output : "json" };
 				return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				
-				$.each(dataJSON.results.bindings,function(i){  
+
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.name =  this.authorName.value || "";
 					JSONToken.uri =  this.authorUri.value || "";
@@ -200,7 +200,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				return JSONfile;
 
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
@@ -215,36 +215,36 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "person : "+str["uri"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getAllPersons : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 
 				var prefix =   'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ';
 				var query =   'SELECT DISTINCT ?personName  ?personUri ?personImg  WHERE  { ' +
-								'  {  <'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?publiUri.' + 
-								'   ?personUri foaf:made ?publiUri.  ' +
-								'   ?personUri foaf:name ?personName.' +
+								'  {  <'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?publiUri.' +
+								'   ?personUri foaf:made ?publiUri; ' +
+								'   foaf:name ?personName.' +
 								' OPTIONAL { ?personUri foaf:img ?personImg.} '+
-								' } UNION {  <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' + 
-								'   ?roleUri swc:isRoleAt ?eventUri.  ' +
-								'   ?roleUri swc:heldBy ?personUri.		'+
+								' } UNION {  <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' +
+								'   ?roleUri swc:isRoleAt ?eventUri;  ' +
+								'   swc:heldBy ?personUri.		'+
 								'	?personUri foaf:name ?personName.  '+
 								'	OPTIONAL { ?personUri foaf:img ?personImg.} } '+
-								'} ORDER BY ASC(?personName) '; 
+								'} ORDER BY ASC(?personName) ';
 				var  ajaxData = { query : prefix + query, output : "json" };
 				return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				
-				$.each(dataJSON.results.bindings,function(i){  
+
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.name =  this.personName.value || "";
 					JSONToken.uri =  this.personUri.value || "";
@@ -256,7 +256,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				return JSONfile;
 
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
@@ -272,46 +272,46 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "person : "+str["uri"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getAllPublications : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 		       var query = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> '+
 						'PREFIX foaf: <http://xmlns.com/foaf/0.1/> '+
 						'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
 	                    'PREFIX dc: <http://purl.org/dc/elements/1.1/> '+
 						'SELECT DISTINCT ?publiTitle ?publiUri WHERE {'+
-						'    <'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?publiUri.' + 
-	                    '	 ?publiUri dc:title ?publiTitle.' + 
-						'} ORDER BY ASC(?publiTitle)'; 
-	             
+						'    <'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?publiUri.' +
+	                    '	 ?publiUri dc:title ?publiTitle.' +
+						'} ORDER BY ASC(?publiTitle)';
+
 			var  ajaxData = { query : query, output : "json" };
 			return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				$.each(dataJSON.results.bindings,function(i){  
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.uri =  this.publiUri.value || "";
-					JSONToken.title =  this.publiTitle.value || "";					
+					JSONToken.title =  this.publiTitle.value || "";
 					JSONfile[i] = JSONToken;
 				});
 				console.log(JSONfile);
 				StorageManager.pushCommandToStorage(currentUri,"getAllPublications",JSONfile);
 				return JSONfile;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
 						if(parameters.mode == "text"){
-	
+
 							ViewAdapterText.appendList(parameters.JSONdata,
 													 {baseHref:'#publication/',
 													  hrefCllbck:function(str){return Encoder.encode(str["title"])+"/"+Encoder.encode(str["uri"])}
@@ -321,34 +321,37 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "paper : "+str["uri"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
+    /**
+     * Retrieve the organizations of everyone having a role at the conference
+     */
 		getAllOrganizations : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 		    	var prefix =   'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ';
 				var query =   'SELECT DISTINCT ?organizationName  ?organizationUri WHERE  { ' +
-								' {   <'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?uriPubli.' + 
-								'   ?authorUri foaf:made ?uriPubli.  ' +
-								'   ?authorUri foaf:member ?organizationUri.' +
+								' {   <'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?uriPubli.' +
+								'   ?authorUri foaf:made ?uriPubli;  ' +
+								'   foaf:member ?organizationUri.' +
 								'   ?organizationUri rdfs:label ?organizationName.' +
-								' } UNION {  <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' + 
-								'   ?roleUri swc:isRoleAt ?eventUri.  ' +
-								'   ?roleUri swc:heldBy ?personUri.		'+
+								' } UNION {  <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' +
+								'   ?roleUri swc:isRoleAt ?eventUri;  ' +
+								'   swc:heldBy ?personUri.		'+
 								'	?personUri foaf:member ?organizationUri.  '+
-								'	?organizationUri rdfs:label ?organizationName. } '+								
-								'} ORDER BY ASC(?organizationName) '; 
+								'	?organizationUri rdfs:label ?organizationName. } '+
+								'} ORDER BY ASC(?organizationName) ';
 				var  ajaxData = { query : prefix + query, output : "json" };
 				return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				$.each(dataJSON.results.bindings,function(i){  
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.uri =  this.organizationUri ? this.organizationUri.value : "";
 					JSONToken.name = this.organizationName ? this.organizationName.value : "";
@@ -358,7 +361,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				StorageManager.pushCommandToStorage(currentUri,"getAllOrganizations",JSONfile);
 				return JSONfile;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
@@ -373,7 +376,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "person : "+str["uri"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
@@ -381,22 +384,22 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 
 		getAllRoles : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 		     	var prefix =  'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>';
 				var query =   'SELECT DISTINCT ?roleName  ?roleUri WHERE  { ' +
-								'    <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' + 
-								'    ?roleUri  swc:isRoleAt  ?eventUri.' +
-								'    ?roleUri rdfs:label ?roleName.' +
-								'} ORDER BY ASC(?roleName)'; 
+								'    <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' +
+								'    ?roleUri  swc:isRoleAt  ?eventUri;' +
+								'    rdfs:label ?roleName.' +
+								'} ORDER BY ASC(?roleName)';
 				var  ajaxData = { query : prefix + query, output : "json" };
 				return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				$.each(dataJSON.results.bindings,function(i){  
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.uri =  this.roleUri.value || null;
 					JSONToken.name =  this.roleName.value || null;
@@ -406,7 +409,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				StorageManager.pushCommandToStorage(currentUri,"getAllRoles",JSONfile);
 				return JSONfile;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
@@ -420,27 +423,27 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "Role : "+str["name"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getAllCategories : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 			 	var prefix =  'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>';
 				var query =   'SELECT DISTINCT ?categoryUri  WHERE  { ' +
-								'    <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' + 
+								'    <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' +
 								'    ?eventUri  rdf:type  ?categoryUri.' +
-								'} ORDER BY ASC(?categoryUri)'; 
+								'} ORDER BY ASC(?categoryUri)';
 				var  ajaxData = { query : prefix + query, output : "json" };
 				return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				$.each(dataJSON.results.bindings,function(i){  
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.name =  this.categoryUri ? this.categoryUri.value : "";
 					JSONToken.uri =  this.categoryUri ? this.categoryUri.value : "";
@@ -450,13 +453,13 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				StorageManager.pushCommandToStorage(currentUri,"getAllCategories",JSONfile);
 				return JSONfile;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
 						if(parameters.mode == "text"){
 
-							for(var i = 0; i < _.size(parameters.JSONdata); i++){ 
+							for(var i = 0; i < _.size(parameters.JSONdata); i++){
 								var eventType = parameters.JSONdata[i];
 								if(eventType.uri != "http://data.semanticweb.org/ns/swc/ontology#ConferenceEvent" ){
 									var categoryName = eventType.uri.split('#')[1];
@@ -464,39 +467,39 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 								}
 
 							};
-						
+
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getTopic : {
 			dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 				var prefix =   'PREFIX dc: <http://purl.org/dc/elements/1.1/> PREFIX ical: <http://www.w3.org/2002/12/cal/ical#> PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> ';
-					
+
 				var query =	'SELECT DISTINCT ?eventUri  ?eventSummary ?publiUri ?publiTitle WHERE  {\
 							 {	 <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.\
-							  	?eventUri dc:subject  "'+parameters.uri+'".\
-							  	?eventUri ical:summary ?eventSummary.\
+							  	?eventUri dc:subject  "'+parameters.uri+'";\
+							  	ical:summary ?eventSummary.\
 							 } UNION { \
 							 	<'+parameters.conference.baseUri+'> swc:hasRelatedDocument ?publiUri.\
-							  	?publiUri dc:subject  "'+parameters.uri+'".\
-							  	?publiUri dc:title ?publiTitle. }\
-							 } '; 
-	
+							  	?publiUri dc:subject  "'+parameters.uri+'";\
+							  	 dc:title ?publiTitle. }\
+							 } ';
+
 				var  ajaxData = { query : prefix + query, output : "json"};
 				return ajaxData;
-		    }, 
-		    
+		    },
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONToken = {};
 				var results = dataJSON.results.bindings;
 				if(_.size(results) > 0 ){
-				
+
 
 					JSONToken.events = [];
 					JSONToken.publications = [];
@@ -506,7 +509,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 						if(token.hasOwnProperty("eventUri")){
 							JSONToken.events[j] =  token;
 							j++;
-						} 
+						}
 						if(token.hasOwnProperty("publiUri")){
 							JSONToken.publications[k]=  token;
 							k++;
@@ -518,7 +521,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				StorageManager.pushCommandToStorage(currentUri,"getTopic",JSONToken);
 				return JSONToken;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				//Reasoner.getMoreSpecificKeywords();
 				if(parameters.JSONdata != null){
@@ -527,7 +530,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 
 							if(parameters.JSONdata.events.length > 0){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].topic.relatedEvents+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.events.length; i++){ 
+								for(var i = 0; i < parameters.JSONdata.events.length; i++){
 									var eventtoken = parameters.JSONdata.events[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#event/'+Encoder.encode(eventtoken.eventSummary.value)+'/'+Encoder.encode(eventtoken.eventUri.value), eventtoken.eventSummary.value,{tiny : false});
 								};
@@ -535,52 +538,52 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 
 							if(parameters.JSONdata.publications.length > 0){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].topic.relatedPublications+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.publications.length; i++){ 
+								for(var i = 0; i < parameters.JSONdata.publications.length; i++){
 									var publication = parameters.JSONdata.publications[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#publication/'+Encoder.encode(publication.publiTitle.value)+'/'+Encoder.encode(publication.publiUri.value), publication.publiTitle.value,{tiny : false});
-									
+
 
 								};
 							}
 
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getPerson : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
-			  
+		    getQuery : function(parameters){
+
 			    var prefix =	'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#>         ' +
 							    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>               ' +
 							    'PREFIX dc: <http://purl.org/dc/elements/1.1/>                      ' +
 							    'PREFIX swrc: <http://swrc.ontoware.org/ontology#>                  ' +
 							    'PREFIX ical: <http://www.w3.org/2002/12/cal/ical#> 				' +
 							    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ' ;
-							
+
 			    var query  =	'SELECT DISTINCT  ?personName ?personHomepage ?personImg ?organizationUri ?organizationName ?publicationUri ?publicationName ?roleUri ?roleName ?eventUri ?eventName ?accountUri ?accountName WHERE  {  ' +
 							    ' { <'+parameters.uri+'>  foaf:name ?personName.                     ' +
 							    '	OPTIONAL {<'+parameters.uri+'>  foaf:homepage ?personHomepage.}' +
 							    '	OPTIONAL {<'+parameters.uri+'>  foaf:img ?personImg.}' +
-							    ' } UNION {  <'+parameters.uri+'>  foaf:member ?organizationUri . '+ 
+							    ' } UNION {  <'+parameters.uri+'>  foaf:member ?organizationUri . '+
 							    '   ?organizationUri  rdfs:label ?organizationName.  ' +
-							    ' } UNION { ?publicationUri foaf:maker  <'+parameters.uri+'> . '+ 
+							    ' } UNION { ?publicationUri foaf:maker  <'+parameters.uri+'> . '+
 							    '   ?publicationUri  dc:title ?publicationName. ' +
-							    ' } UNION { ?roleUri  swc:heldBy <'+parameters.uri+'>. '+ 
-							    '   ?roleUri  swc:isRoleAt ?eventUri. ' +
-							    '   ?roleUri  rdfs:label ?roleName. ' +
+							    ' } UNION { ?roleUri  swc:heldBy <'+parameters.uri+'>. '+
+							    '   ?roleUri  swc:isRoleAt ?eventUri; ' +
+							    '   rdfs:label ?roleName. ' +
 							    '	?eventUri  ical:summary ?eventName.' +
-							    ' } UNION { ?accountUri  foaf:account <'+parameters.uri+'>. '+ 
+							    ' } UNION { ?accountUri  foaf:account <'+parameters.uri+'>. '+
 							    '   ?accountUri  foaf:accountName ?accountName. }' +
 							    '}';
 				var  ajaxData = { query : prefix + query, output : "json" };
-		      	return ajaxData; 
-		    }, 
-		    
+		      	return ajaxData;
+		    },
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONToken = {};
 				var results = dataJSON.results.bindings;
@@ -598,7 +601,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 					// 		JSONToken.roles[currentRole.type] = [];
 					// 	}
 					// 	JSONToken.roles[currentRole.type].push(currentRole["event"]);
-						
+
 					// }
 
 					JSONToken.organizations = [];
@@ -611,14 +614,14 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 						if(token.hasOwnProperty("publicationUri")){
 							JSONToken.publications[j] =  token;
 							j++;
-						} 
+						}
 						if(token.hasOwnProperty("organizationUri")){
 							JSONToken.organizations[k]=  token;
 							k++;
 						}
 						if(token.hasOwnProperty("roleUri")){
 							if(!JSONToken.roles[token.roleName.value]){
-								
+
 								JSONToken.roles[token.roleName.value] = [];
 							}
 
@@ -631,29 +634,29 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				StorageManager.pushCommandToStorage(currentUri,"getPerson",JSONToken);
 				return JSONToken;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				//Reasoner.getMoreSpecificKeywords();
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
 						if(parameters.mode == "text"){
 							if(parameters.JSONdata.image){
-								parameters.contentEl.append($('<div style="min-height:50px; width:20%"><img style="width:100%;height:auto;" src="'+parameters.JSONdata.image+'"/></div>'));    
+								parameters.contentEl.append($('<div style="min-height:50px; width:20%"><img style="width:100%;height:auto;" src="'+parameters.JSONdata.image+'"/></div>'));
 							}
 							if(parameters.JSONdata.name){
 								$("[data-role = page]").find("#header-title").html(parameters.JSONdata.name);
 							}
 							if(parameters.JSONdata.description){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].person.description+'</h2>'));
-								parameters.contentEl.append($('<p>'+parameters.JSONdata.description+'</p>'));    
+								parameters.contentEl.append($('<p>'+parameters.JSONdata.description+'</p>'));
 							}
 							if(parameters.JSONdata.homepage){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].person.homepage+'</h2>'));
-								parameters.contentEl.append($('<a href='+parameters.JSONdata.homepage+'>'+parameters.JSONdata.homepage+'</a>'));    
+								parameters.contentEl.append($('<a href='+parameters.JSONdata.homepage+'>'+parameters.JSONdata.homepage+'</a>'));
 							}
-						
+
 							if(parameters.JSONdata.roles) {
-								
+
 								for(var roleName in parameters.JSONdata.roles){
 										parameters.JSONdata.roles[roleName];
 										parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].role[roleName]+' at </h2>'));
@@ -663,11 +666,11 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 								}
 							}
 
-					
+
 
 							if(parameters.JSONdata.organizations.length > 0){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].person.organizations+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.organizations.length; i++){ 
+								for(var i = 0; i < parameters.JSONdata.organizations.length; i++){
 									var organization = parameters.JSONdata.organizations[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#organization/'+Encoder.encode(organization.organizationName.value)+'/'+Encoder.encode(organization.organizationUri.value), organization.organizationName.value,{tiny : true});
 								};
@@ -675,43 +678,43 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 
 							if(parameters.JSONdata.publications.length > 0){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].person.publications+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.publications.length; i++){ 
+								for(var i = 0; i < parameters.JSONdata.publications.length; i++){
 									var publication = parameters.JSONdata.publications[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#publication/'+Encoder.encode(publication.publicationName.value)+'/'+Encoder.encode(publication.publicationUri.value), publication.publicationName.value,{tiny : false});
-									
+
 
 								};
 							}
 
 						}
 					}
-				} 
+				}
 			}
 		},
 
 
 		getOrganization : {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 			   var prefix =	'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#>         ' +
 							    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>               ' +
 							    'PREFIX dc: <http://purl.org/dc/elements/1.1/>                      ' +
 							    'PREFIX swrc: <http://swrc.ontoware.org/ontology#>                  ' +
 							    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ' ;
-							
+
 			    var query  =	'SELECT DISTINCT   ?orgaName ?orgaHomepage ?orgaBased ?personUri ?personName WHERE  {  ' +
 							    '  {<'+parameters.uri+'>  rdfs:label ?orgaName.            ' +
 							    '	OPTIONAL {<'+parameters.uri+'>  foaf:based_near ?orgaBased.}' +
 						        '	OPTIONAL {<'+parameters.uri+'>  foaf:homepage ?orgaHomepage.}' +
-							    '	 } UNION { ?personUri foaf:member <'+parameters.uri+'> .'+ 
+							    '	 } UNION { ?personUri foaf:member <'+parameters.uri+'> .'+
 							    '   ?personUri  foaf:name ?personName.  }' +
 							    '}';
 				var  ajaxData = { query : prefix + query, output : "json" };
-		      	return ajaxData; 
+		      	return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONToken = {};
 				var results = dataJSON.results.bindings;
@@ -725,14 +728,14 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 						if(token.hasOwnProperty("personUri")){
 							JSONToken.members[j] =  token;
 							j++;
-						} 
+						}
 					});
 				}
 				console.log(JSONToken);
 				StorageManager.pushCommandToStorage(currentUri,"getOrganization",JSONToken);
 				return JSONToken;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				//Reasoner.getMoreSpecificKeywords();
 				if(parameters.JSONdata != null){
@@ -743,52 +746,52 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 							}
 							if(parameters.JSONdata.homepage){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].organization.homepage+'</h2>'));
-								parameters.contentEl.append($('<a href='+parameters.JSONdata.page+'>'+parameters.JSONdata.homepage+'</a>')); 
-								
+								parameters.contentEl.append($('<a href='+parameters.JSONdata.page+'>'+parameters.JSONdata.homepage+'</a>'));
+
 							}
 							if(parameters.JSONdata.based_near){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].organization.country+'</h2>'));
-								parameters.contentEl.append($('<p>'+parameters.JSONdata.based_near+'</p>'));      
+								parameters.contentEl.append($('<p>'+parameters.JSONdata.based_near+'</p>'));
 							}
 
 							if(parameters.JSONdata.members.length > 0){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].organization.members+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.members.length; i++){ 
+								for(var i = 0; i < parameters.JSONdata.members.length; i++){
 									var member = parameters.JSONdata.members[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#person/'+Encoder.encode(member.personName.value)+'/'+Encoder.encode(member.personUri.value), member.personName.value,{tiny : true});
-									
+
 
 								};
 							}
 
 						}
 					}
-				} 
+				}
 			}
 		},
 
 		getPersonByRole: {
 		    dataType : "JSONP",
-		    method : "GET", 
+		    method : "GET",
 		    serviceUri : "",
-		    getQuery : function(parameters){	
+		    getQuery : function(parameters){
 				var prefix =   'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> '+
                        'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>';
 				var query =   'SELECT DISTINCT ?personName  ?personUri ?personImg WHERE  { ' +
-								'   <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?uriSubEvent.' + 
-								'    ?roleUri swc:isRoleAt  ?uriSubEvent.  ' +
-								'    ?roleUri  swc:heldBy ?personUri.' +
-								'    ?roleUri  rdf:type swc:'+parameters.name+'.' +
+								'   <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?uriSubEvent.' +
+								'    ?roleUri swc:isRoleAt  ?uriSubEvent;' +
+								'    swc:heldBy ?personUri;' +
+								'    rdf:type swc:'+parameters.name+'.' +
 								'   ?personUri  foaf:name ?personName.' +
 								'   OPTIONAL{?personUri  foaf:img ?personImg.}' +
-								'} ORDER BY ASC(?personName) '; 
+								'} ORDER BY ASC(?personName) ';
 				var  ajaxData = { query : prefix + query, output : "json" };
 				return ajaxData;
 		    },
-		    
+
 		    ModelCallBack : function(dataJSON,conferenceUri,datasourceUri, currentUri){
 				var JSONfile = {};
-				$.each(dataJSON.results.bindings,function(i){  
+				$.each(dataJSON.results.bindings,function(i){
 					var JSONToken = {};
 					JSONToken.name =  this.personName ? this.personName.value : null;
 					JSONToken.uri =  this.personUri ? this.personUri.value : null;
@@ -799,13 +802,13 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				StorageManager.pushCommandToStorage(currentUri,"getPersonByRole",JSONfile);
 				return JSONfile;
 			},
-				
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
 						if(parameters.mode == "text"){
 							$("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].role[parameters.uri]);
-						
+
 							ViewAdapterText.appendListImage(parameters.JSONdata,
 													 {baseHref:'#person/',
 													  hrefCllbck:function(str){return Encoder.encode(str["name"])+"/"+Encoder.encode(str["uri"])}
@@ -816,61 +819,13 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 													 {type:"Node",labelCllbck:function(str){return "person : "+str["uri"];}});
 						}
 					}
-				} 
+				}
 			}
 		},
 
 
-	
 
-		getPublicationsByAuthorId : {
-		    dataType : "JSONP",
-		    method : "GET", 
-		    serviceUri : "schedule_paper.jsonp?",
-		    getQuery : function(parameters){	
-		    	// debugger;
-			  var conferenceUri = parameters.conferenceUri;
-		      var ajaxData = {  conference_id: parameters.conference.id, author_id:parameters.uri} ;
-		      return ajaxData; 
-			     
-		    },
-		    
-		    ModelCallBack : function(dataXML,conferenceUri,datasourceUri, currentUri){
-		    	// debugger;
-				var JSONfile = {};
-				$(dataXML).each(function(i){  
-					var JSONToken = {};
-					JSONToken.title =  this.title;
-					JSONToken.id =  this.id;
 
-					JSONfile[i] = JSONToken;
-				});
-
-				console.log(JSONfile);
-				StorageManager.pushCommandToStorage(currentUri,"getPublicationsByAuthorId",JSONfile);
-				return JSONfile;
-				
-			},
-				
-			ViewCallBack : function(parameters){
-				//Reasoner.getMoreSpecificKeywords();
-				if(parameters.JSONdata != null){
-					if(_.size(parameters.JSONdata) > 0 ){
-						if(parameters.mode == "text"){
-						
-							parameters.contentEl.append('<h2>'+parameters.conference.acronym +' publications</h2>'); 
-							ViewAdapterText.appendList(parameters.JSONdata,
-													 {baseHref:'#publication/',
-													  hrefCllbck:function(str){return Encoder.encode(str["title"])+'/'+Encoder.encode(str["id"])}
-                           },
-													 "title",
-													 parameters.contentEl,
-													 {type:"Node",labelCllbck:function(str){return "publication : "+str["id"];}});
-						}
-					}
-				} 
-			}
-		},
 
 		getPublication : {
 		    dataType : "JSONP",
@@ -979,112 +934,6 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 		},
 
 
-		// getAllTheme : {
-		//     dataType : "JSONP",
-		//     method : "GET", 
-		//     serviceUri : "",
-		//     getQuery : function(parameters){	
-		// 	 	 var prefix =	'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#>         ' +
-		// 					    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>               ' +
-		// 					    'PREFIX dc: <http://purl.org/dc/elements/1.1/>                      ' +
-		// 					    'PREFIX swrc: <http://swrc.ontoware.org/ontology#>                  ' +
-		// 					    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ' ;
-							
-		// 	    var query  =	'SELECT DISTINCT   ?publiTitle ?publiAbstract ?publiUrl ?authorUri ?authorName ?keywordUri ?keywordName WHERE  {  ' +
-		// 					    '  {<'+parameters.uri+'>  dc:title ?publiTitle.                     ' +
-		// 					    '	OPTIONAL {<'+parameters.uri+'>  swrc:abstract ?publiAbstract.}' +
-		// 					    '	OPTIONAL {<'+parameters.uri+'>  swrc:url ?publiUrl.}' +
-		// 					    '	OPTIONAL {<'+parameters.uri+'>  swrc:year ?publiPublishDate.}' +
-		// 					    '	OPTIONAL {<'+parameters.uri+'>  swrc:link_publisher ?publiPublisher.}' +
-		// 					    '	 } UNION {<'+parameters.uri+'>  foaf:maker  ?authorUri. '+ 
-		// 					    '   ?authorUri  foaf:name ?authorName.  }' +
-		// 					    '	 UNION  {<'+parameters.uri+'>  dc:subject  ?keywordUri. '+
-		// 					    '   ?keywordUri  rdfs:label ?keywordName.  }' + 		 
-		// 					    '}';
-		// 		var  ajaxData = { query : prefix + query, output : "json" };
-		//       return ajaxData; 
-		//     },
-		    
-		//     ModelCallBack : function(dataXML,conferenceUri,datasourceUri, currentUri){
-		// 		var JSONfile = {};
-		// 		$.each(dataXML,function(i){  
-		// 			var JSONToken = {};
-		// 			JSONToken.themename =  this.name || "";
-		// 			JSONfile[i] = JSONToken;
-		// 		});
-		// 			console.log(JSONfile);
-		// 		//StorageManager.pushCommandToStorage(currentUri,"getConferenceMainTrackEvent",JSONfile);
-		// 		return JSONfile;
-		// 	},
-				
-		// 	ViewCallBack : functioeventStartn(parameters){
-		// 		//Reasoner.getMoreSpecificKeywords();
-		// 		if(parameters.JSONdata != null){
-		// 			if(_.size(parameters.JSONdata) > 0 ){
-		// 				if(parameters.mode == "text"){
-		// 					parameters.contentEl.append('<h2>Themes</h2>'); 
-		// 					ViewAdapterText.appendList(parameters.JSONdata,
-		// 											 {baseHref:'#theme/',
-		// 											  hrefCllbck:function(str){return Encoder.encode(str["themename"])},
-		// 											  },
-		// 											 "themename",
-		// 											 parameters.contentEl,
-		// 											 {type:"Node",labelCllbck:function(str){return "Track : "+str["themename"];}});
-		// 				}
-
-		// 			}
-		// 		} 
-		// 	}
-		// },
-
-		getEventbyTheme : {
-		    dataType : "JSONP",
-		    method : "GET", 
-		    serviceUri : "schedule_event.jsonp?",
-		    getQuery : function(parameters){	
-			  var conferenceUri = parameters.conferenceUri;
-		      var ajaxData = { theme_name : parameters.name } ;
-		      return ajaxData; 
-		    },
-		    
-		    ModelCallBack : function(dataXML,conferenceUri,datasourceUri, currentUri){
-				var JSONfile = {};
-				$(dataXML).each(function(i){  
-					var JSONToken = {};
-					JSONToken.eventLabel =  this.name
-					for(var j=0;j<this.xproperties.length;j++){
-					  if(this.xproperties[j].xNamespace=='event_uri')JSONToken.eventUri =  this.xproperties[j].xValue;
-					}
-					JSONfile[i] = JSONToken;
-				});
-					console.log(JSONfile);
-				StorageManager.pushCommandToStorage(currentUri,"getEventbyTheme",JSONfile);
-				return JSONfile;
-				
-			},
-				
-			ViewCallBack : function(parameters){
-				//Reasoner.getMoreSpecificKeywords();
-				if(parameters.JSONdata != null){
-					if(_.size(parameters.JSONdata) > 0 ){
-						if(parameters.mode == "text"){
-							
-							parameters.contentEl.append('<h2>'+parameters.name+'</h2>'); 
-							ViewAdapterText.appendList(parameters.JSONdata,
-													 {baseHref:'#event/',
-													  hrefCllbck:function(str){return Encoder.encode(str["eventUri"])}
-                           },
-													 "eventLabel",
-													 parameters.contentEl,
-													 {type:"Node",labelCllbck:function(str){return "Track : "+str["eventLabel"];}});
-						}
-
-					}
-				} 
-			}
-		},
-
-	
 
 		getEventByCategory : {
 		    dataType : "JSONP",
@@ -1094,8 +943,8 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 			 	var prefix =  'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX ical: <http://www.w3.org/2002/12/cal/ical#>  PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>';
 				var query =   'SELECT DISTINCT ?eventUri ?eventName WHERE  { ' +
 								'    <'+parameters.conference.baseUri+'> swc:isSuperEventOf ?eventUri.' + 
-								'    ?eventUri  rdf:type  <'+parameters.uri+'>.' +
-								'    ?eventUri  ical:summary  ?eventName.' +
+								'    ?eventUri  rdf:type  <'+parameters.uri+'>;' +
+								'    ical:summary  ?eventName.' +
 								'} ORDER BY ASC(?eventName)'; 
 				var  ajaxData = { query : prefix + query, output : "json" };
 				return ajaxData;
@@ -1149,13 +998,13 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 							
 
 			    var query  =	'SELECT DISTINCT  ?eventSummary ?eventStart ?eventEnd ?eventDesc ?eventComent ?eventUrl ?eventContact ?locationUri ?locationName ?subEventSummary ?subEventUri ?roleUri ?subEventUri ?personUri ?personName ?eventTwitterWidgetUrl ?eventTwitterWidgetToken WHERE  {  ' +
-							    '{ OPTIONAL {<'+parameters.uri+'>  ical:dtstart ?eventStart.}' +
-							    '	OPTIONAL {<'+parameters.uri+'>  ical:dtend ?eventEnd.}' +
-							    '	OPTIONAL {<'+parameters.uri+'>  ical:description ?eventDesc.}' +
+							    '{ <'+parameters.uri+'>  ical:dtstart ?eventStart;' +
+							    '	 ical:dtend ?eventEnd;' +
+							    ' OPTIONAL {<'+parameters.uri+'> ical:description ?eventDesc.}' +
 							    '	OPTIONAL {<'+parameters.uri+'>  ical:comment ?eventComent.}' +
 							    '	OPTIONAL {<'+parameters.uri+'>  ical:url ?eventUrl.}' +
 							    '	OPTIONAL {<'+parameters.uri+'>  ical:resources ?eventTwitterWidgetUrl.}' +
-								'	OPTIONAL {<'+parameters.uri+'>  ical:attach ?eventTwitterWidgetToken.}' +
+								  '	OPTIONAL {<'+parameters.uri+'>  ical:attach ?eventTwitterWidgetToken.}' +
 							    '	OPTIONAL {<'+parameters.uri+'>  ical:contact ?eventContact.}' +
 							    ' } UNION {	<'+parameters.uri+'>  swc:hasLocation ?locationUri. '+ 
 							    '   ?locationUri  rdfs:label ?locationName. ' +
@@ -1277,13 +1126,13 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 							    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ' ;
 							
 			    var query  =	'SELECT DISTINCT  ?eventSummary ?eventStart ?eventEnd ?eventDesc ?eventComent  ?eventTwitterWidgetUrl ?eventTwitterWidgetToken ?eventUrl ?eventContact ?locationUri ?locationName ?subEventSummary ?subEventUri ?roleUri ?roleName ?personUri ?personName WHERE  {  ' +
-							    ' { <'+parameters.uri+'>  ical:summary ?eventSummary. ' +
-							    '	OPTIONAL {<'+parameters.uri+'>  ical:dtstart ?eventStart.}' +
-							    '	OPTIONAL {<'+parameters.uri+'>  ical:dtend ?eventEnd.}' +
+							    ' { <'+parameters.uri+'>  ical:summary ?eventSummary; ' +
+							    '	ical:dtstart ?eventStart;' +
+							    '	ical:dtend ?eventEnd.' +
 							    '	OPTIONAL {<'+parameters.uri+'>  ical:description ?eventDesc.}' +
 							    '	OPTIONAL {<'+parameters.uri+'>  ical:comment ?eventComent.}' +
-							     '	OPTIONAL {<'+parameters.uri+'>  ical:resources ?eventTwitterWidgetUrl.}' +
-								'	OPTIONAL {<'+parameters.uri+'>  ical:attach ?eventTwitterWidgetToken.}' +
+							    '	OPTIONAL {<'+parameters.uri+'>  ical:resources ?eventTwitterWidgetUrl.}' +
+								  '	OPTIONAL {<'+parameters.uri+'>  ical:attach ?eventTwitterWidgetToken.}' +
 							    '	OPTIONAL {<'+parameters.uri+'>  ical:url ?eventUrl.}' +
 							    '	OPTIONAL {<'+parameters.uri+'>  ical:contact ?eventContact.}' +
 							    ' } UNION {	<'+parameters.uri+'>  swc:hasLocation ?locationUri. '+ 
@@ -1473,11 +1322,11 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 							    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ' ;
 							
 			    var query  =	'SELECT DISTINCT  ?eventUri ?eventSummary ?eventStart ?eventEnd ?eventType ?locationUri ?locationName WHERE  {  ' +
-							    '  <'+parameters.conference.baseUri+'>  swc:isSuperEventOf ?eventUri '+
-							    '	OPTIONAL {?eventUri ical:summary ?eventSummary. }' +
-							    '	OPTIONAL {?eventUri ical:dtstart ?eventStart.}' +
-							    '	OPTIONAL {?eventUri  ical:dtend ?eventEnd.}' +
-							    '	OPTIONAL {?eventUri rdf:type ?eventType.}' +
+							    '  <'+parameters.conference.baseUri+'>  swc:isSuperEventOf ?eventUri. '+
+							    '	  ?eventUri ical:summary ?eventSummary;' +
+							    '   ical:dtstart ?eventStart;' +
+							    '   ical:dtend ?eventEnd;' +
+							    '   rdf:type ?eventType.' +
 							    '   OPTIONAL {?eventUri  swc:hasLocation ?locationUri. '+ 
 							    '   ?locationUri  rdfs:label ?locationName. }' +
 							    '}ORDER BY ASC(?eventStart)';
@@ -1533,8 +1382,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 					});
 					StorageManager.pushCommandToStorage(currentUri,"getConferenceSchedule",JSONfile);
 					return JSONfile;
-				
-				return null;
+
 			},
 			
 			ViewCallBack : function(parameters){
@@ -1624,11 +1472,11 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 						    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ' ;
 							
 			    var query  =	'SELECT DISTINCT  ?eventUri ?eventSummary ?eventStart ?eventEnd ?eventType ?locationUri ?locationName WHERE  {  ' +
-							    '  <'+parameters.conference.baseUri+'>  swc:isSuperEventOf ?eventUri '+
-							    '	OPTIONAL {?eventUri ical:summary ?eventSummary. }' +
-							    '	OPTIONAL {?eventUri ical:dtstart ?eventStart.}' +
-							    '	OPTIONAL {?eventUri  ical:dtend ?eventEnd.}' +
-							    '	OPTIONAL {?eventUri rdf:type ?eventType.}' +
+							    '  <'+parameters.conference.baseUri+'>  swc:isSuperEventOf ?eventUri. '+
+							    ' ?eventUri ical:summary ?eventSummary;' +
+							    '	ical:dtstart ?eventStart;' +
+							    '	ical:dtend ?eventEnd;' +
+							    '	 rdf:type ?eventType.' +
 							    '   OPTIONAL {?eventUri  swc:hasLocation ?locationUri. '+ 
 							    '   ?locationUri  rdfs:label ?locationName. }' +
 							    '} ORDER BY ASC(?eventStart)';
@@ -1755,7 +1603,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 					$.each(results, function(i, token) {
 						if(token.hasOwnProperty("locationUri")){
 							JSONfile.locations +=  token.locationName.value;
-							n++;
+							i++;
 						}
 					});
 				}

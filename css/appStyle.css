@@ -1,4 +1,3 @@
-
 /********************  global **********************/
 
 body *{
@@ -35,14 +34,14 @@ p{
 
 /**********************   Header ************************/
 #header {
-  background: #f3f6f6 !important;
-  color: #000000 !important;
+  background: #f2f2f2 !important;
+  color: #242c4c !important;
 
 }
 
 #header * {
-  background: #f3f6f6 !important;
-  color: #000000 !important;
+  background: #f2f2f2 !important;
+  color: #242c4c !important;
 }
 
 
@@ -72,12 +71,12 @@ p{
 
 /**********************   Navbar ************************/
 #navBar{
-  background: #2b3435 !important;
+  background: #3a3737 !important;
 }
 
 #navBar *{
-  background: #2b3435 !important;
-  color: #f2f2f2 !important;
+  background: #3a3737 !important;
+  color: #f3f6f6 !important;
 }
 
 /**********************   Content ************************/
@@ -88,12 +87,12 @@ p{
 }
 
 .content h1,h2,h3,h4{
-  color: #c64c88 !important;
+  color: #36487f !important;
 }
 
 .ui-li-divider{
-  background: #2b3435 !important;
-  color: #f2f2f2 !important;
+  background: #3a3737 !important;
+  color: #f3f6f6 !important;
 }
 
 .ui-listview>li>a.ui-btn {
@@ -102,12 +101,12 @@ p{
 
 /**********************   Footer ************************/
 #footer{
-  background: #2b3435 !important;
+  background: #f2f2f2 !important;
 }
 
 #footer *{
-  background: #2b3435 !important;
-  color: #f2f2f2 !important;
+  background: #f2f2f2 !important;
+  color: #000000 !important;
 }
 
 
@@ -118,8 +117,8 @@ p{
 
 .content .ui-btn{
   background: #f2f2f2 !important;
-  color: #000000 !important;
-  border: 1px solid #c64c88 !important;
+  color: #242c4c !important;
+  border: 1px solid #36487f !important;
 }
 
 
@@ -170,12 +169,11 @@ a .swtich{
   color: rgb(250, 252, 253);
 }
 
-#bonusPanel
-{
+#bonusPanel {
   width: 200px;
   border: 1px solid #000;
   border-right: none;
-  background: rgba(0, 0, 0, .5);
+  background: rgba(0,0,0,.5);
   margin: -1px 0;
-  color: rgb(250, 252, 253);
+  color:  rgb(250, 252, 253);
 }
