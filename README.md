@@ -23,11 +23,11 @@ ViewAdapter: This component act as a wrapper to jQueryMobile. It exposes view re
 Request workflow
 -------
 
-The figure above enlightens the interactions between the application components. After receiving a hash change event, the application reacts as a succession of processes all triggered from the main controller (i.e. the Backbone router). The datasource querying and integration process in DataConf is structured as follows.
+The figure (doc/request-workflow.png)  enlightens the interactions between the application components. After receiving a hash change event, the application reacts as a succession of processes all triggered from the main controller (i.e. the Backbone router). The datasource querying and integration process in DataConf is structured as follows.
 
 1)The user change pages and to view a specific resource he is interested in.
 
-2) The router catches the event and reads the requested URL1. By comparing the resource type with the routes declared in the configuration file, it can retrieve the list of commands to execute and the associated datasources.
+2) The router catches the event and reads the requested url. By comparing the resource type with the routes declared in the configuration file, it can retrieve the list of commands to execute and the associated datasources.
 
 3) The router triggers the rendering of the new page by calling the ViewAdapter. The ViewAdapter triggers the page change event and prepares the new layout. This must be done before sending any requests to the datasources, so that the interface does not seem to freeze while awaiting network communications.
 
