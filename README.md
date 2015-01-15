@@ -4,7 +4,7 @@ The sympozer client v1 is the client used in the first version of the conference
 Install
 -------
 
-The client doesn't require any web server since it is meant to work in an autonomous environnement such as a Cordava package.
+The client doesn't require any web server since it is meant to work in an autonomous environnement such as a Cordova package.
 All the configurations can be controlled fron the js/config.js file that wil decide which request will be triggered on each view. 
 
 Architecture overview
