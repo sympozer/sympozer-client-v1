@@ -71,7 +71,7 @@ define(['backbone', 'jquery', 'config', 'encoder', 'localStorage/localStorageMan
 					 
 					//Appending button and keeping track of new route in case the mode changes
 					var currentPage = ViewAdapter.update(routeItem ,title, self.conference, self.datasources,uri,name); 
-					
+
 					//We try if informations are in the local storage before call getQuery and executeCommand
 					var JSONdata = StorageManager.pullCommandFromStorage(uri);
 				  

@@ -1,104 +1,103 @@
 <!doctype html>
 <html>
 <head>
-  <title>ESWC 2015</title>
-  <link rel="shortcut icon" type="image/x-icon" href="http://liris.cnrs.fr/dataconf/images/Logo_DataConf_ico.png">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESWC 2015</title>
+<link rel="shortcut icon" type="image/x-icon" href="http://liris.cnrs.fr/dataconf/images/Logo_DataConf_ico.png">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link rel="stylesheet" href="css/jquery.mobile-1.4.0-rc.1.min.css" />
-  <link rel="stylesheet" href="css/appStyle.css" />
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="css/jquery.mobile-1.4.0-rc.1.min.css" />
+<link rel="stylesheet" href="css/appStyle.css" />
+<link rel="stylesheet" href="css/font-awesome-4.0.3.min.css" />
 
+<!--Loading require js dependencies manager-->
+<script  src="js/lib/require.js"></script>
+<script>
 
-  <!--Loading require js dependencies manager-->
-  <script  src="js/lib/require.js"></script>
-  <script>
+  //Require.js configurations
+  require.config({
+    baseUrl: "js",
+    shim: {
+      backbone: {
+        deps: [
+          'underscore',
+          'jquery'
+        ],
+        exports: 'Backbone'
+      },
+      jqueryMobile: {
+        deps: [
+          'jquery',
+          'jqueryMobile.config'
+        ]
+      },
+      'jStorage' : {
+        deps: [
+          'jquery'
+        ]
+      },
+      'jqueryMobile.config': {
+        deps: [
+          'jquery',
+        ]
+      },
+      'twttr' :{
+        exports : 'widget',
+        init: function () {
 
-    //Require.js configurations
-    require.config({
-      baseUrl: "js",
-      shim: {
-        backbone: {
-          deps: [
-            'underscore',
-            'jquery'
-          ],
-          exports: 'Backbone'
-        },
-        jqueryMobile: {
-          deps: [
-            'jquery',
-            'jqueryMobile.config'
-          ]
-        },
-        'jStorage' : {
-          deps: [
-            'jquery'
-          ]
-        },
-        'jqueryMobile.config': {
-          deps: [
-            'jquery',
-          ]
-        },
-        'twttr' :{
-          exports : 'widget',
-          init: function () {
-
-            return this.twttr;
-          }
-        },
-        'underscore': {
-          exports: '_'
+          return this.twttr;
         }
       },
-      paths: {
-        jquery: 'lib/jquery',
-        backbone: 'lib/backbone',
-        underscore : 'lib/underscore-min',
-        twttr :'lib/widget',
-        'socialite': 'lib/socialite.min',
-        'jqueryMobile.config' : 'lib/jquerymobile.config',
-        'jsw' : 'reasoner/jsw',
-        'jswui' : 'reasoner/jswui',
-        'query' : 'reasoner/query',
-        'encoder': 'lib/encoder',
-        'blob': 'lib/blob',
-        'fileSaver' : 'lib/FileSaver',
-        'labels' : 'i18n/labels',
-        'jqueryMobile' : 'lib/jquery.mobile-1.4.0-rc.1.min',
-        'jStorage' : 'lib/jstorage.min',
-        'moment' : 'lib/moment.min',
-        'tpl' : 'lib/templateLoader',
-        'ajaxLoader' : 'ajaxLoader/AjaxLoader'
+      'underscore': {
+        exports: '_'
       }
+    },
+    paths: {
+      jquery: 'lib/jquery',
+      backbone: 'lib/backbone',
+      underscore : 'lib/underscore-min',
+      twttr :'lib/widget',
+      'socialite': 'lib/socialite.min',
+      'jqueryMobile.config' : 'lib/jquerymobile.config',
+      'jsw' : 'reasoner/jsw',
+      'jswui' : 'reasoner/jswui',
+      'query' : 'reasoner/query',
+      'encoder': 'lib/encoder',
+      'blob': 'lib/blob',
+      'fileSaver' : 'lib/FileSaver',
+      'labels' : 'i18n/labels',
+      'jqueryMobile' : 'lib/jquery.mobile-1.4.0-rc.1.min',
+      'jStorage' : 'lib/jstorage.min',
+      'moment' : 'lib/moment.min',
+      'tpl' : 'lib/templateLoader',
+      'ajaxLoader' : 'ajaxLoader/AjaxLoader'
+    }
 
-    });
+  });
 
-    //Configurations
-    require(['config', 'tpl', 'model/swcEventCommandStore', 'model/liveconSparqlCommandStore','moment'], function(configuration, tpl, liveconApiCommandStore, liveconSparqlCommandStore, moment){
+  //Configurations
+  require(['config', 'tpl', 'model/swcEventCommandStore', 'model/liveconSparqlCommandStore','moment'], function(configuration, tpl, liveconApiCommandStore, liveconSparqlCommandStore, moment){
 
-      //Modules configuration
-      var modules = []
+    //Modules configuration
+    var modules = []
 
-      //Add publications and organizations support
-      modules.push("publications");
-      modules.push("organizations");
+    //Add publications and organizations support
+    modules.push("publications");
+    modules.push("organizations");
 
 
-      tpl.modules = modules;
-      tpl.uri = "templates/";
+    tpl.modules = modules;
+    tpl.uri = "templates/";
 
-      //Language configuration
-      moment.lang('EN_us');
+    //Language configuration
+    moment.lang('EN_us');
 
-    });
+  });
 
-    //Entry point
-    require(['app']);
+  //Entry point
+  require(['app']);
 
-  </script>
+</script>
 
 </head>
 <body style="background-color:#747267">
@@ -107,6 +106,132 @@
   <img src="img/logo.png" height="50px" width="auto;" style="display:inline"/>
   <img src="img/loader.gif" height="32px" width="32px"  style="display:inline;margin-left: auto;margin-right: auto"/>
 </div>
+
+
+<!--All templates used by the client (loaded by lib/templateLoader.js-->
+<script  type="text/template" id="bonusPanel">
+  <div data-role="panel" id="bonusPanel" class="ui-responsive-panel" data-position="left" data-display="overlay">
+    <div id="socialBox">
+
+      <a  id="facebookLink" data-role="button" data-inline="true" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=live-con.com"><span><i class="fa fa-facebook"></i></span></a>
+
+      <a id="twitterLink" data-role="button" data-inline="true" target="_blank" href="https://twitter.com/intent/tweet?text=Livecon.com&url=http%3A%2F%2Flive-con.com&via=live-con.com"><span><i class="fa fa-twitter"></i></span></a>
+      <a id="googleLink"  data-role="button" data-inline="true" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Flive-con.com.com"><span><i class="fa fa-google-plus"></i></span></a>
+      <a id="linkedinLink"  data-role="button" data-inline="true" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flive-con.com.com&title=live-con.com&summary=live-con.com"><span><i class="fa fa-linkedin"></i></span></a>
+
+    </div>
+  </div>
+</script>
+
+<script  type="text/template" id="eventSearch">
+  <article id="eventSearch">
+    <section class="content">
+      <a href="#events" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
+      <a href="#persons"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByPerson %></a>
+      <a href="#categories"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByCategory %></a>
+      <a href="#topics"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTopic %></a>
+      <a href="#locations"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByLocation %></a>
+    </section>
+  </article>
+</script>
+
+<script  type="text/template" id="footer">
+  <footer id="footer" data-role="footer" data-position="fixed" >
+    <div data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" >
+      <ul class="ui-grid">
+        <li class="ui-block-a"><a href="#bonusPanel" id="#btnShowPanel"><span><i class="fa fa-plus-square-o"></i></span></a></li>
+        <li class="ui-block-b"><a href="#"><span><i class="fa fa-home"></i></span></a></li>
+        <li class="ui-block-c"><a href="#settingsPanel"><span><i class="fa fa-cog"></i></span></a></li>
+      </ul>
+    </div>
+  </footer>
+</script>
+
+<script  type="text/template" id="header">
+  <header data-role="header" data-position="inline"  id="header">
+    <div class="ui-grid-b ui-responsive">
+      <div class="ui-block-a">
+        <div class="logoContainer">
+          <a href="#" ><img src ="<%= conference.logoUri %>" alt="logoConference"/></a>
+        </div>
+      </div>
+      <div class="ui-block-b"  id="uselessNav"></div>
+      <div class="ui-block-c">
+        <h1 id="header-title"><%= title %></h1>
+      </div>
+    </div>
+  </header>
+</script>
+
+
+<script  type="text/template" id="home">
+  <article id="home">
+    <section class="content">
+    </section>
+  </article>
+</script>
+
+<script  type="text/template" id="navBar">
+  <nav data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" id="navBar">
+    <ul>
+      <li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li>
+      <li><a href="#search/person"><i class="fa fa-male"></i>     <%= labels.navBar.persons %></a></li>
+      <% if(_.contains(modules, "publications")) { %> <li><a href="#search/publication"><i class="fa fa-book"></i>    <%= labels.navBar.publications %></a></li> <% } %>
+      <% if(_.contains(modules, "organizations")) { %><li><a href="#search/organization"><i class="fa fa-users"></i>    <%= labels.navBar.organizations %></a></li>   <% } %>
+    </ul>
+  </nav>
+</script>
+
+<script  type="text/template" id="organizationSearch">
+  <article id="personSearch">
+    <section class="content">
+      <a href="#organizations" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
+      <a href="#persons"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByPerson %></a>
+    </section>
+  </article>
+</script>
+
+<script  type="text/template" id="personSearch">
+  <article id="personSearch">
+    <section class="content">
+      <a href="#persons" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
+      <a href="#roles"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByRole %></a>
+      <% if(_.contains(modules, "publications")) { %><a href="#organizations"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByOrganization %></a> <% } %>
+    </section>
+  </article>
+</script>
+
+<script  type="text/template" id="publicationSearch">
+  <article id="publicationSearch">
+    <section class="content">
+      <a href="#publications" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTitle %></a>
+      <a href="#authors"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByAuthor %></a>
+      <a href="#topics"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTopic %></a>
+    </section>
+  </article>
+</script>
+
+<script  type="text/template" id="schedule">
+  <article>
+    <section class="content">
+      <a href="#search/event" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.searchEvent %></a>
+      <a href="#whatsnext/"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.whatsnext %></a>
+    </section>
+  </article>
+</script>
+
+<script  type="text/template" id="settingsPanel">
+  <div data-role="panel" id="settingsPanel" class="ui-responsive-panel" data-position="right" data-display="overlay">
+    <h1><%= labels.settingsPanel.storage %></h1>
+    <form>
+      <label for="flip-storage">Storage</label>
+      <select name="flip-storage" id="flip-storage" data-role="slider">
+        <option value="off"><%= labels.settingsPanel.on %></option>
+        <option value="on"><%= labels.settingsPanel.off %></option>
+      </select>
+    </form>
+  </div>
+</script>
 
 </body>
 
