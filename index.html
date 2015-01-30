@@ -2,7 +2,8 @@
 <html>
 <head>
 <title>ESWC 2015</title>
-<link rel="shortcut icon" type="image/x-icon" href="http://liris.cnrs.fr/dataconf/images/Logo_DataConf_ico.png">
+<link rel="shortcut icon" type="image/x-icon"
+	href="http://liris.cnrs.fr/dataconf/images/Logo_DataConf_ico.png">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -11,94 +12,12 @@
 <link rel="stylesheet" href="css/font-awesome-4.0.3.min.css" />
 
 <!--Loading require js dependencies manager-->
-<script  src="js/lib/require.js"></script>
-<script>
+<script src="js/lib/require.js" type="text/javascript"></script>
 
-  //Require.js configurations
-  require.config({
-    baseUrl: "js",
-    shim: {
-      backbone: {
-        deps: [
-          'underscore',
-          'jquery'
-        ],
-        exports: 'Backbone'
-      },
-      jqueryMobile: {
-        deps: [
-          'jquery',
-          'jqueryMobile.config'
-        ]
-      },
-      'jStorage' : {
-        deps: [
-          'jquery'
-        ]
-      },
-      'jqueryMobile.config': {
-        deps: [
-          'jquery',
-        ]
-      },
-      'twttr' :{
-        exports : 'widget',
-        init: function () {
-
-          return this.twttr;
-        }
-      },
-      'underscore': {
-        exports: '_'
-      }
-    },
-    paths: {
-      jquery: 'lib/jquery',
-      backbone: 'lib/backbone',
-      underscore : 'lib/underscore-min',
-      twttr :'lib/widget',
-      'socialite': 'lib/socialite.min',
-      'jqueryMobile.config' : 'lib/jquerymobile.config',
-      'jsw' : 'reasoner/jsw',
-      'jswui' : 'reasoner/jswui',
-      'query' : 'reasoner/query',
-      'encoder': 'lib/encoder',
-      'blob': 'lib/blob',
-      'fileSaver' : 'lib/FileSaver',
-      'labels' : 'i18n/labels',
-      'jqueryMobile' : 'lib/jquery.mobile-1.4.0-rc.1.min',
-      'jStorage' : 'lib/jstorage.min',
-      'moment' : 'lib/moment.min',
-      'tpl' : 'lib/templateLoader',
-      'ajaxLoader' : 'ajaxLoader/AjaxLoader'
-    }
-
-  });
-
-  //Configurations
-  require(['config', 'tpl', 'model/swcEventCommandStore', 'model/liveconSparqlCommandStore','moment'], function(configuration, tpl, liveconApiCommandStore, liveconSparqlCommandStore, moment){
-
-    //Modules configuration
-    var modules = []
-
-    //Add publications and organizations support
-    modules.push("publications");
-    modules.push("organizations");
-
-
-    tpl.modules = modules;
-    tpl.uri = "templates/";
-
-    //Language configuration
-    moment.lang('EN_us');
-
-  });
-
-  //Entry point
-  require(['app']);
-
+<script type="text/javascript">
+    // Launch the app
+    require(['js/main']);
 </script>
-
 </head>
 <body style="background-color:#747267">
 
@@ -107,18 +26,14 @@
   <img src="img/loader.gif" height="32px" width="32px"  style="display:inline;margin-left: auto;margin-right: auto"/>
 </div>
 
-
 <!--All templates used by the client (loaded by lib/templateLoader.js-->
 <script  type="text/template" id="bonusPanel">
   <div data-role="panel" id="bonusPanel" class="ui-responsive-panel" data-position="left" data-display="overlay">
     <div id="socialBox">
-
       <a  id="facebookLink" data-role="button" data-inline="true" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=live-con.com"><span><i class="fa fa-facebook"></i></span></a>
-
       <a id="twitterLink" data-role="button" data-inline="true" target="_blank" href="https://twitter.com/intent/tweet?text=Livecon.com&url=http%3A%2F%2Flive-con.com&via=live-con.com"><span><i class="fa fa-twitter"></i></span></a>
       <a id="googleLink"  data-role="button" data-inline="true" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Flive-con.com.com"><span><i class="fa fa-google-plus"></i></span></a>
       <a id="linkedinLink"  data-role="button" data-inline="true" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flive-con.com.com&title=live-con.com&summary=live-con.com"><span><i class="fa fa-linkedin"></i></span></a>
-
     </div>
   </div>
 </script>
@@ -234,9 +149,4 @@
 </script>
 
 </body>
-
 </html>
-
-
-
-

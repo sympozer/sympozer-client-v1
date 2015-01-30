@@ -11,9 +11,9 @@
 				   
 *   Tags:  JSON, ENDPOINT, SPARQL
 **/
-define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandStore','model/GoogleCommandStore','model/swcEventCommandStore', 'model/DPCommandStore', 'model/liveconSparqlCommandStore'],
-	function(SWDFCommandStore, DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, swcEventCommandStore, DPCommandStore, liveconSparqlCommandStore) {
-		
+define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStore','model/datasources/GoogleCommandStore','model/datasources/swcEventCommandStore', 'model/datasources/DPCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore'],
+	function(SWDFCommandStore, DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, swcEventCommandStore, DPCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
+
 		var AppConfig = {
 			"app" : {
 				"liveconLogo" : "livecon.png"
@@ -38,38 +38,41 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 			// crossDomainMode : "CORS" or "JSONP" explicits the cross domain technique to be used on the service 
 			// commands : Name of the json var that implements all the commands that can be used on the service
 			"datasources" : {
-
-				
 				"DblpDatasource" : {
 					"activated" : true,
 					"uri" : "http://dblp.rkbexplorer.com/sparql/",
 					"crossDomainMode" : "CORS",
 					"commands" : DBLPCommandStore
 				},
-
 				"DuckDuckGoDatasource" : {   
 					"activated" : true,
 					"uri" : "http://api.duckduckgo.com/",
 					"crossDomainMode" : "JSONP",
 					"commands" : DDGoCommandStore
 				},
-				
 				"GoogleDataSource" : {  
 					"activated" : true, 
 					"uri" : "https://ajax.googleapis.com/ajax/services/search/web",
 					"crossDomainMode" : "JSONP",
 					"commands" : GoogleCommandStore
-				},
-				"eventDatasource" : {
-					"activated" : true,
-          //local configuration
+                },
+                "eventDatasource" : {
+                    "activated" : true,
+                    //local configuration
 //					"uri" : "http://localhost:8080/sparql",
-					"uri" : "http://sparql.sympozer.com/sparql",
-					"crossDomainMode" : "JSONP",
-					"commands" : liveconSparqlCommandStore
+                    "uri" : "http://sparql.sympozer.com/sparql",
+                    "crossDomainMode" : "JSONP",
+                    "commands" : liveconSparqlCommandStore
+                },
+                "localDatasource" : {
+					"local": true,
+                    "activated" : true,
+                    //local configuration
+                    "uri" : ".",
+                    "crossDomainMode" : "CORS",
+                    "commands" : LocalCommandStore
 				}
-				
-			}, 
+			},
 			//Declaration of all the routes to be used by the router
 			// hash : url to be catched by the router
 			// view : the name of the view to display when catching the route (if a template in /templates matches the name, it is used, otherwise a generic view is used)
@@ -81,11 +84,11 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					"view" : "home",
 					"graphView" : "no",
 					"title": "10th ESWC 2013",
-					"commands" : [ 
+					"commands" : [
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getConferenceEvent"
-            },
+						},
 						/*{
 							"datasource" : "eventDatasource",
 							"name" : "getConferenceTalk",
@@ -104,7 +107,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						}*/
 						
 					]
-				}, 
+				},
 		    	"Schedule" : {
 					"hash" : "schedule/*locationLabel",
 					"view" : "schedule",
@@ -130,7 +133,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 						    "datasource" : "eventDatasource",
 						    "name" : "getWhatsNext"
-            }
+						}
 					]
 				},  
 				"person-by-role" : { 
@@ -142,7 +145,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					    {
 							"datasource" : "eventDatasource",
 							"name" : "getPersonByRole"
-              }
+						}
 					]
 				},
 			    "Proceedings-search-by-theme" : { 
@@ -154,7 +157,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					    {
 							"datasource" : "eventDatasource",
 							"name" : "getAllTheme"
-              }
+						}
 					]
 				},
 			    "Proceedings-search-by-category" : { 
@@ -166,7 +169,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					    {
 							"datasource" : "eventDatasource",
 							"name" : "getAllCategories"
-              }
+						}
 					]
 				},
 				"Events" : {
@@ -178,7 +181,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllEvents"
-            }
+						}
 					]
 				},
 				"Event" : { 
@@ -206,7 +209,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					    {
 							"datasource" : "eventDatasource",
 							"name" : "getEventByCategory"
-              }
+						}
 					]
 				},
 				"Publication" : { 
@@ -218,8 +221,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getPublication"
-            }
-						
+						}
 					]
 				},
 				"EventSearch" : {
@@ -246,7 +248,6 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					"commands" : [
 					]
 				},
-
 				"Publications" : { 
 					"hash" : "publications",
 					"view" : "publications",
@@ -256,10 +257,9 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllPublications"
-            }
+						}
 					]
 				},
-
 				"Locations" : { 
 					"hash" : "locations",
 					"view" : "locations",
@@ -269,11 +269,9 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllLocations"
-            }
+						}
 					]
 				},
-				
-
 				"OrganizationSearch" : {
 					"hash" : "search/organization",
 					"view" : "organizationSearch",
@@ -282,7 +280,6 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					"commands" : [
 					]
 				},
-				
 				"Persons" : {
 					"hash" : "persons",
 					"view" : "persons",
@@ -292,7 +289,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllPersons"
-            }
+						}
 					]
 				},
 				"Person" : {
@@ -301,23 +298,19 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					"graphView" : "no",
 					"title": "person",
 					"commands" : [
-						
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getPerson"
-            },
+						},
 						{
 							"datasource" : "GoogleDataSource",
 							"name" : "getAuthorPersonalPage"
-            },
+						},
 						{
 							"datasource" : "DblpDatasource",
 							"name" : "getAuthorPublications"
-            }
-						
-
+						}
 					]
-					
 				},
 				"Organizations" : {
 					"hash" : "organizations",
@@ -328,7 +321,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllOrganizations"
-            }
+						}
 					]
 				},
 				"Roles" : {
@@ -340,10 +333,9 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllRoles"
-            }
+						}
 					]
 				},
-
 				"Countries" : {
 					"hash" : "countries",
 					"view" : "countries",
@@ -353,10 +345,9 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllCountries"
-            }
+						}
 					]
 				},
-				
 				"Topics" : {
 					"hash" : "topics",
 					"view" : "topics",
@@ -366,7 +357,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllTopics"
-            },
+						},
 					]
 				},
 				"Topic" : {
@@ -378,7 +369,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getTopic"
-            },
+						},
 					]
 				},
 				"Categories" : {
@@ -390,7 +381,7 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllCategories"
-            }
+						}
 					]
 				},
 				"Category" : {
@@ -402,10 +393,9 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getEventbyCategory"
-            },
+						},
 					]
 				},
-
 				"Authors" : {
 					"hash" : "authors",
 					"view" : "authors",
@@ -415,10 +405,9 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllAuthors"
-            }
+						}
 					]
 				},
-
 				"ExternPublication" : {
 					"hash" : "externPublication/*uri",
 					"view" : "externPublication",
@@ -428,11 +417,11 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 					    {
 							"datasource" : "DblpDatasource",
 							"name" : "getExternPublicationInfo"
-              },
+						},
 						{
 							"datasource" : "DblpDatasource",
 							"name" : "getExternPublicationAuthors"
-            }
+						}
 					]
 				},
 				"Organization" : {
@@ -444,11 +433,11 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "DuckDuckGoDatasource",
 							"name" : "getResultOrganization"
-            },
+						},
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getOrganization"
-            }
+						}
 					]
 				},
 				"Recommendation" : {
@@ -460,10 +449,10 @@ define(['model/SWDFCommandStore', 'model/DBLPCommandStore', 'model/DDGoCommandSt
 						{
 							"datasource" : "SemanticWebConferenceDatasource",
 							"name" : "getRecommendedPublications"
-            }
+						}
 					]
 				}
-      }
+			}
 		};
 		return AppConfig;
 })

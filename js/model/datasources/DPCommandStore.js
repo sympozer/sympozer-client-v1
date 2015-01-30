@@ -17,7 +17,6 @@
 						var  ajaxData = 'key=["'+parameters.uri+'","document"]';
 						return ajaxData;
 			},
-											
 			ModelCallBack : function (dataJSON,conferenceUri,datasourceUri, currentUri){
 
 				var JSONToken = {};

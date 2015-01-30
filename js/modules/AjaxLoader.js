@@ -12,7 +12,7 @@ define(['jquery','jqueryMobile'], function($, jqueryMobile){
 
 		/************************************************      COMMANDS EXECUTION            **************************************/
 		/** Ajax query launcher function 
-		* It organise all AJAX call according to a command and a datasource specifications
+		* It organises all AJAX calls according to a command and a datasource specifications
 		* paramaters : Contains the command to be launched, and the datasource to use
 		* data       : Contains the query built previously by the getQuery command's function
 		**/
@@ -47,12 +47,19 @@ define(['jquery','jqueryMobile'], function($, jqueryMobile){
 				cache: false,
 				dataType: command.dataType,
 				data: data,	
-				success: _.bind(function(data){data = command.ModelCallBack(data, conference, datasource.uri,currentUri,name);
-										jqueryMobile.loading( 'hide' );
-										command.ViewCallBack({JSONdata : data, contentEl : contentEl,name : name, mode : this.viewAdapter.mode, conference : conference});
-										this.viewAdapter.generateJQMobileElement();
-										
-										},this),
+				success: _.bind(function(data){
+					data =
+						command.ModelCallBack(data, conference, datasource.uri,currentUri,name);
+						jqueryMobile.loading( 'hide' );
+						command.ViewCallBack({
+							JSONdata : data,
+							contentEl : contentEl,
+							name : name,
+							mode : this.viewAdapter.mode,
+							conference : conference
+						});
+						this.viewAdapter.generateJQMobileElement();
+					},this),
 				error: function(jqXHR, textStatus, errorThrown) { 
 					console.log(errorThrown);
 					jqueryMobile.loading( 'hide' );

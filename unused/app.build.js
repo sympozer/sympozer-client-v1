@@ -71,7 +71,10 @@
 		'jStorage' : 'lib/jstorage.min',
 		'moment' : 'lib/moment.min',
 		'tpl' : 'lib/templateLoader',
-		'ajaxLoader' : 'ajaxLoader/AjaxLoader'
+        'ajaxLoader' : 'ajaxLoader/AjaxLoader',
+        'localData' : '../data/data_ESWC2014',
+        'personDao': '../data/LocalPersonDAO',
+        'person': 'model/person/person'
     },
     optimize: "uglify",
      uglify: {

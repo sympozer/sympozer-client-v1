@@ -1,7 +1,7 @@
 /**   
 *	Copyright <c> Claude Bernard - University Lyon 1 -  2013
 * 	License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing 
-*   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LE PEUTREC, Benoît DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
+*   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LE PEUTREC, BenoÃ®t DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
 *   Description: This object is used to retrieve values from localstorage and process it to get navigation informations
 *   Version: 1.2
 *   Tags:  JSON, Local Storage

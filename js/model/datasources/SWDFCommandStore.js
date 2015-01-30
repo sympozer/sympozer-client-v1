@@ -9,7 +9,7 @@
 *   Version: 1.2
 *   Tags:  JSON, SPARQL, AJAX
 **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'localStorage/localStorageManager','moment'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, moment){
+define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'localStorage/localStorageManager','moment', 'ajaxLoader'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, moment, ajaxLoader){
 var SWDFCommandStore = { 
 	/** Command used to get and display  all the authors that have a publication in the conference's proceedings using the conference uri **/
 	getAllAuthors : {
@@ -76,8 +76,6 @@ var SWDFCommandStore = {
 			}
 		}
     },
-    
-    
 
 	/** Command used Schedule of the conf **/
 	getConferenceSchedule : {
@@ -216,7 +214,7 @@ var SWDFCommandStore = {
 			}
 		}
     },
-                                        
+
 	/******** Command used to get and display the title of the conference's publications *********/
     getAllTitle : {
         dataType : "XML",
@@ -276,7 +274,7 @@ var SWDFCommandStore = {
 			}
 		}
 	},
-        
+
     /** Command used to get and display all keywords of the conference's publications **/
     getAllKeyword : {
         dataType : "XML",
@@ -336,8 +334,8 @@ var SWDFCommandStore = {
 			} 
 		}
 	},
-	
-	 /** Command used to get and display all keywords of the conference's publications **/
+
+	/** Command used to get and display all keywords of the conference's publications **/
     getAllKeywordList : {
         dataType : "XML",
         method : "GET",
@@ -397,7 +395,7 @@ var SWDFCommandStore = {
 			} 
 		}
 	},
-        
+
     /** Command used to get and display all proceedings of the conference's publications **/     
     getAuthorsProceedings : {
         dataType : "XML",
@@ -451,9 +449,7 @@ var SWDFCommandStore = {
 		
 		
 	},  
-	
 
-                                      
 	/** Command used to get and display the title and the abstract of a publication  **/
     getPublicationInfo : {
         dataType : "XML",
@@ -523,7 +519,7 @@ var SWDFCommandStore = {
 			}
 		}
 	},
-     
+
 	/** Command used to get the auhors of a publication  **/
     getPublicationAuthor : {
         dataType : "XML",
@@ -577,7 +573,7 @@ var SWDFCommandStore = {
 			}
 		}
     }, 
-    
+
 	/** Command used to get all session's sub event of a given event  **/
     getSessionSubEvent : {
 	    dataType : "XML",
@@ -634,7 +630,7 @@ var SWDFCommandStore = {
 		}
                                          
     },
-	
+
 	/** Command used to get all session's sub event of a given event  **/
     getTrackSubEvent : {
 	    dataType : "XML",
@@ -689,7 +685,7 @@ var SWDFCommandStore = {
 		}
                                          
     },
-       
+
     /** Command used to get and display the name, the start and end time and location of a given event  **/ 
     getEvent : {
 	    dataType : "XML",
@@ -923,10 +919,7 @@ var SWDFCommandStore = {
 			} 
 		}
     },
-	
-	
-	
-	
+
 	/** Command used to get the track events of a given conference **/ 
     getConferenceMainTrackEvent : {
 	    dataType : "XML",
@@ -987,7 +980,7 @@ var SWDFCommandStore = {
 			} 
 		}
     },
-	
+
 	/** Command used to get the session events of a given publication **/ 
     getEventRelatedPublication : {
 	    dataType : "XML",
@@ -1046,6 +1039,7 @@ var SWDFCommandStore = {
 			} 
 		}
     },
+
 	/** Command used to get the Session events of a given conference that are not subEvent of any trackEvent**/ 
     getConferenceMainSessionEvent : {
 	    dataType : "XML",
@@ -1107,7 +1101,7 @@ var SWDFCommandStore = {
 			} 
 		}
     },
-	
+
 	/** Command used to get the Keynotes events of a given conference**/  
     getConferenceKeynoteEvent : {
 	    dataType : "XML",
@@ -1167,7 +1161,7 @@ var SWDFCommandStore = {
 			} 
 		}
     },
- 
+
 	/** Command used to get the keywords linked to a publication  **/ 
 	getPublicationKeywords : {
 		dataType : "XML",
@@ -1218,16 +1212,16 @@ var SWDFCommandStore = {
 			}
 		}
 	} ,
-	
+
 	/** Command used to get all publications linked to a keyword  **/ 
 	getPublicationsByKeyword : {
 		dataType : "XML",
 		method : "GET",
 		getQuery : function(parameters){
-			 
+
 			var keyword = Reasoner.labelToUri(parameters.uri);
 			var queryText = 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> select ?o { ?o  <rdf:type> <'+keyword+'> }';
-									
+
 			if(!!window.Worker){
 				Reasoner.sendRequest(queryText,"null",parameters, function (results,parameters){
 					
@@ -1237,7 +1231,6 @@ var SWDFCommandStore = {
 					var first = true;
 					KeywordsString = "";
 					for(var i=0; i < results.length; i++){
-						
 						var keywordRes = Reasoner.UriToLabel(results[i].o);
 						//if(Reasoner.filterResult(parameters.uri,keywordRes)){
 							if(first != true){
@@ -1250,8 +1243,15 @@ var SWDFCommandStore = {
 						
 					};
 					var query = 'SELECT DISTINCT ?publiUri ?publiTitle  WHERE { ' + KeywordsString + '}ORDER BY ASC(?publiTitle) ';
-					AjaxLoader.executeCommand({datasource : parameters.datasource, command : SWDFCommandStore.getPublicationsByKeyword,data : {query : prefix + query}, currentUri : parameters.uri, contentEl :  contentEl = ViewAdapter.currentPage.find("#getPublicationsByKeyword"), name : parameters.name,conference : parameters.conference});
-					
+/*					ajaxLoader.executeCommand({
+						datasource : parameters.datasource,
+						command : SWDFCommandStore.getPublicationsByKeyword,
+						data : {query : prefix + query},
+						currentUri : parameters.uri,
+						contentEl : contentEl = ViewAdapter.currentPage.find("#getPublicationsByKeyword"),
+						name : parameters.name,
+						conference : parameters.conference
+					});*/
 				});
 			}else{
 				ViewAdapter.currentPage.find("#getPublicationsByKeyword").append("<h2>Reasoning : Sorry your browser doesn't support web workers!</h2>");
@@ -1299,7 +1299,7 @@ var SWDFCommandStore = {
 			}
 		}
 	 },
-	
+
 	/** Command used to get the organizations linked to an author  **/ 
 	getAuthorOrganization : {
 		dataType : "XML",
@@ -1361,8 +1361,7 @@ var SWDFCommandStore = {
 		}
 
 	},
-		
-	
+
     /** Command used to get and display all members linked to an organization   **/                  
 	getOrganization : {
 		dataType : "XML",
@@ -1424,18 +1423,17 @@ var SWDFCommandStore = {
 				$.each(mostViewedKeyword, function(i,keyword){
 					ViewAdapterText.appendButton(ViewAdapter.currentPage.find("#getRecommendedPublications"),'#keyword/'+Encoder.encode(keyword),keyword,{tiny : true});
 				});
-			}else{
+			} else {
 				ViewAdapter.currentPage.find("#getRecommendedPublications").append("<h2>Please keep on visiting, we don't have enough information yet!</h2>");
 			}
-			
 
 			$.each(mostViewedKeyword, function(i,keyword){
 				if(keyword != undefined){
 					var keyword = Reasoner.labelToUri(keyword);
-					
+
 					//var queryText = 'PREFIX owl: <http://www.w3.org/2002/07/owl#> select ?o { <'+keyword+'> <owl:SubClassOf>  ?o }';
 					//parameters.uri = Reasoner.UriToLabel(keyword);
-					
+
 					Reasoner.sendRequest("getRecommendedKeywords",keyword,parameters, function (results,parameters){
 						console.log(results);
 						
@@ -1460,61 +1458,56 @@ var SWDFCommandStore = {
 						var prefix = 'PREFIX dc: <http://purl.org/dc/elements/1.1/> '+'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> ';
 						var query = 'SELECT DISTINCT ?publiUri ?publiTitle  WHERE { ' + KeywordsRequest + '}ORDER BY ASC(?publiTitle) ';
 						parameters.name = KeywordString;
-						AjaxLoader.executeCommand({datasource : parameters.datasource, command : SWDFCommandStore.getRecommendedPublications,data : {query : prefix + query}, currentUri : parameters.uri, contentEl :  contentEl = ViewAdapter.currentPage.find("#getRecommendedPublications"), name : parameters.name,conference : parameters.conference});
-							
-						
+/*						ajaxLoader.executeCommand({
+							datasource : parameters.datasource,
+							command : SWDFCommandStore.getRecommendedPublications,
+							data : {query : prefix + query},
+							currentUri : parameters.uri,
+							contentEl : contentEl = ViewAdapter.currentPage.find("#getRecommendedPublications"),
+							name : parameters.name,conference : parameters.conference
+						});*/
 					});
 				}
 			});
-		
-				
-			
 		},
 		ModelCallBack : function(dataXML,conferenceUri,datasourceUri, currentUri,keywordList){ 
 			var JSONfile = {};
-			
+
 			var remainder = "";
 			$(dataXML).find("sparql > results > result").each(function(i){ 
 				if( $(this).find("[name = publiTitle]").text() != remainder){			
 					var JSONToken = {};
-					
+
 					JSONToken.publiUri =  $(this).find("[name = publiUri]").text();
 					JSONToken.publiTitle =  $(this).find("[name = publiTitle]").text();
 					
 					JSONfile[i] = JSONToken;
 					remainder = JSONToken.publiTitle;
 				}
-				
 			});
 			return JSONfile;
 		},
-		
 		ViewCallBack : function(parameters){
 			
 			if(parameters.JSONdata != null){
 				if(_.size(parameters.JSONdata) > 0 ){
 					if(parameters.mode == "text"){
-						
-						
 						var keywordBox = $("<div class='keywordsBox'><div>");
 						var toSeePubliBox = $("<div><div>");
 						var seenPubliBox = $("<div><div>");
-						
-						
+
 						$.each(parameters.name, function(i,keyword){
 							ViewAdapterText.appendButton(keywordBox,'#keyword/'+Encoder.encode(keyword),keyword,{tiny : true,prepend : true});
 						});
-						
+
 						var doRender = true;
 						$(".keywordsBox").each(function(i,box){
 							console.log(box.textContent);
 							console.log(keywordBox.text());
 							if(box.textContent == keywordBox.text()){
-								
 								doRender = false;
 							};
 						});
-						
 						if(doRender){
 							parameters.contentEl.append("<h2>You may like : </h2>"); 
 							parameters.contentEl.append(keywordBox);
@@ -1544,10 +1537,7 @@ var SWDFCommandStore = {
 				}
 			}
 		}
-	 }
-
-
-
+	}
 };
 
 function toTitleCase(str) {

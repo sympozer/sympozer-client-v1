@@ -13,7 +13,7 @@ define(['backbone', 'jquery'], function(Backbone, $){
     templates:{},
     modules:{},
     /** Template loader function
-     * It takes an array of name and retrieve the according template found in the <body> by id (workaround to load templates fully clientside)
+     * It takes an array of name and retrieves the according template found in the <body> by id (workaround to load templates fully client-side)
      * names : Array of the template's name to load
      * callback : function called when the loading is done, in our case, stating the router
      **/
@@ -26,7 +26,6 @@ define(['backbone', 'jquery'], function(Backbone, $){
         that.templates[name] = $("#" + name).html();
       }
       callback();
-
     },
 
     /** Template getter function
