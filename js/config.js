@@ -287,7 +287,7 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 					"title": "allPerson",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getAllPersons"
 						}
 					]

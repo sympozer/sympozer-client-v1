@@ -2,14 +2,10 @@
  * Created by Lionel on 29/01/2015.
  */
 define(['localData', 'person'], function( localData, person) {
-    //Creating DAO instance
-    var personMap = {};
-    var personKeys = [];
-
-    //Populating it with information from the dataset
+    var personMap = new Map();
     var personData = localData.persons.contacts;
     for(var i in personData) {
-        personMap[personData[i].uri] = new person(
+        personMap.set(personData[i].uri, new person(
                 personData[i].uri,
                 personData[i].name,
                 personData[i].homepageUri,
@@ -18,18 +14,8 @@ define(['localData', 'person'], function( localData, person) {
                 personData[i].accounts,
                 personData[i].affiliation,
                 personData[i].made,
-                personData[i].holdsRole);
-        personKeys[i] = personData[i].uri;
+                personData[i].holdsRole)
+        );
     }
-
-    //Adding convenience methods
-    personMap.getPerson = function(key) {
-        return personMap[key];
-    }
-
-    personMap.getAllPersons = function() {
-        return personKeys;
-    }
-
     return personMap;
 });

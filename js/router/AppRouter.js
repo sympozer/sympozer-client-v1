@@ -43,7 +43,7 @@ define(['backbone', 'jquery', 'config', 'encoder', 'localStorage/localStorageMan
 			AjaxLoader.initialize(ViewAdapter);
 
 			//Preparing all the routes and their actions
-			$.each(this.routes,function(i,routeItem){
+			$.each(this.routes, function(i, routeItem){
 
 				//console.log("******* ROUTE ********");
 				//console.log(routeItem);
