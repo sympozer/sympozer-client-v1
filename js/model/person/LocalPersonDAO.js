@@ -22,14 +22,13 @@ define(['localData', 'person'], function( localData, person) {
         personKeys[i] = personData[i].uri;
     }
 
-    //Adding convenience methods
-    personMap.getPerson = function(key) {
-        return personMap[key];
+    //Returning an object with the appropriate methods
+    return {
+        getPerson: function(key) {
+            return personMap[key];
+        },
+        getAllPersons: function() {
+            return personKeys;
+        }
     }
-
-    personMap.getAllPersons = function() {
-        return personKeys;
-    }
-
-    return personMap;
 });
