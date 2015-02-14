@@ -14,7 +14,7 @@
 **/
 define(['backbone', 'jquery', 'config', 'encoder', 'localStorage/localStorageManager', 'view/ViewAdapter', 'ajaxLoader'], function(Backbone, $, configuration, Encoder, StorageManager, ViewAdapter, AjaxLoader){
 
-	AppRouter = Backbone.Router.extend({
+	var AppRouter = Backbone.Router.extend({
 
 		/** Initialization function, launched at the start of the application.
 		*	It reads the configuration file and prepares all the routes and their actions it will use on runtime
@@ -87,36 +87,34 @@ define(['backbone', 'jquery', 'config', 'encoder', 'localStorage/localStorageMan
 									//Informations already exists so we directly call the command callBack view to render them 
 									currentCommand.ViewCallBack({JSONdata : JSONdata[commandItem.name], contentEl : currentPage.find("#"+commandItem.name), name : name, mode : ViewAdapter.mode, conference : self.conference});
 								}
-							} else {
-								if(currentDatasource.local){
-									doRequest = false;
-									console.log("CAll : "+commandItem.name+" ON local datasource");
-									//Information embedded in local datasource, so we synchronously call the datasource command and call the command callBack view to render them 
-									JSONdata = currentCommand.ModelCallBack(currentCommand.getQuery({conferenceUri : self.conference.baseUri, uri : uri,datasource : currentDatasource, name : name, conference : self.conference}), self.conference.baseUri, currentDatasource, uri);
-									currentCommand.ViewCallBack({JSONdata : JSONdata, contentEl : currentPage.find("#"+commandItem.name), name : name, mode : ViewAdapter.mode, conference : self.conference});
-								}
 							}
 							if(doRequest){
-								//console.log("CAll : "+commandItem.name+" ON "+commandItem.datasource);
 								//Retrieveing the query built by the command function "getQuery"
 								try {
-									//Preparing Ajax call 
-									var ajaxData   = currentCommand.getQuery({conferenceUri : self.conference.baseUri, uri : uri,datasource : currentDatasource, name : name, conference : self.conference})
+									var data = currentCommand.getQuery({conferenceUri : self.conference.baseUri, uri : uri,datasource : currentDatasource, name : name, conference : self.conference})
 							    } catch (e) {
 							    	e.message = "cannot find command '"+commandItem.name+"' in the commandStore '"+commandItem.datasource+"'";
 							    	throw e;
 							    }
 
-								if(ajaxData != null){
-									AjaxLoader.executeCommand({
-										datasource : currentDatasource,
-										command : currentCommand,
-										data : ajaxData,
-										currentUri : uri,
-										contentEl :  currentPage.find("#"+commandItem.name),
-										name : name,
-										conference : self.conference
-									});
+								if(data != null){
+                                    if(currentDatasource.local){
+                                        console.log("CAll : "+commandItem.name+" ON local datasource");
+                                        JSONdata = currentCommand.ModelCallBack(data, self.conference.baseUri, currentDatasource, uri);
+                                        currentCommand.ViewCallBack({JSONdata : JSONdata, contentEl : currentPage.find("#"+commandItem.name), name : name, mode : ViewAdapter.mode, conference : self.conference});
+                                    } else {
+                                        console.log("CAll : "+commandItem.name+" ON AJAX datasource");
+                                        //Preparing Ajax call
+                                        AjaxLoader.executeCommand({
+                                            datasource: currentDatasource,
+                                            command: currentCommand,
+                                            data: data,
+                                            currentUri: uri,
+                                            contentEl: currentPage.find("#" + commandItem.name),
+                                            name: name,
+                                            conference: self.conference
+                                        });
+                                    }
 								}
 							}
 						}

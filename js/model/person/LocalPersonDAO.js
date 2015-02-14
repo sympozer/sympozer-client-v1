@@ -8,6 +8,7 @@ define(['localData', 'person'], function( localData, person) {
 
     //Populating it with information from the dataset
     var personData = localData.persons.contacts;
+    console.log("Retrieveing all persons in personDAO...");
     for(var i in personData) {
         personMap[personData[i].uri] = new person(
                 personData[i].uri,
