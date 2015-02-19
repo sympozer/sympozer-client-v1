@@ -499,7 +499,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 
 
 					JSONToken.events = [];
-					JSONToken.publications = [];
+					JSONToken.made = [];
 					j = 0;
 					k = 0;
 					$.each(results, function(i, token) {
@@ -508,7 +508,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 							j++;
 						}
 						if(token.hasOwnProperty("publiUri")){
-							JSONToken.publications[k]=  token;
+							JSONToken.made[k]=  token;
 							k++;
 						}
 					});
@@ -533,10 +533,10 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 								};
 							}
 
-							if(parameters.JSONdata.publications.length > 0){
+							if(parameters.JSONdata.made.length > 0){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].topic.relatedPublications+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.publications.length; i++){
-									var publication = parameters.JSONdata.publications[i];
+								for(var i = 0; i < parameters.JSONdata.made.length; i++){
+									var publication = parameters.JSONdata.made[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#publication/'+Encoder.encode(publication.publiTitle.value)+'/'+Encoder.encode(publication.publiUri.value), publication.publiTitle.value,{tiny : false});
 
 
@@ -601,28 +601,28 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 
 					// }
 
-					JSONToken.organizations = [];
-					JSONToken.roles = {};
-					JSONToken.publications = [];
+					JSONToken.affiliations = [];
+					JSONToken.hasRoles = {};
+					JSONToken.made = [];
 					j = 0;
 					k = 0;
 					l= 0;
 					$.each(results, function(i, token) {
 						if(token.hasOwnProperty("publicationUri")){
-							JSONToken.publications[j] =  token;
+							JSONToken.made[j] =  token;
 							j++;
 						}
 						if(token.hasOwnProperty("organizationUri")){
-							JSONToken.organizations[k]=  token;
+							JSONToken.affiliations[k]=  token;
 							k++;
 						}
 						if(token.hasOwnProperty("roleUri")){
-							if(!JSONToken.roles[token.roleName.value]){
+							if(!JSONToken.hasRoles[token.roleName.value]){
 
-								JSONToken.roles[token.roleName.value] = [];
+								JSONToken.hasRoles[token.roleName.value] = [];
 							}
 
-					    	JSONToken.roles[token.roleName.value].push(token);
+					    	JSONToken.hasRoles[token.roleName.value].push(token);
 						}
 					});
 
@@ -637,8 +637,8 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
 						if(parameters.mode == "text"){
-							if(parameters.JSONdata.image){
-								parameters.contentEl.append($('<div style="min-height:50px; width:20%"><img style="width:100%;height:auto;" src="'+parameters.JSONdata.image+'"/></div>'));
+							if(parameters.JSONdata.depiction){
+								parameters.contentEl.append($('<div style="min-height:50px; width:20%"><img style="width:100%;height:auto;" src="'+parameters.JSONdata.depiction+'"/></div>'));
 							}
 							if(parameters.JSONdata.name){
 								$("[data-role = page]").find("#header-title").html(parameters.JSONdata.name);
@@ -652,29 +652,29 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 								parameters.contentEl.append($('<a href='+parameters.JSONdata.homepage+'>'+parameters.JSONdata.homepage+'</a>'));
 							}
 
-							if(parameters.JSONdata.roles) {
+							if(parameters.JSONdata.hasRoles) {
 
-								for(var roleName in parameters.JSONdata.roles){
-										parameters.JSONdata.roles[roleName];
+								for(var roleName in parameters.JSONdata.hasRoles){
+										parameters.JSONdata.hasRoles[roleName];
 										parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].role[roleName]+' at </h2>'));
-										$.each(parameters.JSONdata.roles[roleName], function(i,currentEvent){
+										$.each(parameters.JSONdata.hasRoles[roleName], function(i,currentEvent){
 											ViewAdapterText.appendButton(parameters.contentEl,'#event/'+Encoder.encode(currentEvent.eventName.value)+'/'+Encoder.encode(currentEvent.eventUri.value), currentEvent.eventName.value,{tiny : true});
 										});
 								}
 							}
 
-							if(parameters.JSONdata.organizations.length > 0){
-								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].person.organizations+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.organizations.length; i++){
-									var organization = parameters.JSONdata.organizations[i];
+							if(parameters.JSONdata.affiliations.length > 0){
+								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].person.affiliations+'</h2>'));
+								for(var i = 0; i < parameters.JSONdata.affiliations.length; i++){
+									var organization = parameters.JSONdata.affiliations[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#organization/'+Encoder.encode(organization.organizationName.value)+'/'+Encoder.encode(organization.organizationUri.value), organization.organizationName.value,{tiny : true});
 								};
 							}
 
-							if(parameters.JSONdata.publications.length > 0){
-								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].person.publications+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.publications.length; i++){
-									var publication = parameters.JSONdata.publications[i];
+							if(parameters.JSONdata.made.length > 0){
+								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].person.made+'</h2>'));
+								for(var i = 0; i < parameters.JSONdata.made.length; i++){
+									var publication = parameters.JSONdata.made[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#publication/'+Encoder.encode(publication.publicationName.value)+'/'+Encoder.encode(publication.publicationUri.value), publication.publicationName.value,{tiny : false});
 
 
@@ -1024,14 +1024,14 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 					JSONfile.eventStart = results[0].eventStart ? results[0].eventStart.value : null;
 					JSONfile.eventEnd = results[0].eventEnd ? results[0].eventEnd.value : null;
 
-					JSONfile.roles = [];
+					JSONfile.hasRoles = [];
 					JSONfile.locations = [];
 					j = 0;
 					k = 0;
 
 					$.each(results, function(i, token) {
 						if(token.hasOwnProperty("roleUri")){
-							JSONfile.roles[j] =  token;
+							JSONfile.hasRoles[j] =  token;
 							j++;
 						} 
 						if(token.hasOwnProperty("locationUri")){
@@ -1158,9 +1158,9 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 					JSONfile.eventTwitterWidgetUrl =  results[0].eventTwitterWidgetUrl ? results[0].eventTwitterWidgetUrl.value : null;
 					JSONfile.eventTwitterWidgetToken = results[0].eventTwitterWidgetToken ? results[0].eventTwitterWidgetToken.value : null;
 
-					JSONfile.roles = [];
+					JSONfile.hasRoles = [];
 					JSONfile.subEvents = [];
-					JSONfile.publications = [];
+					JSONfile.made = [];
 					JSONfile.topics = [];
 					JSONfile.locations = [];
 					j = 0;
@@ -1170,17 +1170,17 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 					n = 0;
 					$.each(results, function(i, token) {
 						if(token.hasOwnProperty("roleUri")){
-							if(!JSONfile.roles[token.roleName.value]){
-								JSONfile.roles[token.roleName.value] = [];
+							if(!JSONfile.hasRoles[token.roleName.value]){
+								JSONfile.hasRoles[token.roleName.value] = [];
 							}
-					    	JSONfile.roles[token.roleName.value].push(token);
+					    	JSONfile.hasRoles[token.roleName.value].push(token);
 						}
 						if(token.hasOwnProperty("subEventUri")){
 							JSONfile.subEvents[k] =  token;
 							k++;
 						}
 						if(token.hasOwnProperty("publiUri")){
-							JSONfile.publications[l] =  token;
+							JSONfile.made[l] =  token;
 							l++;
 						}
 						if(token.hasOwnProperty("topicUri")){
@@ -1250,12 +1250,12 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 							}
 						
 						
-							if(parameters.JSONdata.roles) {
+							if(parameters.JSONdata.hasRoles) {
 								
-								for(var roleName in parameters.JSONdata.roles){
-										parameters.JSONdata.roles[roleName];
+								for(var roleName in parameters.JSONdata.hasRoles){
+										parameters.JSONdata.hasRoles[roleName];
 										parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].role[roleName]+'</h2>'));
-										$.each(parameters.JSONdata.roles[roleName], function(i,currentPerson){
+										$.each(parameters.JSONdata.hasRoles[roleName], function(i,currentPerson){
 											ViewAdapterText.appendButton(parameters.contentEl,'#person/'+Encoder.encode(currentPerson.personName.value)+'/'+Encoder.encode(currentPerson.personUri.value), currentPerson.personName.value, {tiny : true});
 										});
 								}
@@ -1269,10 +1269,10 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 								};
 							}
 
-							if(_.size(parameters.JSONdata.publications) > 0 ){
+							if(_.size(parameters.JSONdata.made) > 0 ){
 								parameters.contentEl.append($('<h2>'+labels[parameters.conference.lang].event.relatedDocument+'</h2>'));
-								for(var i = 0; i < parameters.JSONdata.publications.length; i++){ 
-									var publication = parameters.JSONdata.publications[i];
+								for(var i = 0; i < parameters.JSONdata.made.length; i++){
+									var publication = parameters.JSONdata.made[i];
 									ViewAdapterText.appendButton(parameters.contentEl,'#publication/'+Encoder.encode(publication.publiName.value)+'/'+Encoder.encode(publication.publiUri.value),publication.publiName.value, {tiny : true});
 								};
 							}

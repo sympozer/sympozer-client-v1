@@ -32,8 +32,8 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 				"lang" : "EN",
 				"storage": "off"
 			},
-			
-			//Defnition of the datasources 
+
+			//Defnition of the datasources
 			// uri : It correspond to the uri to be used to access the service
 			// crossDomainMode : "CORS" or "JSONP" explicits the cross domain technique to be used on the service 
 			// commands : Name of the json var that implements all the commands that can be used on the service
@@ -68,7 +68,7 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 					"local": true,
                     "activated" : true,
                     //local configuration
-                    "uri" : ".",
+                    "uri" : "file://.",
                     "crossDomainMode" : "CORS",
                     "commands" : LocalCommandStore
 				}

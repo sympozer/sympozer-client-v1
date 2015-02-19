@@ -246,6 +246,31 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
         getAllPersons: {
             getQuery: function (parameters) {
+                return {
+                    "daoType": "person",
+                    "command": "getAllPersons",
+                    "query": null
+                }
+            },
+
+            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+                var JSONfile = [];
+
+                $.each(dataJSON, function (i) {
+                    var JSONToken = {
+                        "@id": this.id,
+                        "name": this.name,
+                        "img": this.depiction ? this.depiction : null
+                    };
+                    JSONfile.push(JSONToken);
+                });
+                //console.log(JSONfile);
+                StorageManager.pushCommandToStorage(currentUri, "getAllPersons", JSONfile);
+                return JSONfile;
+
+            },
+/*
+            getQuery: function (parameters) {
                 var serialize = function(data) {
                     var res = {
                         "head": {
@@ -305,6 +330,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 return JSONfile;
 
             },
+ */
 
             ViewCallBack: function (parameters) {
                 if (parameters.JSONdata != null) {
@@ -574,7 +600,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 if (_.size(results) > 0) {
 
                     JSONToken.events = [];
-                    JSONToken.publications = [];
+                    JSONToken.made = [];
                     j = 0;
                     k = 0;
                     $.each(results, function (i, token) {
@@ -583,7 +609,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             j++;
                         }
                         if (token.hasOwnProperty("publiUri")) {
-                            JSONToken.publications[k] = token;
+                            JSONToken.made[k] = token;
                             k++;
                         }
                     });
@@ -609,10 +635,10 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 ;
                             }
 
-                            if (parameters.JSONdata.publications.length > 0) {
+                            if (parameters.JSONdata.made.length > 0) {
                                 parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].topic.relatedPublications + '</h2>'));
-                                for (var i = 0; i < parameters.JSONdata.publications.length; i++) {
-                                    var publication = parameters.JSONdata.publications[i];
+                                for (var i = 0; i < parameters.JSONdata.made.length; i++) {
+                                    var publication = parameters.JSONdata.made[i];
                                     ViewAdapterText.appendButton(parameters.contentEl, '#publication/' + Encoder.encode(publication.publiTitle.value) + '/' + Encoder.encode(publication.publiUri.value), publication.publiTitle.value, {tiny: false});
 
                                 }
@@ -628,6 +654,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
  BEGIN MODIFIED PART (LM)
 ************************************/
         getPerson: {
+/*
             getQuery: function (parameters) {
                 var serialize = function (data) {
                     var res = {
@@ -639,9 +666,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         }
                     };
 
-                    if (data.uri) {
+                    if (data.id) {
                         res.head.vars.push("personUri");
-                        res.results.bindings.push({"personUri": {"type": "uri", "value": data.uri}});
+                        res.results.bindings.push({"personUri": {"type": "uri", "value": data.id}});
                     }
 
                     if (data.name) {
@@ -897,7 +924,80 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 StorageManager.pushCommandToStorage(currentUri, "getPerson", JSONToken);
                 return JSONToken;
             },
+*/
 
+    getQuery: function (parameters) {
+        //Retrieve the right person
+        return {
+            "daoType": "person",
+            "command": "getPerson",
+            "query": {
+                "key": parameters.uri,
+                "nestedQueries": null
+                //TODO
+                //Retrieve her/his organizations
+                //TODO
+                //Retrieve her/his publications
+                //TODO
+                //Retrieve her/his roles in the conference
+                //TODO
+            }
+        };
+    },
+
+    ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+        var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
+            "name": dataJSON.name,
+            "img": dataJSON.depiction ? dataJSON.depiction : null,
+            "homepage": dataJSON.homepage ? dataJSON.homepage : null
+        };
+        if (_.size(dataJSON.made) >0) {
+            for(var i in dataJSON.made) {
+                JSONToken.made = [];
+                var publi = dataJSON.made[i];
+                //TODO: match with publicationDAO properties
+                if (publi.publicationUri && publi.publicationName) {
+                    JSONToken.made.push({
+                        "@id": publi.publicationUri,
+                        "name": publi.publicationName
+                    });
+                }
+            }
+        }
+        if (_.size(dataJSON.affiliations) >0) {
+            for(var i in dataJSON.affiliations) {
+                JSONToken.affiliation = [];
+                var orga = dataJSON.affiliations[i];
+                //TODO: match with organizationDAO properties
+                if (orga.organizationUri && orga.organizationName) {
+                    JSONToken.affiliation.push({
+                        "@id": orga.organizationUri,
+                        "name": orga.organizationName
+                    });
+                }
+            }
+        }
+        if (_.size(dataJSON.hasRoles) >0) {
+            for(var i in dataJSON.hasRoles) {
+                JSONToken.holdsRole = [];
+                var role = dataJSON.hasRoles[i];
+                //TODO: match with roleDAO properties
+                if (role.roleUri && role.roleName && role.eventUri && role.eventName) {
+                    JSONToken.holdsRole.push({
+                        "@id": role.roleUri,
+                        "name": role.roleName,
+                        "isRoleAt": {
+                            "@id": role.eventUri,
+                            "name": role.eventName
+                        }
+                    });
+                }
+            }
+        }
+        //console.log(JSONToken);
+        StorageManager.pushCommandToStorage(currentUri, "getPerson", JSONToken);
+        return JSONToken;
+    },
             ViewCallBack: function (parameters) {
                 //Reasoner.getMoreSpecificKeywords();
                 if (parameters.JSONdata != null) {
@@ -920,7 +1020,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             }
 
                             if (_.size(parameters.JSONdata.affiliation) > 0) {
-                                parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.organizations + '</h2>'));
+                                parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.affiliations + '</h2>'));
                                 for (var i in parameters.JSONdata.affiliation) {
                                     var organization = parameters.JSONdata.affiliation[i];
                                     try {
@@ -944,7 +1044,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             }
 
                             if (_.size(parameters.JSONdata.made) > 0) {
-                                parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.publications + '</h2>'));
+                                parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.made + '</h2>'));
                                 for (var i in parameters.JSONdata.made) {
                                     var publication = parameters.JSONdata.made[i];
                                     try {
@@ -1295,14 +1395,14 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile.eventStart = results[0].eventStart ? results[0].eventStart.value : null;
                     JSONfile.eventEnd = results[0].eventEnd ? results[0].eventEnd.value : null;
 
-                    JSONfile.roles = [];
+                    JSONfile.hasRoles = [];
                     JSONfile.locations = [];
                     j = 0;
                     k = 0;
 
                     $.each(results, function (i, token) {
                         if (token.hasOwnProperty("roleUri")) {
-                            JSONfile.roles[j] = token;
+                            JSONfile.hasRoles[j] = token;
                             j++;
                         }
                         if (token.hasOwnProperty("locationUri")) {
@@ -1421,9 +1521,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile.eventTwitterWidgetUrl = results[0].eventTwitterWidgetUrl ? results[0].eventTwitterWidgetUrl.value : null;
                     JSONfile.eventTwitterWidgetToken = results[0].eventTwitterWidgetToken ? results[0].eventTwitterWidgetToken.value : null;
 
-                    JSONfile.roles = [];
+                    JSONfile.hasRoles = [];
                     JSONfile.subEvents = [];
-                    JSONfile.publications = [];
+                    JSONfile.made = [];
                     JSONfile.topics = [];
                     JSONfile.locations = [];
                     j = 0;
@@ -1433,17 +1533,17 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     n = 0;
                     $.each(results, function (i, token) {
                         if (token.hasOwnProperty("roleUri")) {
-                            if (!JSONfile.roles[token.roleName.value]) {
-                                JSONfile.roles[token.roleName.value] = [];
+                            if (!JSONfile.hasRoles[token.roleName.value]) {
+                                JSONfile.hasRoles[token.roleName.value] = [];
                             }
-                            JSONfile.roles[token.roleName.value].push(token);
+                            JSONfile.hasRoles[token.roleName.value].push(token);
                         }
                         if (token.hasOwnProperty("subEventUri")) {
                             JSONfile.subEvents[k] = token;
                             k++;
                         }
                         if (token.hasOwnProperty("publiUri")) {
-                            JSONfile.publications[l] = token;
+                            JSONfile.made[l] = token;
                             l++;
                         }
                         if (token.hasOwnProperty("topicUri")) {
@@ -1511,12 +1611,12 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.eventHomepage + '</p>'));
                             }
 
-                            if (parameters.JSONdata.roles) {
+                            if (parameters.JSONdata.hasRoles) {
 
-                                for (var roleName in parameters.JSONdata.roles) {
-                                    parameters.JSONdata.roles[roleName];
+                                for (var roleName in parameters.JSONdata.hasRoles) {
+                                    parameters.JSONdata.hasRoles[roleName];
                                     parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].role[roleName] + '</h2>'));
-                                    $.each(parameters.JSONdata.roles[roleName], function (i, currentPerson) {
+                                    $.each(parameters.JSONdata.hasRoles[roleName], function (i, currentPerson) {
                                         ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(currentPerson.personName.value) + '/' + Encoder.encode(currentPerson.personUri.value), currentPerson.personName.value, {tiny: true});
                                     });
                                 }
@@ -1531,10 +1631,10 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 ;
                             }
 
-                            if (_.size(parameters.JSONdata.publications) > 0) {
+                            if (_.size(parameters.JSONdata.made) > 0) {
                                 parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.relatedDocument + '</h2>'));
-                                for (var i = 0; i < parameters.JSONdata.publications.length; i++) {
-                                    var publication = parameters.JSONdata.publications[i];
+                                for (var i = 0; i < parameters.JSONdata.made.length; i++) {
+                                    var publication = parameters.JSONdata.made[i];
                                     ViewAdapterText.appendButton(parameters.contentEl, '#publication/' + Encoder.encode(publication.publiName.value) + '/' + Encoder.encode(publication.publiUri.value), publication.publiName.value, {tiny: true});
                                 }
                                 ;

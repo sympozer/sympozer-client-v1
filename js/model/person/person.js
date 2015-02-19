@@ -3,16 +3,16 @@
  */
 
 define(function() {
-    return function (uri, name, homepageUri, imageUri, mbox, accounts, organizationUris, publicationUris, roleUris) {
-        this.uri = uri;
+    return function (id, name, homepageUri, imageUri, mbox, accounts, organizationUris, publicationUris, roleUris) {
+        this.id = id;
         this.name = name;
         this.homepage = homepageUri;
-        this.image = imageUri;
+        this.depiction = imageUri;
         this.mbox = mbox;
         this.accounts = accounts;
-        this.organizations = organizationUris;
-        this.publications = publicationUris;
-        this.roles = roleUris;
+        this.affiliations = organizationUris;
+        this.made = publicationUris;
+        this.hasRoles = roleUris;
         this.serialize = function () {
             var res = {
                 "head": {
@@ -23,9 +23,9 @@ define(function() {
                 }
             };
 
-            if (this.uri) {
+            if (this.id) {
                 res.head.vars.push("personUri");
-                res.results.bindings.push({"personUri": {"type": "uri", "value": this.uri}});
+                res.results.bindings.push({"personUri": {"type": "uri", "value": this.id}});
             }
 
             if (this.name) {
@@ -38,9 +38,9 @@ define(function() {
                 res.results.bindings.push({"personHomepage": {"type": "uri", "value": this.homepage}});
             }
 
-            if (this.image) {
+            if (this.depiction) {
                 res.head.vars.push("personImg");
-                res.results.bindings.push({"personImg": {"type": "uri", "value": this.image}});
+                res.results.bindings.push({"personImg": {"type": "uri", "value": this.depiction}});
             }
 
             if (this.mbox) {
@@ -55,17 +55,17 @@ define(function() {
                 }
             }
 
-            if (this.organizations != null && Array.isArray(this.organizations) && this.organizations.length > 0) {
+            if (this.affiliations != null && Array.isArray(this.affiliations) && this.affiliations.length > 0) {
                 res.head.vars.push("organizationUri");
-                for (var i in this.organizations) {
-                    res.results.bindings.push({"organizationUri": {"type": "uri", "value": this.organizations[i]}});
+                for (var i in this.affiliations) {
+                    res.results.bindings.push({"organizationUri": {"type": "uri", "value": this.affiliations[i]}});
                 }
             }
 
-            if (this.publications != null && Array.isArray(this.publications) && this.publications.length > 0) {
+            if (this.made != null && Array.isArray(this.made) && this.made.length > 0) {
                 res.head.vars.push("publicationUri");
-                for (var i in this.publications) {
-                    res.results.bindings.push({"publicationUri": {"type": "uri", "value": this.publications[i]}});
+                for (var i in this.made) {
+                    res.results.bindings.push({"publicationUri": {"type": "uri", "value": this.made[i]}});
                 }
             }
             return res;

@@ -7,7 +7,7 @@
  *	Version: 1.2
  *   Tags:  TEMPLATE
  **/
-define(['backbone', 'jquery'], function(Backbone, $){
+define(['backbone', 'jquery', 'promise'], function(Backbone, $, Promise){
     var tpl = {
         // Hash of preloaded templates for the app
         templates:{},
@@ -19,12 +19,13 @@ define(['backbone', 'jquery'], function(Backbone, $){
          **/
         loadTemplates:function (names, callback) {
             var that = this;
-            return new Promise(function(resolve, reject) {
+            return new Promise(function(resolve) {
 
-                //Get all template from <body> by id
+                //Get templates from <body> by id
                 for (var i = 0; i < names.length; i++) {
                     var name = names[i];
                     that.templates[name] = $("#" + name).html();
+                    console.log("Loading template: " + name)
                 }
                 resolve();
             }).then(callback);

@@ -10,8 +10,8 @@ define(['localData', 'person'], function( localData, person) {
     var personData = localData.persons.contacts;
     console.log("Retrieveing all persons in personDAO...");
     for(var i in personData) {
-        personMap[personData[i].uri] = new person(
-                personData[i].uri,
+        personMap[personData[i].id] = new person(
+                personData[i].id,
                 personData[i].name,
                 personData[i].homepageUri,
                 personData[i].depiction,
@@ -20,16 +20,16 @@ define(['localData', 'person'], function( localData, person) {
                 personData[i].affiliation,
                 personData[i].made,
                 personData[i].holdsRole);
-        personKeys[i] = personData[i].uri;
+        personKeys[i] = personData[i].id;
     }
 
     //Returning an object with the appropriate methods
-    return {
-        getPerson: function(key) {
-            return personMap[key];
-        },
-        getAllPersons: function() {
-            return personKeys;
+    return function(command, query) {
+        switch(command) {
+            case "getPerson":
+                return personMap[query.key];
+            case "getAllPersons":
+                return personMap;
         }
     }
 });

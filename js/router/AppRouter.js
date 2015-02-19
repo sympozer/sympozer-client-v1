@@ -1,4 +1,4 @@
- /**   
+/**
 *	Copyright <c> Claude Bernard - University Lyon 1 -  2013
 * 	License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing 
 *   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LEPEUTREC, Benoît DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
@@ -12,9 +12,9 @@
 *	Version: 1.2				   
 *   Tags:  BACKBONE, AJAX, ROUTING
 **/
-define(['backbone', 'jquery', 'config', 'encoder', 'localStorage/localStorageManager', 'view/ViewAdapter', 'ajaxLoader'], function(Backbone, $, configuration, Encoder, StorageManager, ViewAdapter, AjaxLoader){
+define(['backbone', 'jquery', 'jqueryMobile', 'config', 'encoder', 'localStorage/localStorageManager', 'view/ViewAdapter', 'asyncLoader'], function(Backbone, $, jqueryMobile, configuration, Encoder, StorageManager, ViewAdapter, AsyncLoader){
 
-	var AppRouter = Backbone.Router.extend({
+	return Backbone.Router.extend({
 
 		/** Initialization function, launched at the start of the application.
 		*	It reads the configuration file and prepares all the routes and their actions it will use on runtime
@@ -37,16 +37,17 @@ define(['backbone', 'jquery', 'config', 'encoder', 'localStorage/localStorageMan
 
 			//Initialize storage manager
 			StorageManager.initialize({conference : this.conference});
-			//Initialize ViewAdapter to text mode
-			ViewAdapter.initialize("text");	
-			//Initialize ajax Loader 
-			AjaxLoader.initialize(ViewAdapter);
+
+            //Initialize ViewAdapter to text mode
+            ViewAdapter.initialize("text");
 
 			//Preparing all the routes and their actions
 			$.each(this.routes, function(i, routeItem){
 
 				//console.log("******* ROUTE ********");
 				//console.log(routeItem);
+
+                jqueryMobile.loading( 'show' );
 
 				//Preparing the function to use when catching the current route
 				self.route(routeItem.hash, function(name, uri) {
@@ -82,6 +83,7 @@ define(['backbone', 'jquery', 'config', 'encoder', 'localStorage/localStorageMan
 							var doRequest = true;
 							if(JSONdata != null){
 								if(JSONdata.hasOwnProperty(commandItem.name)){
+                                    jqueryMobile.loading('hide');
 									doRequest = false;
 									console.log("CAll : "+commandItem.name+" ON Storage");
 									//Informations already exists so we directly call the command callBack view to render them 
@@ -89,41 +91,49 @@ define(['backbone', 'jquery', 'config', 'encoder', 'localStorage/localStorageMan
 								}
 							}
 							if(doRequest){
-								//Retrieveing the query built by the command function "getQuery"
+								//Retrieving the query built by the command function "getQuery"
 								try {
-									var data = currentCommand.getQuery({conferenceUri : self.conference.baseUri, uri : uri,datasource : currentDatasource, name : name, conference : self.conference})
+									var query = currentCommand.getQuery({conferenceUri : self.conference.baseUri, uri : uri, datasource : currentDatasource, name : name, conference : self.conference})
 							    } catch (e) {
 							    	e.message = "cannot find command '"+commandItem.name+"' in the commandStore '"+commandItem.datasource+"'";
 							    	throw e;
 							    }
 
-								if(data != null){
-                                    if(currentDatasource.local){
-                                        console.log("CAll : "+commandItem.name+" ON local datasource");
-                                        JSONdata = currentCommand.ModelCallBack(data, self.conference.baseUri, currentDatasource, uri);
-                                        currentCommand.ViewCallBack({JSONdata : JSONdata, contentEl : currentPage.find("#"+commandItem.name), name : name, mode : ViewAdapter.mode, conference : self.conference});
-                                    } else {
-                                        console.log("CAll : "+commandItem.name+" ON AJAX datasource");
-                                        //Preparing Ajax call
-                                        AjaxLoader.executeCommand({
-                                            datasource: currentDatasource,
-                                            command: currentCommand,
-                                            data: data,
-                                            currentUri: uri,
-                                            contentEl: currentPage.find("#" + commandItem.name),
-                                            name: name,
-                                            conference: self.conference
+								if(query != null){
+                                    console.log("Call : " + commandItem.name);
+                                    //asynchronous call
+                                    AsyncLoader.executeCommand({
+                                        datasource: currentDatasource,
+                                        command: commandItem.name,
+                                        data: query,
+                                        currentUri: uri,
+                                        name: name,
+                                        conference: self.conference
+                                    }).then(function(results) {
+                                        return currentCommand.ModelCallBack(results, self.conference, currentDatasource.uri, uri, name);
+                                    }).then(function(data) {
+                                        jqueryMobile.loading('hide');
+                                        currentCommand.ViewCallBack({
+                                            JSONdata : data,
+                                            contentEl : currentPage.find("#" + commandItem.name),
+                                            name : name,
+                                            mode : ViewAdapter.mode,
+                                            conference : self.conference
                                         });
-                                    }
+                                        ViewAdapter.generateJQMobileElement();
+                                    }).catch(function(ex) {
+                                        console.log(ex);
+                                        jqueryMobile.loading('hide');
+                                    });
 								}
 							}
 						}
 					});
 
+                    //When all commands are done
 					ViewAdapter.generateJQMobileElement();
 				});
 			});
 		}
-  });
- 	return AppRouter;
+    });
 });

@@ -22,6 +22,9 @@ require.config({
                 'jqueryMobile.config'
             ]
         },
+        'promise': {
+            exports: 'Promise'
+        },
         'jStorage' : {
             deps: [
                 'jquery'
@@ -48,21 +51,23 @@ require.config({
         'backbone' : 'lib/backbone',
         'jqueryMobile.config' : 'lib/jquerymobile.config',
         'jqueryMobile' : 'lib/jquery.mobile-1.4.0-rc.1.min',
+        'promise' : 'lib/promise-done-6.1.0.min',
         'twttr' :'lib/widget',
         'encoder': 'lib/encoder',
         'blob': 'lib/blob',
         'fileSaver' : 'lib/FileSaver',
         'jStorage' : 'lib/jstorage.min',
         'moment' : 'lib/moment.min',
-        'tpl' : 'modules/templateLoader',
-        'labels' : 'modules/labels',
-        'ajaxLoader' : 'modules/AjaxLoader',
 /* Unused for the moment (LM)
         'socialite': 'lib/socialite.min',
         'jsw' : 'reasoner/jsw',
         'jswui' : 'reasoner/jswui',
         'query' : 'reasoner/query',*/
 //Specific modules
+        'tpl' : 'modules/templateLoader',
+        'labels' : 'modules/labels',
+        'asyncLoader' : 'modules/AsyncLoader',
+        'ajaxLoader' : 'modules/AjaxLoader',
         'localData' : '../data/data_ESWC2014',
         'personDao': 'model/person/LocalPersonDAO',
         'person': 'model/person/person'
@@ -70,7 +75,7 @@ require.config({
 });
 
 //Configurations
-require(['config', 'tpl', 'model/datasources/swcEventCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/LocalCommandStore','moment'], function(configuration, tpl, liveconApiCommandStore, liveconSparqlCommandStore, LocalCommandStore, moment){
+require(['config', 'tpl', 'model/datasources/swcEventCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore','moment'], function(configuration, tpl, liveconApiCommandStore, liveconSparqlCommandStore, LocalCommandStore, moment){
 
     //Modules configuration
     var modules = []

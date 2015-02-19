@@ -6,8 +6,8 @@ define([],function() {
 			'navBar' : {
 				'schedule' : 'Schedule',
 				'persons' : 'Persons',
-				'organizations' : 'Organizations',
-				'publications' : 'Publications'
+				"affiliations" : 'Organizations',
+				"made" : 'Publications'
 
 			},
 			'publication' : {
@@ -34,8 +34,8 @@ define([],function() {
 				'website' : 'Website',
 				'description' : 'Description',
 				'homepage' : 'Homepage',
-				'organizations' : 'Organizations',
-				'publications' :'Conference publication(s)',
+				"affiliations" : 'Organizations',
+				"made" :'Conference publication(s)',
 				'otherPublications' :'Other publication(s)'
 			},
 
@@ -170,8 +170,8 @@ define([],function() {
 			'navBar' : {
 				'schedule' : 'Planning',
 				'persons' : 'Participants',
-				'organizations' : 'Organisations',
-				'publications' : 'Publications'
+				"affiliations" : 'Organisations',
+				"made" : 'Publications'
 
 			},
 			'publication' : {
@@ -196,8 +196,8 @@ define([],function() {
 				'website' : 'Site web',
 				'description' : 'Description',
 				'homepage' : 'Homepage',
-				'organizations' : 'Organisations',
-				'publications' :'Publication(s) de la conférence',
+				"affiliations" : 'Organisations',
+				"made" :'Publication(s) de la conférence',
 				'otherPublications' :'Autre publication(s)'
 			},
 
