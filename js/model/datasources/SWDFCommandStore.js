@@ -1514,7 +1514,7 @@ var SWDFCommandStore = {
 							parameters.contentEl.append(toSeePubliBox);
 							parameters.contentEl.append(seenPubliBox);
 							$.each(parameters.JSONdata, function(i,publication){
-								if(StorageManager.pullCommandFromStorage(publication.publiUri) != null){
+								if(StorageManager.pullCommandsFromStorage(publication.publiUri) != null){
 									
 									var button = ViewAdapterText.appendButton(seenPubliBox,'#publication/'+Encoder.encode(publication.publiUri),publication.publiTitle,{theme :  "d"});
 									button.attr("data-icon","check");

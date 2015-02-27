@@ -30,7 +30,7 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 				//Local configuration
 //        "baseUri": "http://localhost:8080/resource/conference/1/1new-sympozer-conference",
 				"lang" : "EN",
-				"storage": "off"
+				"storage": "on"
 			},
 
 			//Defnition of the datasources
@@ -39,34 +39,27 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 			// commands : Name of the json var that implements all the commands that can be used on the service
 			"datasources" : {
 				"DblpDatasource" : {
-					"activated" : true,
 					"uri" : "http://dblp.rkbexplorer.com/sparql/",
 					"crossDomainMode" : "CORS",
 					"commands" : DBLPCommandStore
 				},
 				"DuckDuckGoDatasource" : {   
-					"activated" : true,
 					"uri" : "http://api.duckduckgo.com/",
 					"crossDomainMode" : "JSONP",
 					"commands" : DDGoCommandStore
 				},
 				"GoogleDataSource" : {  
-					"activated" : true, 
 					"uri" : "https://ajax.googleapis.com/ajax/services/search/web",
 					"crossDomainMode" : "JSONP",
 					"commands" : GoogleCommandStore
                 },
                 "eventDatasource" : {
-                    "activated" : true,
-                    //local configuration
-//					"uri" : "http://localhost:8080/sparql",
                     "uri" : "http://sparql.sympozer.com/sparql",
                     "crossDomainMode" : "JSONP",
                     "commands" : liveconSparqlCommandStore
                 },
                 "localDatasource" : {
 					"local": true,
-                    "activated" : true,
                     //local configuration
                     "uri" : "file://.",
                     "crossDomainMode" : "CORS",

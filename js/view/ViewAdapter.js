@@ -119,7 +119,7 @@ define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/Abstr
 			this.currentPage = this.changePage(new AbstractView({templateName :  this.template ,title : this.title, model : this.conference }), "flip");
 			this.initPage(this.graphView);
 			
-			var JSONdata = StorageManager.pullCommandFromStorage(this.uri);
+			var JSONdata = StorageManager.pullCommandsFromStorage(this.uri);
 			_.each(this.commands,function(commandItem,i){
 
 				var currentDatasource = this.datasources[commandItem.datasource];

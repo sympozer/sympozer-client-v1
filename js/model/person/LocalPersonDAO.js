@@ -13,10 +13,10 @@ define(['localData', 'person'], function( localData, person) {
         personMap[personData[i].id] = new person(
                 personData[i].id,
                 personData[i].name,
-                personData[i].homepageUri,
+                personData[i].homepage,
                 personData[i].depiction,
                 personData[i].mbox,
-                personData[i].accounts,
+                personData[i].account,
                 personData[i].affiliation,
                 personData[i].made,
                 personData[i].holdsRole);

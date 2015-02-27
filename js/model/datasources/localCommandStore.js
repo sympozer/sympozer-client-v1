@@ -249,7 +249,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 return {
                     "daoType": "person",
                     "command": "getAllPersons",
-                    "query": null
+                    "data": null
                 }
             },
 
@@ -931,7 +931,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         return {
             "daoType": "person",
             "command": "getPerson",
-            "query": {
+            "data": {
                 "key": parameters.uri,
                 "nestedQueries": null
                 //TODO
