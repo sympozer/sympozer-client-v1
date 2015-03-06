@@ -1,4 +1,3 @@
-//define(['underscore', 'jquery', 'jqueryMobile', 'router/AppRouter','tpl'], function( _, $, jqueryMobile, appRouter, templateLoader) {
 define(['router/AppRouter','tpl'], function( appRouter, templateLoader ) {
 
     //Loading templates from /templates directory

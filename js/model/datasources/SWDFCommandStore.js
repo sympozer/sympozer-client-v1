@@ -9,7 +9,7 @@
 *   Version: 1.2
 *   Tags:  JSON, SPARQL, AJAX
 **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'localStorage/localStorageManager','moment', 'ajaxLoader'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, moment, ajaxLoader){
+define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'localStorage/localStorageManager','moment'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, moment){
 var SWDFCommandStore = { 
 	/** Command used to get and display  all the authors that have a publication in the conference's proceedings using the conference uri **/
 	getAllAuthors : {
@@ -1243,15 +1243,6 @@ var SWDFCommandStore = {
 						
 					};
 					var query = 'SELECT DISTINCT ?publiUri ?publiTitle  WHERE { ' + KeywordsString + '}ORDER BY ASC(?publiTitle) ';
-/*					ajaxLoader.executeCommand({
-						datasource : parameters.datasource,
-						command : SWDFCommandStore.getPublicationsByKeyword,
-						data : {query : prefix + query},
-						currentUri : parameters.uri,
-						contentEl : contentEl = ViewAdapter.currentPage.find("#getPublicationsByKeyword"),
-						name : parameters.name,
-						conference : parameters.conference
-					});*/
 				});
 			}else{
 				ViewAdapter.currentPage.find("#getPublicationsByKeyword").append("<h2>Reasoning : Sorry your browser doesn't support web workers!</h2>");
@@ -1458,14 +1449,6 @@ var SWDFCommandStore = {
 						var prefix = 'PREFIX dc: <http://purl.org/dc/elements/1.1/> '+'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> ';
 						var query = 'SELECT DISTINCT ?publiUri ?publiTitle  WHERE { ' + KeywordsRequest + '}ORDER BY ASC(?publiTitle) ';
 						parameters.name = KeywordString;
-/*						ajaxLoader.executeCommand({
-							datasource : parameters.datasource,
-							command : SWDFCommandStore.getRecommendedPublications,
-							data : {query : prefix + query},
-							currentUri : parameters.uri,
-							contentEl : contentEl = ViewAdapter.currentPage.find("#getRecommendedPublications"),
-							name : parameters.name,conference : parameters.conference
-						});*/
 					});
 				}
 			});

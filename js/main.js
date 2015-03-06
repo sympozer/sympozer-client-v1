@@ -67,10 +67,8 @@ require.config({
         'tpl' : 'modules/templateLoader',
         'labels' : 'modules/labels',
         'asyncLoader' : 'modules/AsyncLoader',
-        'ajaxLoader' : 'modules/AjaxLoader',
         'localData' : '../data/data_ESWC2014',
-        'personDao': 'model/person/LocalPersonDAO',
-        'person': 'model/person/person'
+        'personDao': 'model/resources/person/LocalPersonDAO'
     }
 });
 

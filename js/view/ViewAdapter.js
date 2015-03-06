@@ -7,7 +7,7 @@
 *   Version: 1.2
 *   Tags:  arborjs   
 **/
-define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/AbstractView', 'localStorage/localStorageManager', 'ajaxLoader'], function($, jqueryMobile, encoder, ViewAdapterText, AbstractView, StorageManager, AjaxLoader){
+define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/AbstractView', 'localStorage/localStorageManager'], function($, jqueryMobile, encoder, ViewAdapterText, AbstractView, StorageManager){
 	var ViewAdapter = {
 
 		initialize : function(mode){
@@ -128,10 +128,13 @@ define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/Abstr
 					if(JSONdata.hasOwnProperty(commandItem.name)){
 						currentCommand.ViewCallBack({JSONdata : JSONdata[commandItem.name],contentEl : this.currentPage.find("#"+commandItem.name), name : this.name, currentUri : this.uri, mode : ViewAdapter.mode });
 					}
-				}else{
+				}
+/*
+                else{
 					var ajaxData   = currentCommand.getQuery({conferenceUri : this.conference.baseUri, uri : this.uri,datasource : currentDatasource, name : name, conference : this.conference});
 					AjaxLoader.executeCommand({datasource : currentDatasource, command : currentCommand,data : ajaxData, currentUri : this.uri, contentEl :  this.currentPage.find("#"+commandItem.name), name : name, conference : ViewAdapter.conference});
 				}
+*/
 			},this);
 			this.generateJQMobileElement();
 		},

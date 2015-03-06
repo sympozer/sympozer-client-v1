@@ -136,8 +136,8 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 					"title": "allRole",
 					"commands" : [
 					    {
-							"datasource" : "eventDatasource",
-							"name" : "getPersonByRole"
+							"datasource" : "localDatasource",
+							"name" : "getPersonsByRole"
 						}
 					]
 				},
@@ -396,7 +396,7 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 					"title": "allAuthor",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getAllAuthors"
 						}
 					]

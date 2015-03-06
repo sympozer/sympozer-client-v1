@@ -9,7 +9,7 @@
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'localStorage/localStorageManager', 'moment', 'lib/FileSaver', 'labels', 'personDao', 'person'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, moment, FileSaver, labels, personDao, person) {
+define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'labels'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, labels) {
     var localCommandStore = {
 
         getAllTopics: {
@@ -41,7 +41,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile[i] = JSONToken;
                 });
                 //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllTopics", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getAllTopics", JSONfile);
                 return JSONfile;
             },
 
@@ -71,7 +71,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         },
 
         getAllLocations: {
-
             dataType: "JSONP",
             method: "GET",
             serviceUri: "",
@@ -98,7 +97,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile[i] = JSONToken;
                 });
                 //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllTopics", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getAllTopics", JSONfile);
                 return JSONfile;
             },
 
@@ -148,7 +147,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-
                 var JSONfile = {};
                 $.each(dataJSON.results.bindings, function (i) {
                     var JSONToken = {};
@@ -157,9 +155,8 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile[i] = JSONToken;
                 })
 
-                StorageManager.pushCommandToStorage(currentUri, "getAllEvents", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getAllEvents", JSONfile);
                 return JSONfile;
-
             },
 
             ViewCallBack: function (parameters) {
@@ -191,54 +188,49 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             method: "GET",
             serviceUri: "",
             getQuery: function (parameters) {
-
-                var prefix = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ';
-                var query = 'SELECT DISTINCT ?authorName  ?authorUri ?authorImg  WHERE  { ' +
-                    '    <' + parameters.conference.baseUri + '> swc:hasRelatedDocument ?uriPubli.' +
-                    '   ?authorUri foaf:made ?uriPubli;  ' +
-                    '   foaf:name ?authorName.' +
-                    ' OPTIONAL { ?authorUri foaf:img ?authorImg.}' +
-                    '} ORDER BY ASC(?authorName) ';
-                var ajaxData = {query: prefix + query, output: "json"};
-                return ajaxData;
+                return {
+                    "daoType": "person",
+                    "command": "getAllAuthors",
+                    "data": null
+                }
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = {};
+                var personList = [];
 
-                $.each(dataJSON.results.bindings, function (i) {
-                    var JSONToken = {};
-                    JSONToken.name = this.authorName.value || "";
-                    JSONToken.uri = this.authorUri.value || "";
-                    JSONToken.image = this.authorImg ? this.authorImg.value : null;
-                    JSONfile[i] = JSONToken;
+                $.each(dataJSON, function (i) {
+                    var JSONToken = {
+                        "@id": this.id,
+                        "name": this.name,
+                        "img": this.depiction ? this.depiction : null
+                    };
+                    personList.push(JSONToken);
                 });
-                //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllPersons", JSONfile);
-                return JSONfile;
-
+                //console.log(personList);
+                return personList;
             },
 
             ViewCallBack: function (parameters) {
                 if (parameters.JSONdata != null) {
                     if (_.size(parameters.JSONdata) > 0) {
-                        if (parameters.mode == "text") {
-                            ViewAdapterText.appendListImage(parameters.JSONdata,
-                                {
-                                    baseHref: '#person/',
-                                    hrefCllbck: function (str) {
-                                        return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["uri"])
-                                    }
-                                },
-                                "name",
-                                "image",
-                                parameters.contentEl,
-                                {
-                                    type: "Node", labelCllbck: function (str) {
-                                    return "person : " + str["uri"];
+                        ViewAdapterText.appendListImage(
+                            parameters.JSONdata,
+                            {
+                                baseHref: '#person/',
+                                hrefCllbck: function (str) {
+                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
                                 }
-                                });
-                        }
+                            },
+                            "name",
+                            "img",
+                            parameters.contentEl,
+                            {
+                                type: "Node",
+                                labelCllbck: function (str) {
+                                    return "person : " + str["@id"];
+                                }
+                            }
+                        );
                     }
                 }
             }
@@ -254,7 +246,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = [];
+                var personList = [];
 
                 $.each(dataJSON, function (i) {
                     var JSONToken = {
@@ -262,97 +254,33 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         "name": this.name,
                         "img": this.depiction ? this.depiction : null
                     };
-                    JSONfile.push(JSONToken);
+                    personList.push(JSONToken);
                 });
-                //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllPersons", JSONfile);
-                return JSONfile;
-
+                //console.log(personList);
+                return personList;
             },
-/*
-            getQuery: function (parameters) {
-                var serialize = function(data) {
-                    var res = {
-                        "head": {
-                            "vars": ["personName", "personUri", "personImg"]
-                        },
-                        "results": {
-                            "bindings": []
-                        }
-                    };
-
-                    for(var i in data) {
-                        var binding = {
-                            "personName": {
-                                "type": "literal",
-                                "value": data[i].name
-                            },
-                            "personUri": {
-                                "type": "uri",
-                                "value": data[i].uri
-                            },
-                            "personImg": {
-                                "type": "uri",
-                                "value": data[i].img
-                            }
-                        }
-                        res.results.bindings.push(binding);
-                    }
-                    return res;
-                };
-
-                var results = [];
-                var persons = personDao.getAllPersons()
-                for(var i in persons) {
-                    var personInfo = {
-                        "uri": persons[i],
-                        "name": personDao.getPerson(persons[i]).name,
-                        "img": personDao.getPerson(persons[i]).image
-                    }
-                    results.push(personInfo);
-                }
-                return serialize(results);
-            },
-
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = [];
-
-                $.each(dataJSON.results.bindings, function (i) {
-                    var JSONToken = {
-                        "@id": this.personUri.value || "",
-                        "name": this.personName.value || "",
-                        "img": this.personImg ? this.personImg.value : null
-                    };
-                    JSONfile.push(JSONToken);
-                });
-                //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllPersons", JSONfile);
-                return JSONfile;
-
-            },
- */
 
             ViewCallBack: function (parameters) {
                 if (parameters.JSONdata != null) {
                     if (_.size(parameters.JSONdata) > 0) {
-                        if (parameters.mode == "text") {
-
-                            ViewAdapterText.appendListImage(parameters.JSONdata,
-                                {
-                                    baseHref: '#person/',
-                                    hrefCllbck: function (str) {
-                                        return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
-                                    }
-                                },
-                                "name",
-                                "img",
-                                parameters.contentEl,
-                                {
-                                    type: "Node", labelCllbck: function (str) {
+                        ViewAdapterText.appendListImage(
+                            parameters.JSONdata,
+                            {
+                                baseHref: '#person/',
+                                hrefCllbck: function (str) {
+                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
+                                }
+                            },
+                            "name",
+                            "img",
+                            parameters.contentEl,
+                            {
+                                type: "Node",
+                                labelCllbck: function (str) {
                                     return "person : " + str["@id"];
                                 }
-                                });
-                        }
+                            }
+                        );
                     }
                 }
             }
@@ -385,7 +313,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile[i] = JSONToken;
                 });
                 //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllPublications", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getAllPublications", JSONfile);
                 return JSONfile;
             },
 
@@ -447,7 +375,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile[i] = JSONToken;
                 });
                 //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllOrganizations", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getAllOrganizations", JSONfile);
                 return JSONfile;
             },
 
@@ -500,7 +428,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile[i] = JSONToken;
                 });
                 //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllRoles", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getAllRoles", JSONfile);
                 return JSONfile;
             },
 
@@ -551,7 +479,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile[i] = JSONToken;
                 });
                 //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getAllCategories", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getAllCategories", JSONfile);
                 return JSONfile;
             },
 
@@ -616,7 +544,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
                 }
                 //console.log(JSONToken);
-                StorageManager.pushCommandToStorage(currentUri, "getTopic", JSONToken);
+                //StorageManager.pushCommandToStorage(currentUri, "getTopic", JSONToken);
                 return JSONToken;
             },
 
@@ -650,354 +578,81 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-/************************************
- BEGIN MODIFIED PART (LM)
-************************************/
+        /************************************
+         BEGIN MODIFIED PART (LM)
+         ************************************/
         getPerson: {
-/*
             getQuery: function (parameters) {
-                var serialize = function (data) {
-                    var res = {
-                        "head": {
-                            "vars": ["organizationUri", "publicationUri", "roleUri"]
-                        },
-                        "results": {
-                            "bindings": []
-                        }
-                    };
-
-                    if (data.id) {
-                        res.head.vars.push("personUri");
-                        res.results.bindings.push({"personUri": {"type": "uri", "value": data.id}});
+                //Retrieve the right person
+                return {
+                    "daoType": "person",
+                    "command": "getPerson",
+                    "data": {
+                        "key": parameters.uri,
+                        "nestedQueries": null
+                        //TODO
+                        //Retrieve her/his organizations
+                        //TODO
+                        //Retrieve her/his publications
+                        //TODO
+                        //Retrieve her/his roles in the conference
+                        //TODO
                     }
-
-                    if (data.name) {
-                        res.head.vars.push("personName");
-                        res.results.bindings.push({"personName": {"type": "literal", "value": data.name}});
-                    }
-
-                    if (data.homepage) {
-                        res.head.vars.push("personHomepage");
-                        res.results.bindings.push({"personHomepage": {"type": "uri", "value": data.homepage}});
-                    }
-
-                    if (data.image) {
-                        res.head.vars.push("personImg");
-                        res.results.bindings.push({"personImg": {"type": "uri", "value": data.image}});
-                    }
-
-                    if (data.mbox) {
-                        res.head.vars.push("mbox");
-                        res.results.bindings.push({"mbox": {"type": "uri", "value": data.mbox}});
-                    }
-
-                    if (data.accounts != null && Array.isArray(data.accounts) && data.accounts.length > 0) {
-                        res.head.vars.push("accountUri");
-                        for (var i in data.accounts) {
-                            res.results.bindings.push({"accountUri": {"type": "uri", "value": data.accounts[i]}});
-                        }
-                    }
-
-                    if (data.organizations != null && Array.isArray(data.organizations) && data.organizations.length > 0) {
-                        res.head.vars.push("organizationUri");
-                        for (var i in data.organizations) {
-                            res.results.bindings.push({"organizationUri": {"type": "uri", "value": data.organizations[i]}});
-                        }
-                    }
-
-                    if (data.publications != null && Array.isArray(data.publications) && data.publications.length > 0) {
-                        res.head.vars.push("publicationUri");
-                        for (var i in data.publications) {
-                            res.results.bindings.push({"publicationUri": {"type": "uri", "value": data.publications[i]}});
-                        }
-                    }
-                    return res;
                 };
-
-                // Quick'n dirty: URI format adaptation between Sympozer endpoint and local data
-                var findUri = function () {
-                    var _START = "http://data.semanticweb.org/person/";
-                    var _name = parameters.name.toLowerCase().replace(" ", "-");
-                    return _START + _name;
-                };
-                try {
-                    //Retrieve the right person
-                    var p = personDao.getPerson(findUri());
-                    //Retrieve her/his organizations
-                    //TODO
-                    //Retrieve her/his publications
-                    //TODO
-                    //Retrieve her/his roles in the conference
-                    //TODO
-
-                    //Merge the graphs and convert them into a common representation format (-> SimpleRdf)
-                    //TODO
-
-                    //Since then...
-                    return serialize(p);
-                } catch (e) {
-                    console.log("Person " + findUri() + " not found");
-//In case nothing is found (yet), respond with sample code to test that it complies with the rest of the app...
-//TODO: remove this and react consequently.
-                    return {
-                        "head": {
-                            "vars": ["personName", "personHomepage", "personImg", "organizationUri", "organizationName", "publicationUri", "publicationName", "roleUri", "roleName", "eventUri", "eventName", "accountUri", "accountName"]
-                        },
-                        "results": {
-                            "bindings": [
-                                {
-                                    "personName": {"type": "literal", "value": "Lionel Médini"}
-                                },
-                                {
-                                    "personHomepage": {"type": "uri", "value": 'http://liris.cnrs.fr/lionel.medini/'}
-                                },
-                                {
-                                    "personImg": {
-                                        "type": "uri",
-                                        "value": "http://liris.cnrs.fr/~lmedini/images/medini.jpg"
-                                    }
-                                },
-                                {
-                                    "organizationUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/organization/907/Universit%C3%A9_Paris_13_%26_CNR-ISTC"
-                                    },
-                                    "organizationName": {
-                                        "datatype": "http://www.w3.org/2001/XMLSchema#string",
-                                        "type": "typed-literal",
-                                        "value": "Université Lyon 1"
-                                    }
-                                },
-                                {
-                                    "publicationUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/paper/821/Modelling_OWL_ontologies_with_Graffoo"
-                                    },
-                                    "publicationName": {
-                                        "type": "literal",
-                                        "value": "Modelling OWL ontologies with Graffoo"
-                                    }
-                                },
-                                {
-                                    "publicationUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/paper/823/Semantic_Web-based_Sentiment_Analysis"
-                                    },
-                                    "publicationName": {
-                                        "type": "literal",
-                                        "value": "Semantic Web-based Sentiment Analysis"
-                                    }
-                                },
-                                {
-                                    "publicationUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/paper/873/A_Semantic_Web_Based_Core_Engine_to_Efficiently_Perform_Sentiment_Analysis"
-                                    },
-                                    "publicationName": {
-                                        "type": "literal",
-                                        "value": "A Semantic Web Based Core Engine to Efficiently Perform Sentiment Analysis"
-                                    }
-                                },
-                                {
-                                    "publicationUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/paper/890/Emergency_vehicle_routing_using_Geolinked_Open_Data_for_the_Municipality_of_Catania"
-                                    },
-                                    "publicationName": {
-                                        "type": "literal",
-                                        "value": "Emergency vehicle routing using Geolinked Open Data for the Municipality of Catania"
-                                    }
-                                },
-                                {
-                                    "roleUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/role/930/3525/Chair"
-                                    },
-                                    "roleName": {"type": "literal", "value": "Chair"},
-                                    "eventUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/event/930/Reseach_papers_Cognition_and_Semantic_Web%3A_The_usability_of_Description_Logics%3A_Understanding_the_cognitive_difficulties_presented_by_Description_Logics"
-                                    },
-                                    "eventName": {
-                                        "type": "literal",
-                                        "value": "Reseach papers Cognition and Semantic Web: The usability of Description Logics: Understanding the cognitive difficulties presented by Description Logics"
-                                    }
-                                },
-                                {
-                                    "roleUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/role/1031/3525/Chair"
-                                    },
-                                    "roleName": {"type": "literal", "value": "Chair"},
-                                    "eventUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/event/1031/Reseach_papers_Cognition_and_Semantic_Web%3A_NL-Graphs%3A_A_Hybrid_Approach_toward_Interactively_Querying_Semantic_Data"
-                                    },
-                                    "eventName": {
-                                        "type": "literal",
-                                        "value": "Reseach papers Cognition and Semantic Web: NL-Graphs: A Hybrid Approach toward Interactively Querying Semantic Data"
-                                    }
-                                },
-                                {
-                                    "roleUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/role/1034/3525/Chair"
-                                    },
-                                    "roleName": {"type": "literal", "value": "Chair"},
-                                    "eventUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/event/1034/Reseach_papers_Cognition_and_Semantic_Web%3A_Evaluating_citation_functions_in_CiTO%3A_cognitive_issues"
-                                    },
-                                    "eventName": {
-                                        "type": "literal",
-                                        "value": "Reseach papers Cognition and Semantic Web: Evaluating citation functions in CiTO: cognitive issues"
-                                    }
-                                },
-                                {
-                                    "roleUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/role/875/3525/Presenter"
-                                    },
-                                    "roleName": {"type": "literal", "value": "Presenter"},
-                                    "eventUri": {
-                                        "type": "uri",
-                                        "value": "http://sparql.sympozer.com/resource/event/875/Panel_session_Panel_session%3A_Panel%3A_Data_protection_and_security_on_the_Web"
-                                    },
-                                    "eventName": {
-                                        "type": "literal",
-                                        "value": "Panel session Panel session: Panel: Data protection and security on the Web"
-                                    }
-                                }
-                            ]
-                        }
-                    };
-                }
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"@id": currentUri}; // "@context": "http://json-ld.org/contexts/person.jsonld"
-                var results = dataJSON.results.bindings;
-                if (_.size(results) > 0) {
-
-                    for (i in results) {
-                        var token = results[i];
-                        if (token.hasOwnProperty("personName")) {
-                            JSONToken.name = token.personName.value;
-                        }
-                        if (token.hasOwnProperty("personHomepage")) {
-                            JSONToken.homepage = token.personHomepage.value;
-                        }
-                        if (token.hasOwnProperty("personImg")) {
-                            JSONToken.img = token.personImg.value;
-                        }
-                        if (token.hasOwnProperty("publicationUri") && token.hasOwnProperty("publicationName")) {
-                            JSONToken.made = [];
+                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
+                    "name": dataJSON.name,
+                    "img": dataJSON.depiction ? dataJSON.depiction : null,
+                    "homepage": dataJSON.homepage ? dataJSON.homepage : null
+                };
+                if (_.size(dataJSON.made) >0) {
+                    for(var i in dataJSON.made) {
+                        JSONToken.made = [];
+                        var publi = dataJSON.made[i];
+                        //TODO: match with publicationDAO properties
+                        if (publi.publicationUri && publi.publicationName) {
                             JSONToken.made.push({
-                                "@id": token.publicationUri.value,
-                                "name": token.publicationName.value
+                                "@id": publi.publicationUri,
+                                "name": publi.publicationName
                             });
-                        }
-                        if (token.hasOwnProperty("organizationUri") && token.hasOwnProperty("organizationName")) {
-                            JSONToken.affiliation = [];
-                            JSONToken.affiliation.push({
-                                "@id": token.organizationUri.value,
-                                "name": token.organizationName.value
-                            });
-                        }
-                        if (token.hasOwnProperty("roleUri") && token.hasOwnProperty("roleName") && token.hasOwnProperty("eventUri") && token.hasOwnProperty("eventName")) {
-                            JSONToken.holdsRole = [];
-                            //Roles can be empty in the dataset
-                            if (token.roleUri.value) {
-                                JSONToken.holdsRole.push({
-                                    "@id": token.roleUri.value,
-                                    "name": token.roleName.value,
-                                    "isRoleAt": {
-                                        "@id": token.eventUri.value,
-                                        "name": token.eventName.value
-                                    }
-                                });
-                            }
                         }
                     }
                 }
-                //console.log(JSONToken);
-                StorageManager.pushCommandToStorage(currentUri, "getPerson", JSONToken);
+                if (_.size(dataJSON.affiliation) >0) {
+                    for(var i in dataJSON.affiliation) {
+                        JSONToken.affiliation = [];
+                        var orga = dataJSON.affiliation[i];
+                        //TODO: match with organizationDAO properties
+                        if (orga.organizationUri && orga.organizationName) {
+                            JSONToken.affiliation.push({
+                                "@id": orga.organizationUri,
+                                "name": orga.organizationName
+                            });
+                        }
+                    }
+                }
+                if (_.size(dataJSON.holdsRole) >0) {
+                    for(var i in dataJSON.holdsRole) {
+                        JSONToken.holdsRole = [];
+                        var role = dataJSON.holdsRole[i];
+                        //TODO: match with roleDAO properties
+                        if (role.roleUri && role.roleName && role.eventUri && role.eventName) {
+                            JSONToken.holdsRole.push({
+                                "@id": role.roleUri,
+                                "name": role.roleName,
+                                "isRoleAt": {
+                                    "@id": role.eventUri,
+                                    "name": role.eventName
+                                }
+                            });
+                        }
+                    }
+                }
                 return JSONToken;
             },
-*/
 
-    getQuery: function (parameters) {
-        //Retrieve the right person
-        return {
-            "daoType": "person",
-            "command": "getPerson",
-            "data": {
-                "key": parameters.uri,
-                "nestedQueries": null
-                //TODO
-                //Retrieve her/his organizations
-                //TODO
-                //Retrieve her/his publications
-                //TODO
-                //Retrieve her/his roles in the conference
-                //TODO
-            }
-        };
-    },
-
-    ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-        var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
-            "name": dataJSON.name,
-            "img": dataJSON.depiction ? dataJSON.depiction : null,
-            "homepage": dataJSON.homepage ? dataJSON.homepage : null
-        };
-        if (_.size(dataJSON.made) >0) {
-            for(var i in dataJSON.made) {
-                JSONToken.made = [];
-                var publi = dataJSON.made[i];
-                //TODO: match with publicationDAO properties
-                if (publi.publicationUri && publi.publicationName) {
-                    JSONToken.made.push({
-                        "@id": publi.publicationUri,
-                        "name": publi.publicationName
-                    });
-                }
-            }
-        }
-        if (_.size(dataJSON.affiliations) >0) {
-            for(var i in dataJSON.affiliations) {
-                JSONToken.affiliation = [];
-                var orga = dataJSON.affiliations[i];
-                //TODO: match with organizationDAO properties
-                if (orga.organizationUri && orga.organizationName) {
-                    JSONToken.affiliation.push({
-                        "@id": orga.organizationUri,
-                        "name": orga.organizationName
-                    });
-                }
-            }
-        }
-        if (_.size(dataJSON.hasRoles) >0) {
-            for(var i in dataJSON.hasRoles) {
-                JSONToken.holdsRole = [];
-                var role = dataJSON.hasRoles[i];
-                //TODO: match with roleDAO properties
-                if (role.roleUri && role.roleName && role.eventUri && role.eventName) {
-                    JSONToken.holdsRole.push({
-                        "@id": role.roleUri,
-                        "name": role.roleName,
-                        "isRoleAt": {
-                            "@id": role.eventUri,
-                            "name": role.eventName
-                        }
-                    });
-                }
-            }
-        }
-        //console.log(JSONToken);
-        StorageManager.pushCommandToStorage(currentUri, "getPerson", JSONToken);
-        return JSONToken;
-    },
             ViewCallBack: function (parameters) {
                 //Reasoner.getMoreSpecificKeywords();
                 if (parameters.JSONdata != null) {
@@ -1060,9 +715,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
             }
         },
-/************************************
- END MODIFIED PART (LM)
-************************************/
+        /************************************
+         END MODIFIED PART (LM)
+         ************************************/
 
         getOrganization: {
             dataType: "JSONP",
@@ -1103,7 +758,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     });
                 }
                 //console.log(JSONToken);
-                StorageManager.pushCommandToStorage(currentUri, "getOrganization", JSONToken);
+                //StorageManager.pushCommandToStorage(currentUri, "getOrganization", JSONToken);
                 return JSONToken;
             },
 
@@ -1140,61 +795,60 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        getPersonByRole: {
-            dataType: "JSONP",
-            method: "GET",
-            serviceUri: "",
+        getPersonsByRole: {
             getQuery: function (parameters) {
-                var prefix = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
-                    'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>';
-                var query = 'SELECT DISTINCT ?personName  ?personUri ?personImg WHERE  { ' +
-                    '   <' + parameters.conference.baseUri + '> swc:isSuperEventOf ?uriSubEvent.' +
-                    '    ?roleUri swc:isRoleAt  ?uriSubEvent;' +
-                    '    swc:heldBy ?personUri;' +
-                    '    rdf:type swc:' + parameters.name + '.' +
-                    '   ?personUri  foaf:name ?personName.' +
-                    '   OPTIONAL{?personUri  foaf:img ?personImg.}' +
-                    '} ORDER BY ASC(?personName) ';
-                var ajaxData = {query: prefix + query, output: "json"};
-                return ajaxData;
+                return {
+                    daoType: "person",
+                    command: "getPersonsByRole",
+                    data: {
+                        key: parameters.name,
+                        nestedQueries: null
+                        /*
+                                                nestedQueries: [{
+                                                    datasource: parameters.datasource,
+                                                    command: "getPersonLink"
+                                                }]
+                        */
+                    }
+                }
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = {};
-                $.each(dataJSON.results.bindings, function (i) {
-                    var JSONToken = {};
-                    JSONToken.name = this.personName ? this.personName.value : null;
-                    JSONToken.uri = this.personUri ? this.personUri.value : null;
-                    JSONToken.image = this.personImg ? this.personImg.value : null;
-                    JSONfile[i] = JSONToken;
+                var personList = [];
+
+                $.each(dataJSON, function (i) {
+                    var JSONToken = {
+                        "@id": this.id,
+                        "name": this.name,
+                        "img": this.depiction ? this.depiction : null
+                    };
+                    personList.push(JSONToken);
                 });
-                //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getPersonByRole", JSONfile);
-                return JSONfile;
+                //console.log(personList);
+                return personList;
             },
 
             ViewCallBack: function (parameters) {
                 if (parameters.JSONdata != null) {
                     if (_.size(parameters.JSONdata) > 0) {
-                        if (parameters.mode == "text") {
-                            $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].role[parameters.uri]);
-
-                            ViewAdapterText.appendListImage(parameters.JSONdata,
-                                {
-                                    baseHref: '#person/',
-                                    hrefCllbck: function (str) {
-                                        return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["uri"])
-                                    }
-                                },
-                                "name",
-                                "image",
-                                parameters.contentEl,
-                                {
-                                    type: "Node", labelCllbck: function (str) {
-                                    return "person : " + str["uri"];
+                        ViewAdapterText.appendListImage(
+                            parameters.JSONdata,
+                            {
+                                baseHref: '#person/',
+                                hrefCllbck: function (str) {
+                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
                                 }
-                                });
-                        }
+                            },
+                            "name",
+                            "img",
+                            parameters.contentEl,
+                            {
+                                type: "Node",
+                                labelCllbck: function (str) {
+                                    return "person : " + str["@id"];
+                                }
+                            }
+                        );
                     }
                 }
             }
@@ -1253,7 +907,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     });
                 }
                 //console.log(JSONToken);
-                StorageManager.pushCommandToStorage(currentUri, "getPublication", JSONToken);
+                //StorageManager.pushCommandToStorage(currentUri, "getPublication", JSONToken);
                 return JSONToken;
             },
 
@@ -1329,7 +983,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     JSONfile[i] = JSONToken;
                 });
                 //console.log(JSONfile);
-                StorageManager.pushCommandToStorage(currentUri, "getEventByCategory", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getEventByCategory", JSONfile);
                 return JSONfile;
             },
 
@@ -1412,7 +1066,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     });
                 }
 
-                StorageManager.pushCommandToStorage(currentUri, "getConferenceEvent", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getConferenceEvent", JSONfile);
                 return JSONfile;
             },
 
@@ -1557,7 +1211,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     });
                 }
 
-                StorageManager.pushCommandToStorage(currentUri, "getEvent", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getEvent", JSONfile);
                 return JSONfile;
 
             },
@@ -1728,7 +1382,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         //currentEndSlot.events.push(currentEvent);
                     }
                 });
-                StorageManager.pushCommandToStorage(currentUri, "getConferenceSchedule", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getConferenceSchedule", JSONfile);
                 return JSONfile;
             },
 
@@ -1866,7 +1520,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             }
                         }
                     });
-                    //	StorageManager.pushCommandToStorage(currentUri,"getWhatsNext",JSONfile);
+                    //StorageManager.pushCommandToStorage(currentUri,"getWhatsNext",JSONfile);
                     return JSONfile;
                 }
                 return null;
@@ -1954,7 +1608,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     });
                 }
 
-                StorageManager.pushCommandToStorage(currentUri, "getEventIcs", JSONfile);
+                //StorageManager.pushCommandToStorage(currentUri, "getEventIcs", JSONfile);
                 return JSONfile;
             },
 
