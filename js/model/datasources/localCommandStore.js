@@ -389,32 +389,23 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        //TODO
         getAllRoles: {
-            dataType: "JSONP",
-            method: "GET",
-            serviceUri: "",
             getQuery: function (parameters) {
-                var prefix = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>';
-                var query = 'SELECT DISTINCT ?roleName  ?roleUri WHERE  { ' +
-                    '    <' + parameters.conference.baseUri + '> swc:isSuperEventOf ?eventUri.' +
-                    '    ?roleUri  swc:isRoleAt  ?eventUri;' +
-                    '    rdfs:label ?roleName.' +
-                    '} ORDER BY ASC(?roleName)';
-                var ajaxData = {query: prefix + query, output: "json"};
-                return ajaxData;
+                return {
+                    "command": "getAllRoles",
+                    "data": null
+                }
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = {};
-                $.each(dataJSON.results.bindings, function (i) {
-                    var JSONToken = {};
-                    JSONToken.uri = this.roleUri.value || null;
-                    JSONToken.name = this.roleName.value || null;
-                    JSONfile[i] = JSONToken;
+                var JSONfile = [];
+                $.each(dataJSON, function (i) {
+                    var JSONToken = {
+                        "@id": Encoder.encode(dataJSON[i]),
+                        "name": dataJSON[i]
+                    };
+                    JSONfile.push(JSONToken);
                 });
-                //console.log(JSONfile);
-                //StorageManager.pushCommandToStorage(currentUri, "getAllRoles", JSONfile);
                 return JSONfile;
             },
 
@@ -425,7 +416,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             {
                                 baseHref: '#person-by-role/',
                                 hrefCllbck: function (str) {
-                                    return Encoder.encode(str["name"]) + '/' + Encoder.encode(str["uri"])
+                                    return Encoder.encode(str["name"]) + '/' + Encoder.encode(str["@id"])
                                 }
                             },
                             "name",
@@ -742,11 +733,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     command: "getPersonsByRole",
                     data: {
                         key: parameters.name,
-                        nestedQueries: [{
-                            datasource: parameters.datasource,
-                            command: "getPersonLink",
-                            targetProperty: "heldBy"
-                        }]
+                        nestedQueries: null
                     }
                 }
             },
