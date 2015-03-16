@@ -2,8 +2,8 @@
 *	Copyright <c> Claude Bernard - University Lyon 1 -  2013
 * 	License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing 
 *   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LEPEUTREC, Benoît DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
-*   Description: This JSON object contains all the configurations of the application. It is a crutial part of the system, it desribes :
-*				-> The conference informations, the uri, the logo uri and the name.
+*   Description: This JSON object contains all the configurations of the application. It is a crucial part of the system, it describes :
+*				-> The conference information, the uri, the logo uri and the name.
 *				-> All the datasources defined by their uris, the cross domain  mode they use, and the commandStore (see /model) related to them.
 *				   This command store contains the definition of all the command (a specific parameters+query+callback implementation) that can be send on it.
 *				-> All the routes that the app will use. Each route is configured to display a specific view, if a template exist for this view name (see /templates)
@@ -11,9 +11,13 @@
 				   
 *   Tags:  JSON, ENDPOINT, SPARQL
 **/
-define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStore','model/datasources/GoogleCommandStore','model/datasources/swcEventCommandStore', 'model/datasources/DPCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore'],
-	function(SWDFCommandStore, DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, swcEventCommandStore, DPCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
 
+/*
+define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStore','model/datasources/GoogleCommandStore','model/datasources/swcEventCommandStore', 'model/datasources/DPCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore'],
+ function(SWDFCommandStore, DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, swcEventCommandStore, DPCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
+ */
+define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStore','model/datasources/GoogleCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore'],
+	function(DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
 		var AppConfig = {
 			"app" : {
 				"liveconLogo" : "livecon.png"
@@ -22,13 +26,11 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 			"conference" : {
 				"id": "1",
 				"eventId": "1",
-				"name": "Livecon",
-				"acronym": "Livecon",
+				"name": "11th ESWC2014",
+				"acronym": "ESWC2014",
 				"logoUri": "img/logo.png",
-				"website": "http://live-con.com/",
+				"website": "http://2014.eswc-conferences.org/",
 				"baseUri": "http://sparql.sympozer.com/resource/conference/38/3811th-eswc-2014",
-				//Local configuration
-//        "baseUri": "http://localhost:8080/resource/conference/1/1new-sympozer-conference",
 				"lang" : "EN",
 				"storage": "on"
 			},
@@ -59,10 +61,9 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
                     "commands" : liveconSparqlCommandStore
                 },
                 "localDatasource" : {
-					"local": true,
+                    "uri" : "local:/embedded",
                     //local configuration
-                    "uri" : "file://.",
-                    "crossDomainMode" : "CORS",
+                    "local": true,
                     "commands" : LocalCommandStore
 				}
 			},
@@ -76,7 +77,6 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 					"hash" : "",
 					"view" : "home",
 					"graphView" : "no",
-					"title": "10th ESWC 2013",
 					"commands" : [
 						{
 							"datasource" : "eventDatasource",
@@ -229,7 +229,7 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 					"hash" : "search/person",
 					"view" : "personSearch",
 					"graphView" : "no",
-					"title": "searchPerson",
+					"title": "Search person",
 					"commands" : [
 					]
 				},
@@ -312,7 +312,7 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 					"title": "allOrganization",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getAllOrganizations"
 						}
 					]
@@ -428,7 +428,7 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
 							"name" : "getResultOrganization"
 						},
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getOrganization"
 						}
 					]

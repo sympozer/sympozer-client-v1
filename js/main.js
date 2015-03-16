@@ -67,13 +67,13 @@ require.config({
         'tpl' : 'modules/templateLoader',
         'labels' : 'modules/labels',
         'asyncLoader' : 'modules/AsyncLoader',
-        'localData' : '../data/data_ESWC2014',
-        'personDao': 'model/resources/person/LocalPersonDAO'
+        'localDao': 'modules/LocalDAO',
+        'localData' : '../data/data_ESWC2014'
     }
 });
 
 //Configurations
-require(['config', 'tpl', 'model/datasources/swcEventCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore','moment'], function(configuration, tpl, liveconApiCommandStore, liveconSparqlCommandStore, LocalCommandStore, moment){
+require(['config', 'tpl', 'moment'], function(configuration, tpl, moment){
 
     //Modules configuration
     var modules = []

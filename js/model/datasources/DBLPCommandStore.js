@@ -52,17 +52,14 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
-						if(parameters.mode == "text"){
-							parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.otherPublications+'</h2>');
-							ViewAdapterText.appendList(parameters.JSONdata,
-														 {baseHref:'#externPublication/',
-														  hrefCllbck:function(str){return Encoder.encode(str["publiUri"])}},
-														 "publiTitle",
-														 parameters.contentEl,
-														 {type:"Node",labelCllbck:function(str){return "External paper : "+str["publiTitle"];}}
-														 );
-				
-						}
+                        parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.otherPublications+'</h2>');
+                        ViewAdapterText.appendList(parameters.JSONdata,
+                            {baseHref:'#externPublication/',
+                                hrefCllbck:function(str){return Encoder.encode(str["publiUri"])}},
+                            "publiTitle",
+                            parameters.contentEl,
+                            {type:"Node",labelCllbck:function(str){return "External paper : "+str["publiTitle"];}}
+                        );
 					}
 				} 
 			}
@@ -99,12 +96,10 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 			ViewCallBack : function(parameters){ 
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
-						if(parameters.mode == "text"){
-							parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.authors+'</h2>');
-							$.each(parameters.JSONdata, function(i,auhtor){
-								ViewAdapterText.appendButton(parameters.contentEl,'#person/'+Encoder.encode(auhtor.authorName)+'/'+Encoder.encode(auhtor.authorUri),auhtor.authorName,{tiny : true});
-							});
-						}
+                        parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.authors+'</h2>');
+                        $.each(parameters.JSONdata, function(i,auhtor){
+                            ViewAdapterText.appendButton(parameters.contentEl,'#person/'+Encoder.encode(auhtor.authorName)+'/'+Encoder.encode(auhtor.authorUri),auhtor.authorName,{tiny : true});
+                        });
 					}
 				}
 			}
@@ -144,7 +139,7 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 					JSONToken.publiLink   = $(this).find("[name = publiLink]").text();
 					JSONfile[i] = JSONToken;
 				});
-				StorageManager.pushCommandToStorage(currentUri,"getExternPublicationInfo",JSONfile);
+//				StorageManager.pushCommandToStorage(currentUri,"getExternPublicationInfo",JSONfile);
 				return JSONfile;
 			},
 			
@@ -152,36 +147,32 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
 				if(parameters.JSONdata != null){
 					var publiInfo = parameters.JSONdata;
 					if(_.size(publiInfo) > 0 ){
-						if(parameters.mode == "text"){
-									  
-							var title  = publiInfo[0].title;				
-							var link  = publiInfo[0].publiLink;	
-							var resume  = publiInfo[0].resume;	
-							var year  = publiInfo[0].year;	
-							var publisher  = publiInfo[0].publisher;	
-							
-						
-							if(title != ""){  
-								parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.title+'</h2>');
-								parameters.contentEl.append('<p>'+title+'</p>'); 
-							} 
-							if(resume != ""){  
-								parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.reference+'</h2>');
-								parameters.contentEl.append('<p>'+resume+'</p>'); 
-							} 
-							if(link != ""){ 
-								parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.link+'</h2>');
-								parameters.contentEl.append('<a href="'+link+'">'+link+'</p>');
-							}
-							if(year != ""){ 
-								parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.year+'</h2>');
-								parameters.contentEl.append('<p>'+year+'</p>'); 
-							}
-							if(publisher !=""){ 
-								parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.publisher+'</h2>');
-								parameters.contentEl.append('<p>'+publisher+'</p>'); 
-							}
-						}
+                        var title  = publiInfo[0].title;
+                        var link  = publiInfo[0].publiLink;
+                        var resume  = publiInfo[0].resume;
+                        var year  = publiInfo[0].year;
+                        var publisher  = publiInfo[0].publisher;
+
+                        if(title != ""){
+                            parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.title+'</h2>');
+                            parameters.contentEl.append('<p>'+title+'</p>');
+                        }
+                        if(resume != ""){
+                            parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.reference+'</h2>');
+                            parameters.contentEl.append('<p>'+resume+'</p>');
+                        }
+                        if(link != ""){
+                            parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.link+'</h2>');
+                            parameters.contentEl.append('<a href="'+link+'">'+link+'</p>');
+                        }
+                        if(year != ""){
+                            parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.year+'</h2>');
+                            parameters.contentEl.append('<p>'+year+'</p>');
+                        }
+                        if(publisher !=""){
+                            parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].otherPublication.publisher+'</h2>');
+                            parameters.contentEl.append('<p>'+publisher+'</p>');
+                        }
 					}
 				}
 			}

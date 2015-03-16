@@ -25,7 +25,7 @@ define([],function() {
             'otherPublication' : {
                 'year' : 'Year',
                 'authors' : 'Authors',
-                'title' : 'Title',
+                "title" : 'Title',
                 'reference' : 'Reference',
                 'publisher' : 'Publisher',
                 'link' : 'Link'
@@ -187,7 +187,7 @@ define([],function() {
             'otherPublication' : {
                 'year' : 'Année',
                 'authors' : 'Auteurs',
-                'title' : 'Titre',
+                "title" : 'Titre',
                 'reference' : 'Reference',
                 'publisher' : 'Editeur',
                 'link' : 'Lien'

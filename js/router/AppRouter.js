@@ -12,7 +12,7 @@
  *	Version: 1.2
  *   Tags:  BACKBONE, AJAX, ROUTING
  **/
-define(['backbone', 'jquery', 'jqueryMobile', 'config', 'encoder', 'view/ViewAdapter', 'asyncLoader'], function(Backbone, $, jqueryMobile, configuration, Encoder, ViewAdapter, AsyncLoader){
+define(['backbone', 'jquery', 'jqueryMobile', 'config', 'encoder', 'view/ViewAdapter', 'asyncLoader'], function(Backbone, $, jqueryMobile, config, Encoder, ViewAdapter, AsyncLoader){
 
     return Backbone.Router.extend({
 
@@ -22,26 +22,19 @@ define(['backbone', 'jquery', 'jqueryMobile', 'config', 'encoder', 'view/ViewAda
         initialize: function (options){
             var self = this;
 
-            //Saving conference definition
-            this.conference = configuration.conference;
-            //Saving datasource definitions
-            this.datasources = configuration.datasources;
-            //Saving route definitions
-            this.routes = configuration.routes;
-
-            $.each(this.datasources,function(i,datasourceItem){
+            $.each(config.datasources,function(i,datasourceItem){
                 console.log("******* DATASOURCE ********");
                 console.log(datasourceItem);
             });
 
             //Initialize AsyncLoader
-            AsyncLoader.initialize({conference : this.conference});
+            AsyncLoader.initialize();
 
             //Initialize ViewAdapter to text mode
-            ViewAdapter.initialize("text");
+//            ViewAdapter.initialize("text");
 
             //Preparing all the routes and their actions
-            $.each(this.routes, function(i, routeItem){
+            $.each(config.routes, function(i, routeItem){
 
                 //console.log("******* ROUTE ********");
                 //console.log(routeItem);
@@ -51,52 +44,53 @@ define(['backbone', 'jquery', 'jqueryMobile', 'config', 'encoder', 'view/ViewAda
                 //Preparing the function to use when catching the current route
                 self.route(routeItem.hash, function(name, uri) {
 
-                    var title = "";
-                    if(name !== undefined){
-                        name = Encoder.decode(name);
-                        title = name;
-                    }
-                    if(uri == undefined){
-                        title = routeItem.title;
-                        uri = name;
-                    }else{
-                        uri = Encoder.decode(uri);
+                    //Default route
+                    if(name === undefined && uri === undefined){
+                        uri = config.conference.baseUri;
+                        name = routeItem.title ? routeItem.title : config.conference.name;
+                    } else {
+                        //Not sure this is useful
+                        if (uri === undefined) {
+                            uri = Encoder.encode(name);
+                        }
+                        //But sure about that one
+                        if (name !== undefined) {
+                            name = Encoder.decode(name);
+                        }
                     }
 
-                    if(name == undefined && uri == undefined){
-                        uri = self.conference.baseUri;
-                    }
+                    var hashtag = Encoder.getHashtag(config.conference.acronym, name);
 
-                    //Appending button and keeping track of new route in case the mode changes
-                    var currentPage = ViewAdapter.update(routeItem ,title, self.conference, self.datasources,uri,name);
+                    //Appending button and keeping track of new route
+                    var currentPage = ViewAdapter.update(routeItem ,hashtag, config.conference, config.datasources, uri, name);
 
                     //Prepare AJAX call according to the commands declared
                     $.each(routeItem.commands, function(i, commandItem){
-                        var currentDatasource = self.datasources[commandItem.datasource];
+                        var currentDatasource = config.datasources[commandItem.datasource];
                         var currentCommand    = currentDatasource.commands[commandItem.name];
 
                         console.log("Call : " + commandItem.name);
                         //asynchronous call
                         AsyncLoader.executeCommand({
-                            datasource: currentDatasource,
+                            datasource: commandItem.datasource,
                             command: commandItem.name,
                             currentUri: uri,
                             name: name
                         }).then(function(results) {
-                            return currentCommand.ModelCallBack(results, self.conference, currentDatasource.uri, uri, name);
+                            return currentCommand.ModelCallBack(results, config.conference, currentDatasource.uri, uri, name);
                         }).then(function(data) {
                             jqueryMobile.loading('hide');
                             currentCommand.ViewCallBack({
                                 JSONdata : data,
                                 contentEl : currentPage.find("#" + commandItem.name),
                                 name : name,
-                                mode : ViewAdapter.mode,
-                                conference : self.conference
+//                                mode : ViewAdapter.mode,
+                                conference : config.conference
                             });
                             ViewAdapter.generateJQMobileElement();
-                        }).catch(function(ex) {
-                            console.log(ex);
-                            jqueryMobile.loading('hide');
+                        //}).catch(function(ex) {
+                        //    console.log(ex);
+                        //    jqueryMobile.loading('hide');
                         });
                     });
 

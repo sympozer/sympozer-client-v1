@@ -18,29 +18,29 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 			dataType : "JSONP",
 			method : "GET",
 			serviceUri : "",
-			getQuery : function(parameters){ 
+
+			getQuery : function(parameters){
 				var searchValue = parameters.name;
 				var  ajaxData = { q : searchValue, v : "1.0" };
 				return ajaxData ; 
 			},
-			ModelCallBack : function (dataJSON,conferenceUri,datasourceUri, currentUri){									
+
+			ModelCallBack : function (dataJSON, conferenceUri, datasourceUri, currentUri){
 				var JSONfile   = {};
 				var JSONToken  = {};
 				JSONToken.authorHomepage  = dataJSON.responseData.results[0].url;
 				JSONfile[0] = JSONToken;
-				//StorageManager.pushCommandToStorage(currentUri,"getAuthorPersonalPage",JSONfile);		
+				//StorageManager.pushCommandToStorage(currentUri,"getAuthorPersonalPage",JSONfile);
 				return JSONfile;
 			},
-			
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					var authorHomepage = parameters.JSONdata;
-					if(_.size(authorHomepage) > 0 ){		  
-						if(parameters.mode == "text"){
-							var homepageUrl  = authorHomepage[0].authorHomepage;
-							parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.website+'</h2>');	
-							parameters.contentEl.append('<a href="'+homepageUrl+'" >'+homepageUrl+'</a>');	
-						}
+					if(_.size(authorHomepage) > 0 ){
+                        var homepageUrl  = authorHomepage[0].authorHomepage;
+                        parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.website+'</h2>');
+                        parameters.contentEl.append('<a href="'+homepageUrl+'" >'+homepageUrl+'</a>');
 					}
 				}
 			}

@@ -24,7 +24,7 @@ define(['jquery', 'underscore', 'localStorage/localStorageAnalyser'], function($
 			});
 			return maxOccurKeywordLabelTab;
 		},
-		
+
 		getMostViewEntity : function(){
 			keywordStore = StorageManager.get("keyword");
 			var maxOccurKeyword = 0;
