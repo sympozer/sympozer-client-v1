@@ -35,7 +35,8 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 			},
 
 			ViewCallBack : function(parameters){
-				if(parameters.JSONdata != null){
+                //Check if the homepage was not specified in the local datasource (have no means to do it before sending the AJAX query).
+				if(!$("#person_homepage").html() && parameters.JSONdata != null){
 					var authorHomepage = parameters.JSONdata;
 					if(_.size(authorHomepage) > 0 ){
                         var homepageUrl  = authorHomepage[0].authorHomepage;

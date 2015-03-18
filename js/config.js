@@ -26,10 +26,10 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 			"conference" : {
 				"id": "1",
 				"eventId": "1",
-				"name": "11th ESWC2014",
-				"acronym": "ESWC2014",
+				"name": "11th ESWC2015",
+				"acronym": "ESWC2015",
 				"logoUri": "img/logo.png",
-				"website": "http://2014.eswc-conferences.org/",
+				"website": "http://2015.eswc-conferences.org/",
 				"baseUri": "http://sparql.sympozer.com/resource/conference/38/3811th-eswc-2014",
 				"lang" : "EN",
 				"storage": "on"
@@ -212,7 +212,7 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"title": "publication",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getPublication"
 						}
 					]
@@ -248,7 +248,7 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"title": "allPublication",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getAllPublications"
 						}
 					]

@@ -33,7 +33,7 @@ define([],function() {
             },
             'person' : {
                 'contact' : 'Contact',
-                'website' : 'Website',
+                'website' : 'Most probable homepage',
                 'description' : 'Description',
                 'homepage' : 'Homepage',
                 "affiliations" : 'Organizations',
@@ -195,7 +195,7 @@ define([],function() {
             },
             'person' : {
                 'contact' : 'Contact',
-                'website' : 'Site web',
+                'website' : 'Site web probable',
                 'description' : 'Description',
                 'homepage' : 'Homepage',
                 "affiliations" : 'Organisations',

@@ -68,7 +68,7 @@ require.config({
         'labels' : 'modules/labels',
         'asyncLoader' : 'modules/AsyncLoader',
         'localDao': 'modules/LocalDAO',
-        'localData' : '../data/data_ESWC2014'
+        'localData' : '../data/data_ESWC2015'
     }
 });
 

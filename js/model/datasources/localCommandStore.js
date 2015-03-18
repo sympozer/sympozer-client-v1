@@ -282,54 +282,49 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        //TODO
         getAllPublications: {
             dataType: "JSONP",
             method: "GET",
             serviceUri: "",
             getQuery: function (parameters) {
-                var query = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> ' +
-                    'PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
-                    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ' +
-                    'PREFIX dc: <http://purl.org/dc/elements/1.1/> ' +
-                    'SELECT DISTINCT ?publiTitle ?publiUri WHERE {' +
-                    '    <' + parameters.conference.baseUri + '> swc:hasRelatedDocument ?publiUri.' +
-                    '	 ?publiUri dc:title ?publiTitle.' +
-                    '} ORDER BY ASC(?publiTitle)';
-
-                var ajaxData = {query: query, output: "json"};
-                return ajaxData;
+                return {
+                    "command": "getAllPublications",
+                    "data": null
+                }
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = {};
-                $.each(dataJSON.results.bindings, function (i) {
-                    var JSONToken = {};
-                    JSONToken.uri = this.publiUri.value || "";
-                    JSONToken.title = this.publiTitle.value || "";
-                    JSONfile[i] = JSONToken;
+                var publicationList = [];
+
+                $.each(dataJSON, function (i) {
+                    var JSONToken = {
+                        "@id": this.id,
+                        "name": this.title,
+                        "img": this.thumbnail ? this.thumbnail : null
+                    };
+                    publicationList.push(JSONToken);
                 });
-                //console.log(JSONfile);
-                //StorageManager.pushCommandToStorage(currentUri, "getAllPublications", JSONfile);
-                return JSONfile;
+                return publicationList;
             },
 
             ViewCallBack: function (parameters) {
                 if (parameters.JSONdata != null) {
                     if (_.size(parameters.JSONdata) > 0) {
-                        ViewAdapterText.appendList(parameters.JSONdata,
+                        ViewAdapterText.appendListImage(
+                            parameters.JSONdata,
                             {
                                 baseHref: '#publication/',
                                 hrefCllbck: function (str) {
-                                    return Encoder.encode(str["title"]) + "/" + Encoder.encode(str["uri"])
+                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
                                 }
                             },
-                            "title",
+                            "name",
+                            "img",
                             parameters.contentEl,
                             {
                                 type: "Node",
                                 labelCllbck: function (str) {
-                                    return "paper : " + str["uri"];
+                                    return "paper : " + str["@id"];
                                 }
                             }
                         );
@@ -557,15 +552,19 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     "data": {
                         "key": parameters.uri,
                         "nestedQueries": [{
+                            //Retrieve organizations
                             datasource: "localDatasource",
                             command: "getOrganizationLink",
                             targetProperty: "affiliation"
-                        }]
-                        //TODO
-                        //Retrieve her/his publications
-                        //TODO
-                        //Retrieve her/his roles in the conference
-                        //TODO
+                        }, {
+                            //Retrieve publications
+                            datasource: "localDatasource",
+                            command: "getPublicationLink",
+                            targetProperty: "made"
+                        }
+                            //TODO
+                            //Retrieve her/his roles in the conference
+                        ]
                     }
                 };
             },
@@ -574,22 +573,10 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
                     "name": dataJSON.name,
                     "img": dataJSON.depiction ? dataJSON.depiction : null,
-                    "homepage": dataJSON.homepage ? dataJSON.homepage : null,
-                    "affiliation": dataJSON.affiliation ? dataJSON.affiliation : null
+                    "homepage": (dataJSON.websites && dataJSON.websites[0]) ? dataJSON.websites[0] : null,
+                    "affiliation": dataJSON.affiliation ? dataJSON.affiliation : null,
+                    "made": dataJSON.made ? dataJSON.made : null
                 };
-                if (_.size(dataJSON.made) >0) {
-                    for(var i in dataJSON.made) {
-                        JSONToken.made = [];
-                        var publi = dataJSON.made[i];
-                        //TODO: match with publicationDAO properties
-                        if (publi.publicationUri && publi.publicationName) {
-                            JSONToken.made.push({
-                                "@id": publi.publicationUri,
-                                "name": publi.publicationName
-                            });
-                        }
-                    }
-                }
 
                 if (_.size(dataJSON.holdsRole) >0) {
                     for(var i in dataJSON.holdsRole) {
@@ -626,7 +613,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             parameters.contentEl.append($('<p>' + parameters.JSONdata.description + '</p>'));
                         }
                         if (parameters.JSONdata.homepage) {
-                            parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.homepage + '</h2>'));
+                            parameters.contentEl.append($('<h2 id="person_homepage">' + labels[parameters.conference.lang].person.homepage + '</h2>'));
                             //TODO: find out why the content is taken out of the a element...
                             parameters.contentEl.append($('<a href=' + parameters.JSONdata.homepage + '>' + parameters.JSONdata.homepage + '</a>'));
                         }
@@ -781,62 +768,38 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
         //TODO
         getPublication: {
-            dataType: "JSONP",
-            method: "GET",
-            serviceUri: "",
             getQuery: function (parameters) {
-
-                var prefix = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#>         ' +
-                    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>               ' +
-                    'PREFIX dc: <http://purl.org/dc/elements/1.1/>                      ' +
-                    'PREFIX swrc: <http://swrc.ontoware.org/ontology#>                  ' +
-                    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ';
-
-                var query = 'SELECT DISTINCT   ?publiTitle ?publiAbstract ?publiUrl ?authorUri ?authorName ?keywordUri ?keywordName WHERE  {  ' +
-                    '  {<' + parameters.uri + '>  dc:title ?publiTitle.                     ' +
-                    '	OPTIONAL {<' + parameters.uri + '>  swrc:abstract ?publiAbstract.}' +
-                    '	OPTIONAL {<' + parameters.uri + '>  swrc:url ?publiUrl.}' +
-                    '	OPTIONAL {<' + parameters.uri + '>  swrc:year ?publiPublishDate.}' +
-                    '	OPTIONAL {<' + parameters.uri + '>  swrc:link_publisher ?publiPublisher.}' +
-                    '	 } UNION {<' + parameters.uri + '>  foaf:maker  ?authorUri. ' +
-                    '   ?authorUri  foaf:name ?authorName.  }' +
-                    '	 UNION  {<' + parameters.uri + '>  dc:subject  ?keywordUri. ' +
-                    '   ?keywordUri  rdfs:label ?keywordName.  }' +
-                    '}';
-                var ajaxData = {query: prefix + query, output: "json"};
-                return ajaxData;
+                return {
+                    "command": "getPublication",
+                    "data": {
+                        "key": parameters.uri,
+                        "nestedQueries": [{
+                            //Retrieve authors
+                            datasource: "localDatasource",
+                            command: "getPersonLink",
+                            targetProperty: "authors"
+                        }
+                           //TODO
+                           //Retrieve the corresponding track of the conference
+                        ]
+                    }
+                };
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {};
-                var results = dataJSON.results.bindings;
-                if (_.size(results) > 0) {
-                    JSONToken.title = results[0].publiTitle ? results[0].publiTitle.value : null;
-                    JSONToken.abstract = results[0].publiAbstract ? results[0].publiAbstract.value : null;
-                    JSONToken.publishDate = results[0].publiPublishDate ? results[0].publiPublishDate.value : null;
-                    JSONToken.url = results[0].publiUrl ? results[0].publiUrl.value : null;
-                    JSONToken.publisher = results[0].publiPublisher ? results[0].publiPublisher.value : null;
-
-                    JSONToken.keywords = [];
-                    JSONToken.authors = [];
-                    j = 0;
-                    k = 0;
-                    $.each(results, function (i, token) {
-                        if (token.hasOwnProperty("authorUri")) {
-                            JSONToken.authors[j] = token;
-                            j++;
-                        }
-                        if (token.hasOwnProperty("keywordUri")) {
-                            JSONToken.keywords[k] = token;
-                            k++;
-                        }
-                    });
-                }
-                //console.log(JSONToken);
-                //StorageManager.pushCommandToStorage(currentUri, "getPublication", JSONToken);
+                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
+                    "title": dataJSON.title,
+                    "abstract": dataJSON.abstract,
+                    "authors": dataJSON.authors,
+                    "track": dataJSON.track ? dataJSON.track : null,
+                    "img": dataJSON.thumbnail ? dataJSON.thumbnail : null,
+                    "hashtag": dataJSON.hashtag ? dataJSON.hashtag : null
+                };
                 return JSONToken;
             },
 
+            //In previous versions, it was possible to retrieve the publisher, publication date, as well as the location of the paper PDF.
+            // Even if is not possible in modelCallback, I left it there, in case...
             ViewCallBack: function (parameters) {
                 //Reasoner.getMoreSpecificKeywords();
                 if (parameters.JSONdata != null) {
@@ -860,15 +823,12 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.publishBy + '</h2>'));
                             parameters.contentEl.append($('<a href=' + parameters.JSONdata.publisher + '>' + parameters.JSONdata.publisher + '</a>'));
                         }
-
                         if (_.size(parameters.JSONdata.authors) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.authors + '</h2>'));
                             for (var i = 0; i < parameters.JSONdata.authors.length; i++) {
                                 var author = parameters.JSONdata.authors[i];
-                                ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(author.authorName.value) + '/' + Encoder.encode(author.authorUri.value), author.authorName.value, {tiny: true});
+                                ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(author.name) + '/' + Encoder.encode(author["@id"]), author.name, {tiny: true});
                             }
-                            ;
-
                         }
                         if (_.size(parameters.JSONdata.keywords) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.topics + '</h2>'));
@@ -876,7 +836,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 var keyword = parameters.JSONdata.keywords[i];
                                 ViewAdapterText.appendButton(parameters.contentEl, '#topic/' + Encoder.encode(keyword.keywordLabel.value) + '/' + Encoder.encode(keyword.keywordUri.value), keyword.keywordLabel.value, {tiny: true});
                             }
-                            ;
                         }
                     }
                 }
@@ -1643,6 +1602,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 return JSONToken;
             }
         },
+
         getOrganizationLink: {
             getQuery: function (parameters) {
                 return {
@@ -1657,6 +1617,25 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
                     "name": dataJSON.name,
                     "img": dataJSON.depiction ? dataJSON.depiction : null
+                };
+                return JSONToken;
+            }
+        },
+
+        getPublicationLink: {
+            getQuery: function (parameters) {
+                return {
+                    "command": "getPublicationLink",
+                    "data": {
+                        "key": parameters.uri
+                    }
+                };
+            },
+
+            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
+                    "name": dataJSON.title,
+                    "img": dataJSON.thumbnail ? dataJSON.thumbnail : null
                 };
                 return JSONToken;
             }

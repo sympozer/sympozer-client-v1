@@ -2,3 +2,5 @@
 #intelliJ files
 *.iml
 .idea
+/data/data_ESWC2015.js
+/unused/*
