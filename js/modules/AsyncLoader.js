@@ -56,24 +56,26 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                         };
                         //Before resolving the nested query, nestedData only contains the URI(s) of the element(s) to retrieve
                         var nestedUri = successParams.data[nestedQuery.targetProperty];
-                        if (Array.isArray(nestedUri)) {
-                            for (var j in nestedUri) {
-                                nestedQueryParams.currentUri = nestedUri[j];
-                                nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams, i, j).then(function (result) {
-                                    //Replace the URI with the result of the nested query
-                                    successParams.data[successParams.nestedQueries[result.position1].targetProperty].splice(result.position2, 1, result.data);
+                        if(nestedUri != null){
+                            if (Array.isArray(nestedUri)) {
+                                for (var j in nestedUri) {
+                                    nestedQueryParams.currentUri = nestedUri[j];
+                                    nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams, i, j).then(function (result) {
+                                        //Replace the URI with the result of the nested query
+                                        successParams.data[successParams.nestedQueries[result.position1].targetProperty].splice(result.position2, 1, result.data);
+                                    }));
+                                }
+                            } else {
+                                nestedQueryParams.currentUri = nestedUri;
+                                nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams).then(function (result) {
+                                    successParams.data[successParams.nestedQueries[i].targetProperty] = result.data;
                                 }));
                             }
-                        } else {
-                            nestedQueryParams.currentUri = nestedUri;
-                            nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams).then(function (result) {
-                                successParams.data[successParams.nestedQueries[i].targetProperty] = result.data;
-                            }));
                         }
                     }
-                    Promise.all(nestedPromises).then(function () {
-                        resolve(successParams.data);
-                    });
+                    if(nestedPromises.length >0) {
+                        Promise.all(nestedPromises).then(resolve(successParams.data));
+                    }
                 } else {
                     resolve(successParams.data);
                 }
