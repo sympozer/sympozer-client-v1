@@ -627,7 +627,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 var publication = parameters.JSONdata.made[i];
                                 try {
                                     // LM: Should work as soon as organizations are available
-                                    ViewAdapterText.appendButton(parameters.contentEl, '#publication/' + Encoder.encode(publication.name) + '/' + Encoder.encode(publication.id), publication.name, {tiny: false});
+                                    ViewAdapterText.appendButton(parameters.contentEl, '#publication/' + Encoder.encode(publication.title) + '/' + Encoder.encode(publication.id), publication.title, {tiny: false});
                                 } catch (e) {
                                 }
                             }
