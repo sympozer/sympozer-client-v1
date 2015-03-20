@@ -36,9 +36,10 @@ define([],function() {
                 'website' : 'Most probable homepage',
                 'description' : 'Description',
                 'homepage' : 'Homepage',
-                "affiliations" : 'Organizations',
+                "affiliations" : 'Organization(s)',
                 "made" :'Conference publication(s)',
-                'otherPublications' :'Other publication(s)'
+                'otherPublications' :'Other publication(s)',
+                'holdsRole': 'Role(s)'
             },
 
             'organization' : {
@@ -200,7 +201,8 @@ define([],function() {
                 'homepage' : 'Homepage',
                 "affiliations" : 'Organisations',
                 "made" :'Publication(s) de la conférence',
-                'otherPublications' :'Autre publication(s)'
+                'otherPublications' :'Autre(s) publication(s)',
+                'holdsRole': 'Rôle(s)'
             },
 
             'organization' : {

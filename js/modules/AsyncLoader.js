@@ -14,7 +14,8 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
         initialize: function () {
             asyncL = this;
             conference = config.conference;
-            //Initialize storage manager
+            //Initialize depending objects
+            dao.initialize();
             StorageManager.initialize({conference : config.conference});
         },
 
@@ -31,7 +32,8 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                 return {
                     position1: pos1,
                     position2: pos2,
-                    data: nestedCommand.ModelCallBack(results, config.conference, nestedDatasource.uri, nestedUri, nestedName)
+                    data: results
+//                    data: nestedCommand.ModelCallBack(results, config.conference, nestedDatasource.uri, nestedUri, nestedName)
                 };
             });
         },
@@ -93,6 +95,11 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
         executeCommand: function (parameters) {
             var currentDatasource = config.datasources[parameters.datasource];
             var currentCommand = currentDatasource.commands[parameters.command];
+            /**
+             * Function called to store the data retrieved from a datasource.
+             * Should be called after nested queries have been processed and their results included in high-level responses
+             * Note: this is an inner function just to avoid retransmitting the currentUri and command parameters...
+             */
             var store = function (data) {
                 //TODO: push only if there was no error while retrieving the data (i.e. the answer does not contain an empty response)
                 StorageManager.pushCommandToStorage(parameters.currentUri, parameters.command, data);
@@ -122,13 +129,14 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                     if (currentDatasource.local === true) {
                         console.log("...on local datasource " + currentDatasource.uri);
                         if(dao) {
-                            data = dao(parameters.command, query.data);
+                            data = dao.query(parameters.command, query.data);
                             if (data) {
                                 asyncL.processNestedQueries({
                                     nestedQueries: query.data ? query.data.nestedQueries : null,
                                     data: data
                                 }).then(function(result) {
-                                    store(result);
+                                    //Don't need localStorage for local datasources as objects are already in memory.
+                                    //store(result);
                                     resolve(result);
                                 });
                             } else {
@@ -146,7 +154,7 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                     //Query distant datasources
                     } else {
                         console.log("...on AJAX datasource " + currentDatasource.uri);
-                        //Preparing the cross domain technic according to datasource definition
+                        //Preparing the cross domain technique according to datasource definition
                         jQuery.support.cors = (currentDatasource.crossDomainMode === "CORS");
                         //Sending AJAX request to the datasource
                         $.ajax({

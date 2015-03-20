@@ -1,17 +1,20 @@
 /**
- *    Copyright <c> Claude Bernard - University Lyon 1 -  2013
- *    License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing
+ *   Copyright <c> Claude Bernard - University Lyon 1 -  2013
+ *   License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing
  *   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LEPEUTREC, Benoît DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
  *   Description: This object contains a json definition of all the commands that will prepare all the queries we want to send on the SemanticWebDogFood sparql endpoint.
- *                 Each one of those commands declare the datatype, the method, the query string it is supposed to use on the endpoint and provide a model Callback to store results, a view CallBack to render data stored.
- *                 To declare a request, each commands can use the parameters declared for the route they are called in (see Configuration.js). Those parameters can be a name, an uri or both and represents
- *                 the entity which we want informations on. After calling a command, the results are stored using the localStorageManager (see localStorage.js) and rendered when needed. It is the role of the router to call those commands according to the configuration file.
+ *   Each one of those commands declare the datatype, the method, the query string it is supposed to use on the endpoint and provide a model Callback to store results, a view CallBack to render data stored.
+ *   To declare a request, each commands can use the parameters declared for the route they are called in (see Configuration.js). Those parameters can be a name, an uri or both and represents
+ *   the entity which we want informations on. After calling a command, the results are stored using the localStorageManager (see localStorage.js) and rendered when needed. It is the role of the router to call those commands according to the configuration file.
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
 define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'labels'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, labels) {
     var localCommandStore = {
 
+        /**
+         * Retrieve lists
+         */
         //TODO
         getAllTopics: {
             dataType: "JSONP",
@@ -193,18 +196,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var personList = [];
-
-                $.each(dataJSON, function (i) {
-                    var JSONToken = {
-                        "@id": this.id,
-                        "name": this.name,
-                        "img": this.depiction ? this.depiction : null
-                    };
-                    personList.push(JSONToken);
-                });
-                //console.log(personList);
-                return personList;
+                return dataJSON ? dataJSON : null;
             },
 
             ViewCallBack: function (parameters) {
@@ -215,16 +207,16 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             {
                                 baseHref: '#person/',
                                 hrefCllbck: function (str) {
-                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
+                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str.id)
                                 }
                             },
                             "name",
-                            "img",
+                            "depiction",
                             parameters.contentEl,
                             {
                                 type: "Node",
                                 labelCllbck: function (str) {
-                                    return "person : " + str["@id"];
+                                    return "person : " + str.id;
                                 }
                             }
                         );
@@ -242,18 +234,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var personList = [];
-
-                $.each(dataJSON, function (i) {
-                    var JSONToken = {
-                        "@id": this.id,
-                        "name": this.name,
-                        "img": this.depiction ? this.depiction : null
-                    };
-                    personList.push(JSONToken);
-                });
-                //console.log(personList);
-                return personList;
+                return dataJSON ? dataJSON : null;
             },
 
             ViewCallBack: function (parameters) {
@@ -264,16 +245,16 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             {
                                 baseHref: '#person/',
                                 hrefCllbck: function (str) {
-                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
+                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str.id)
                                 }
                             },
                             "name",
-                            "img",
+                            "depiction",
                             parameters.contentEl,
                             {
                                 type: "Node",
                                 labelCllbck: function (str) {
-                                    return "person : " + str["@id"];
+                                    return "person : " + str.id;
                                 }
                             }
                         );
@@ -294,17 +275,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var publicationList = [];
-
-                $.each(dataJSON, function (i) {
-                    var JSONToken = {
-                        "@id": this.id,
-                        "name": this.title,
-                        "img": this.thumbnail ? this.thumbnail : null
-                    };
-                    publicationList.push(JSONToken);
-                });
-                return publicationList;
+                return dataJSON ? dataJSON : null;
             },
 
             ViewCallBack: function (parameters) {
@@ -315,16 +286,16 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             {
                                 baseHref: '#publication/',
                                 hrefCllbck: function (str) {
-                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
+                                    return Encoder.encode(str["title"]) + "/" + Encoder.encode(str.id)
                                 }
                             },
-                            "name",
-                            "img",
+                            "title",
+                            "thumbnail",
                             parameters.contentEl,
                             {
                                 type: "Node",
                                 labelCllbck: function (str) {
-                                    return "paper : " + str["@id"];
+                                    return "paper : " + str.id;
                                 }
                             }
                         );
@@ -333,9 +304,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        /**
-         * Retrieve the organizations of everyone having a role at the conference
-         */
         getAllOrganizations: {
             getQuery: function (parameters) {
                 return {
@@ -345,18 +313,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var organizationList = [];
-
-                $.each(dataJSON, function (i) {
-                    var JSONToken = {
-                        "@id": this.id,
-                        "name": this.name,
-                        "img": this.depiction ? this.depiction : null
-                    };
-                    organizationList.push(JSONToken);
-                });
-                //console.log(personList);
-                return organizationList;
+                return dataJSON ? dataJSON : null;
             },
 
             ViewCallBack: function (parameters) {
@@ -366,16 +323,16 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             {
                                 baseHref: '#organization/',
                                 hrefCllbck: function (str) {
-                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
+                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str.id)
                                 }
                             },
                             "name",
-                            "img",
+                            "depiction",
                             parameters.contentEl,
                             {
                                 type: "Node",
                                 labelCllbck: function (str) {
-                                    return "organization : " + str["@id"];
+                                    return "organization : " + str.id;
                                 }
                             }
                         );
@@ -393,15 +350,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = [];
-                $.each(dataJSON, function (i) {
-                    var JSONToken = {
-                        "@id": Encoder.encode(dataJSON[i]),
-                        "name": dataJSON[i]
-                    };
-                    JSONfile.push(JSONToken);
-                });
-                return JSONfile;
+                return dataJSON ? dataJSON : null;
             },
 
             ViewCallBack: function (parameters) {
@@ -411,15 +360,56 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             {
                                 baseHref: '#person-by-role/',
                                 hrefCllbck: function (str) {
-                                    return Encoder.encode(str["name"]) + '/' + Encoder.encode(str["@id"])
+                                    return Encoder.encode(str["label"]) + '/' + Encoder.encode(str.id)
                                 }
                             },
-                            "name",
+                            "label",
                             parameters.contentEl,
                             {
                                 type: "Node",
                                 labelCllbck: function (str) {
-                                    return "Role : " + str["name"];
+                                    return "Role : " + str["label"];
+                                }
+                            }
+                        );
+                    }
+                }
+            }
+        },
+
+        getPersonsByRole: {
+            getQuery: function (parameters) {
+                return {
+                    command: "getPersonsByRole",
+                    data: {
+                        key: parameters.name,
+                        nestedQueries: null
+                    }
+                }
+            },
+
+            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+                return dataJSON ? dataJSON : null;
+            },
+
+            ViewCallBack: function (parameters) {
+                if (parameters.JSONdata != null) {
+                    if (_.size(parameters.JSONdata) > 0) {
+                        ViewAdapterText.appendListImage(
+                            parameters.JSONdata,
+                            {
+                                baseHref: '#person/',
+                                hrefCllbck: function (str) {
+                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str.id)
+                                }
+                            },
+                            "name",
+                            "depiction",
+                            parameters.contentEl,
+                            {
+                                type: "Node",
+                                labelCllbck: function (str) {
+                                    return "person : " + str.id;
                                 }
                             }
                         );
@@ -471,6 +461,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
+        /**
+         * Retrieve list elements (individuals)
+         */
         //TODO
         getTopic: {
             dataType: "JSONP",
@@ -561,41 +554,30 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             datasource: "localDatasource",
                             command: "getPublicationLink",
                             targetProperty: "made"
-                        }
-                            //TODO
-                            //Retrieve her/his roles in the conference
-                        ]
+                        }, {
+                            //Retrieve roles
+                            datasource: "localDatasource",
+                            command: "getRoleLink",
+                            targetProperty: "holdsRole"
+                        }]
                     }
                 };
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
-                    "name": dataJSON.name,
-                    "img": dataJSON.depiction ? dataJSON.depiction : null,
-                    "homepage": (dataJSON.websites && dataJSON.websites[0]) ? dataJSON.websites[0] : null,
-                    "affiliation": dataJSON.affiliation ? dataJSON.affiliation : null,
-                    "made": dataJSON.made ? dataJSON.made : null
-                };
-
                 if (_.size(dataJSON.holdsRole) >0) {
                     for(var i in dataJSON.holdsRole) {
-                        JSONToken.holdsRole = [];
                         var role = dataJSON.holdsRole[i];
                         //TODO: match with roleDAO properties
-                        if (role.roleUri && role.roleName && role.eventUri && role.eventName) {
-                            JSONToken.holdsRole.push({
-                                "@id": role.roleUri,
-                                "name": role.roleName,
-                                "isRoleAt": {
-                                    "@id": role.eventUri,
+                        if (role.eventUri && role.eventName) {
+                            role.isRoleAt = {
+                                    "id": role.eventUri,
                                     "name": role.eventName
-                                }
-                            });
+                                };
                         }
                     }
                 }
-                return JSONToken;
+                return dataJSON;
             },
 
             ViewCallBack: function (parameters) {
@@ -603,7 +585,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 if (parameters.JSONdata != null) {
                     if (_.size(parameters.JSONdata) > 0) {
                         if (parameters.JSONdata.img) {
-                            parameters.contentEl.append($('<div style="min-height:50px; width:20%"><img style="width:100%;height:auto;" src="' + parameters.JSONdata.img + '"/></div>'));
+                            parameters.contentEl.append($('<div style="min-height:50px; width:20%"><img style="width:100%;height:auto;" src="' + parameters.JSONdata.depiction + '"/></div>'));
                         }
                         if (parameters.JSONdata.name) {
                             $("[data-role = page]").find("#header-title").html(parameters.JSONdata.name);
@@ -612,31 +594,29 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.description + '</h2>'));
                             parameters.contentEl.append($('<p>' + parameters.JSONdata.description + '</p>'));
                         }
-                        if (parameters.JSONdata.homepage) {
-                            parameters.contentEl.append($('<h2 id="person_homepage">' + labels[parameters.conference.lang].person.homepage + '</h2>'));
-                            //TODO: find out why the content is taken out of the a element...
-                            parameters.contentEl.append($('<a href=' + parameters.JSONdata.homepage + '>' + parameters.JSONdata.homepage + '</a>'));
+                        if (parameters.JSONdata.websites) {
+                            parameters.contentEl.append($('<h2 id="person_homepage">' + labels[parameters.conference.lang].person.websites + '</h2>'));
+
+                            parameters.contentEl.append($('<a href=' + parameters.JSONdata.websites + '>' + parameters.JSONdata.websites + '</a>'));
                         }
 
                         if (_.size(parameters.JSONdata.affiliation) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.affiliations + '</h2>'));
                             for (var i in parameters.JSONdata.affiliation) {
                                 var organization = parameters.JSONdata.affiliation[i];
-                                try {
-                                    // LM: Should work as soon as organizations are available
-                                    ViewAdapterText.appendButton(parameters.contentEl, '#organization/' + Encoder.encode(organization.name) + '/' + Encoder.encode(organization["@id"]), organization.name, {tiny: true});
-                                } catch (e) {
-                                }
+                                ViewAdapterText.appendButton(parameters.contentEl, '#organization/' + Encoder.encode(organization.name) + '/' + Encoder.encode(organization.id), organization.name, {tiny: true});
                             }
                         }
 
                         if (_.size(parameters.JSONdata.holdsRole) > 0) {
+                            parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.holdsRole + '</h2>'));
                             for (var i in parameters.JSONdata.holdsRole) {
                                 var role = parameters.JSONdata.holdsRole[i];
-                                parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].role[role.name] + ' at </h2>'));
+                                ViewAdapterText.appendButton(parameters.contentEl, '#person-by-role/' + Encoder.encode(role.label) + '/' + Encoder.encode(role.id), role.label, {tiny: true});
                                 if (role.isRoleAt) {
+                                    parameters.contentEl.append($(' at '));
                                     var event = role.isRoleAt;
-                                    ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(event.name) + '/' + Encoder.encode(event["@id"]), event.name, {tiny: true});
+                                    ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(event.name) + '/' + Encoder.encode(event.id), event.name, {tiny: true});
                                 }
                             }
                         }
@@ -647,7 +627,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 var publication = parameters.JSONdata.made[i];
                                 try {
                                     // LM: Should work as soon as organizations are available
-                                    ViewAdapterText.appendButton(parameters.contentEl, '#publication/' + Encoder.encode(publication.name) + '/' + Encoder.encode(publication["@id"]), publication.name, {tiny: false});
+                                    ViewAdapterText.appendButton(parameters.contentEl, '#publication/' + Encoder.encode(publication.name) + '/' + Encoder.encode(publication.id), publication.name, {tiny: false});
                                 } catch (e) {
                                 }
                             }
@@ -673,7 +653,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
+                var JSONToken = {"id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
                     "name": dataJSON.name,
                     "img": dataJSON.depiction ? dataJSON.depiction : null,
                     "homepage": dataJSON.homepage ? dataJSON.homepage : null,
@@ -706,7 +686,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             for (var i = 0; i < parameters.JSONdata.members.length; i++) {
                                 var member = parameters.JSONdata.members[i];
                                 // TODO change appendButton to "appendImage", since the person's photo may be available in member.img
-                                ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(member.name) + '/' + Encoder.encode(member["@id"]), member.name, {tiny: true});
+                                ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(member.name) + '/' + Encoder.encode(member.id), member.name, {tiny: true});
                             }
                         }
                     }
@@ -714,59 +694,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        getPersonsByRole: {
-            getQuery: function (parameters) {
-                return {
-                    command: "getPersonsByRole",
-                    data: {
-                        key: parameters.name,
-                        nestedQueries: null
-                    }
-                }
-            },
-
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var personList = [];
-
-                $.each(dataJSON, function (i) {
-                    var JSONToken = {
-                        "@id": this.id,
-                        "name": this.name,
-                        "img": this.depiction ? this.depiction : null
-                    };
-                    personList.push(JSONToken);
-                });
-                //console.log(personList);
-                return personList;
-            },
-
-            ViewCallBack: function (parameters) {
-                if (parameters.JSONdata != null) {
-                    if (_.size(parameters.JSONdata) > 0) {
-                        ViewAdapterText.appendListImage(
-                            parameters.JSONdata,
-                            {
-                                baseHref: '#person/',
-                                hrefCllbck: function (str) {
-                                    return Encoder.encode(str["name"]) + "/" + Encoder.encode(str["@id"])
-                                }
-                            },
-                            "name",
-                            "img",
-                            parameters.contentEl,
-                            {
-                                type: "Node",
-                                labelCllbck: function (str) {
-                                    return "person : " + str["@id"];
-                                }
-                            }
-                        );
-                    }
-                }
-            }
-        },
-
-        //TODO
         getPublication: {
             getQuery: function (parameters) {
                 return {
@@ -787,7 +714,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
+                var JSONToken = {"id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
                     "title": dataJSON.title,
                     "abstract": dataJSON.abstract,
                     "authors": dataJSON.authors,
@@ -827,7 +754,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.authors + '</h2>'));
                             for (var i = 0; i < parameters.JSONdata.authors.length; i++) {
                                 var author = parameters.JSONdata.authors[i];
-                                ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(author.name) + '/' + Encoder.encode(author["@id"]), author.name, {tiny: true});
+                                ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(author.name) + '/' + Encoder.encode(author.id), author.name, {tiny: true});
                             }
                         }
                         if (_.size(parameters.JSONdata.keywords) > 0) {
@@ -1582,7 +1509,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         },
 
         /**
-         * Nested queries (no view callback)
+         * Nested queries (no model or view callback)
          */
         getPersonLink: {
             getQuery: function (parameters) {
@@ -1592,14 +1519,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         "key": parameters.uri
                     }
                 };
-            },
-
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
-                    "name": dataJSON.name,
-                    "img": dataJSON.depiction ? dataJSON.depiction : null
-                };
-                return JSONToken;
             }
         },
 
@@ -1611,14 +1530,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         "key": parameters.uri
                     }
                 };
-            },
-
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
-                    "name": dataJSON.name,
-                    "img": dataJSON.depiction ? dataJSON.depiction : null
-                };
-                return JSONToken;
             }
         },
 
@@ -1630,14 +1541,17 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         "key": parameters.uri
                     }
                 };
-            },
+            }
+        },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"@id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
-                    "name": dataJSON.title,
-                    "img": dataJSON.thumbnail ? dataJSON.thumbnail : null
+        getRoleLink: {
+            getQuery: function (parameters) {
+                return {
+                    "command": "getRoleLink",
+                    "data": {
+                        "key": parameters.uri
+                    }
                 };
-                return JSONToken;
             }
         }
     };
