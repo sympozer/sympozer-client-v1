@@ -764,6 +764,19 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 ViewAdapterText.appendButton(parameters.contentEl, '#topic/' + Encoder.encode(keyword.keywordLabel.value) + '/' + Encoder.encode(keyword.keywordUri.value), keyword.keywordLabel.value, {tiny: true});
                             }
                         }
+                        
+                        //voting system
+                        var tokens = parameters.JSONdata.id.split('/');
+                        var id = tokens[tokens.length - 1];
+                        var track = tokens[tokens.length - 2];
+                        //if(track == 'demo' || track =='poster'){
+                        if(track == 'research' || track == 'in-use'){
+                        	parameters.contentEl.append($('<br><span><h2 style="display:inline;">Vote for best demo track</h2><img src="img/vote.gif" style="width:30px;height:30px"/></span>'));
+                        	parameters.contentEl.append($('<p>Attention! You can only vote once for one demo/poster! Enter your personal code and press "Vote!" button.</p>'));
+                        	parameters.contentEl.append($('<input id="personalCode" type="text" size="10" value="code"/>'));
+                        	parameters.contentEl.append($('<p id="msg" style="color:red"></p>'));
+                        	parameters.contentEl.append($('<button id="voteButton" data-inline="true" class="button" onclick="vote('+"'"+track+"','"+id+"'"+'); return false;">Vote!</button>'));
+                        }
                     }
                 }
             }
