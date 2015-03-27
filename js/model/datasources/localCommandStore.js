@@ -595,7 +595,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             parameters.contentEl.append($('<p>' + parameters.JSONdata.description + '</p>'));
                         }
                         if (parameters.JSONdata.websites) {
-                            parameters.contentEl.append($('<h2 id="person_homepage">' + labels[parameters.conference.lang].person.websites + '</h2>'));
+                            parameters.contentEl.append($('<h2 id="person_homepage">' + labels[parameters.conference.lang].person.homepage + '</h2>'));
 
                             parameters.contentEl.append($('<a href=' + parameters.JSONdata.websites + '>' + parameters.JSONdata.websites + '</a>'));
                         }
