@@ -50,8 +50,8 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                                 }
                             } else {
                                 nestedQueryParams.currentUri = nestedData;
-                                nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams).then(function (result) {
-                                    nestedQueriesParams.data[nestedQueriesParams.nestedQueries[i].targetProperty] = result.data;
+                                nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams, i).then(function (result) {
+                                    nestedQueriesParams.data[nestedQueriesParams.nestedQueries[result.position1].targetProperty] = result.data;
                                 }));
                             }
                         }

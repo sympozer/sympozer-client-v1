@@ -18,7 +18,7 @@ define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStor
  */
 define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStore','model/datasources/GoogleCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore'],
 	function(DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
-		var AppConfig = {
+		return {
 			"app" : {
 				"liveconLogo" : "livecon.png"
 			},
@@ -81,24 +81,7 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getConferenceEvent"
-						},
-						/*{
-							"datasource" : "eventDatasource",
-							"name" : "getConferenceTalk",
-						},
-						{
-							"datasource" : "eventDatasource",
-							"name" : "getConferenceWorkshop",
-						},
-						{
-							"datasource" : "eventDatasource",
-							"name" : "getSessionEvent",
-						},
-						{
-							"datasource" : "eventDatasource",
-							"name" : "getConferenceSpecialEvent",
-						}*/
-						
+						}
 					]
 				},
 		    	"Schedule" : {
@@ -172,7 +155,7 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"title": "allEvent",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getAllEvents"
 						}
 					]
@@ -184,28 +167,28 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"title": "event",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getEvent"	
 						},
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getEventIcs"
 						}						
 					]
 				},
-				"Event-by-category" : { 
+				"Event-by-category" : {
 					"hash" : "event-by-category/:name/*uri",
 					"view" : "event-by-category",
 					"graphView" : "no",
 					"title": "searchByCategory",
 					"commands" : [
 					    {
-							"datasource" : "eventDatasource",
-							"name" : "getEventByCategory"
+							"datasource" : "localDatasource",
+							"name" : "getCategory"
 						}
 					]
 				},
-				"Publication" : { 
+				"Publication" : {
 					"hash" : "publication/:name/*uri",
 					"view" : "publication",
 					"graphView" : "no",
@@ -329,18 +312,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 						}
 					]
 				},
-				"Countries" : {
-					"hash" : "countries",
-					"view" : "countries",
-					"graphView" : "no",
-					"title": "allCountry",
-					"commands" : [
-						{
-							"datasource" : "eventDatasource",
-							"name" : "getAllCountries"
-						}
-					]
-				},
 				"Topics" : {
 					"hash" : "topics",
 					"view" : "topics",
@@ -350,7 +321,7 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getAllTopics"
-						},
+						}
 					]
 				},
 				"Topic" : {
@@ -362,7 +333,7 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getTopic"
-						},
+						}
 					]
 				},
 				"Categories" : {
@@ -372,21 +343,22 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"title": "allCategory",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getAllCategories"
 						}
 					]
 				},
+                //This one seems useless...
 				"Category" : {
-					"hash" : "category/:name",
+					"hash" : "category/:name/*uri",
 					"view" : "category",
 					"graphView" : "no",
 					"title": "category",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
-							"name" : "getEventbyCategory"
-						},
+							"datasource" : "localDatasource",
+							"name" : "getCategory"
+						}
 					]
 				},
 				"Authors" : {
@@ -447,5 +419,5 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				}
 			}
 		};
-		return AppConfig;
-})
+    }
+);

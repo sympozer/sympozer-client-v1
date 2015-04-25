@@ -65,6 +65,7 @@ define([],function() {
                 'startAtLe' : 'Starts at',
                 'endAt' : 'Ends at',
                 'endAtLe' : 'Ends at',
+                'parentEvent' : 'Parent event',
                 'subEvent' : 'Sub events',
                 'duration' : 'Duration',
                 'location' : 'Location',
@@ -96,17 +97,21 @@ define([],function() {
             },
 
             'category' : {
-
-                'SessionEvent' : "Session",
-                'ConferenceEvent' : "Conference",
-                'TrackEvent' : "Track",
-                'TalkEvent' : "Talk",
-                'PanelEvent' : "Panel",
-                'MealEvent' : "Meal",
-                'SocialEvent' : "Social event",
-                'WorkshopEvent' : "Workshop",
-                'KeynoteEvent' : "Keynote",
-                'BreakEvent' : "Break"
+                'sessionEvent' : "Session",
+                'conferenceEvent' : "Conference",
+                'trackEvent' : "Track",
+                'talkEvent' : "Talk",
+                'panelEvent' : "Panel",
+                'mealEvent' : "Meal",
+                'socialEvent' : "Social event",
+                'workshopEvent' : "Workshop",
+                'keynoteEvent' : "Keynote",
+                'tutorialEvent' : "Tutorial",
+                'posterEvent' : "Poster session",
+                'phdSymposiumEvent' : "PhD symposium",
+                'challengeEvent' : "Challenge",
+                'presentationEvent' : "Presentation",
+                'breakEvent' : "Break"
             },
 
             'search' : {
@@ -227,7 +232,8 @@ define([],function() {
                 'startAtLe' : 'Débute le',
                 'endAt' : 'Finit à',
                 'endAtLe' : 'Finit le',
-                'subEvent' : 'Sous évènements',
+                'parentEvent' : 'Événement parent',
+                'subEvent' : 'Sous événements',
                 'duration' : 'Durée',
                 'location' : 'Localisation',
                 'description' : 'Description',
@@ -258,16 +264,21 @@ define([],function() {
             },
 
             'category' : {
-                'SessionEvent' : "Session",
-                'ConferenceEvent' : "Conference",
-                'TrackEvent' : "Track",
-                'TalkEvent' : "Talk",
-                'PanelEvent' : "Panel",
-                'MealEvent' : "Meal",
-                'SocialEvent' : "Social event",
-                'WorkshopEvent' : "Workshop",
-                'KeynoteEvent' : "Keynote",
-                'BreakEvent' : "Break"
+                'sessionEvent' : "Session",
+                'conferenceEvent' : "Conference",
+                'trackEvent' : "Track",
+                'talkEvent' : "Talk",
+                'panelEvent' : "Panel",
+                'mealEvent' : "Meal",
+                'socialEvent' : "Social event",
+                'workshopEvent' : "Workshop",
+                'keynoteEvent' : "Keynote",
+                'tutorialEvent' : "Tutorial",
+                'posterEvent' : "Poster session",
+                'phdSymposiumEvent' : "PhD symposium",
+                'challengeEvent' : "Challenge",
+                'presentationEvent' : "Presentation",
+                'breakEvent' : "Break"
             },
 
             'search' : {

@@ -22,6 +22,14 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
     var publicationMap = {};
     var publicationLinkMap = {};
 
+    //Categories
+    var categoryMap = {};
+    var categoryLinkMap = {};
+
+    //Events
+    var eventMap = {};
+    var eventLinkMap = {};
+
     var dao ={
         /**
          * Populating it with information from the dataset
@@ -93,6 +101,41 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
                 }
             }
 
+            //Categories
+            //Must be initialized before events
+            var categoryData = localData.categories;
+            console.log("Retrieving all categories in DAO...");
+            for(var m in categoryData) {
+                var tempCategory = categoryData[m];
+                categoryMap[tempCategory.id] = tempCategory;
+                categoryMap[tempCategory.id].events = [];
+                categoryLinkMap[tempCategory.id] = {
+                    id: tempCategory.id,
+                    name: tempCategory.name,
+                    //Yet, no property named "thumbnail" exists, but why not...
+                    thumbnail: tempCategory.thumbnail ? tempCategory.thumbnail : null
+                }
+            }
+
+            //Events
+            var eventData = localData.events;
+            console.log("Retrieving all events in DAO...");
+            for(var l in eventData) {
+                var tempEvent = eventData[l];
+                eventMap[tempEvent.id] = tempEvent;
+                eventLinkMap[tempEvent.id] = {
+                    id: tempEvent.id,
+                    name: tempEvent.name,
+                    //Yet, no property named "thumbnail" exists, but why not...
+                    thumbnail: tempEvent.thumbnail ? tempEvent.thumbnail : null
+                }
+                //Add the event to the categories it refers to.
+                for(var n in tempEvent.categories) {
+                    var tempCategory = categoryMap[tempEvent.categories[n]];
+                    tempCategory.events.push(tempEvent.id);
+                }
+            }
+
             //TODO: remove this.
             //Test if the previous functions is called once or each time...
             console.log("DAO INITIALIZATION FINISHED");
@@ -132,6 +175,20 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
                     return publicationLinkMap[query.key];
                 case "getAllPublications":
                     return publicationLinkMap;
+                case "getEvent":
+                    return eventMap[query.key];
+                case "getEventIcs":
+                    return eventMap[query.key];
+                case "getEventLink":
+                    return eventLinkMap[query.key];
+                case "getAllEvents":
+                    return eventLinkMap;
+                case "getCategory":
+                    return categoryMap[query.key];
+                case "getCategoryLink":
+                    return categoryLinkMap[query.key];
+                case "getAllCategories":
+                    return categoryLinkMap;
             }
         }
     }

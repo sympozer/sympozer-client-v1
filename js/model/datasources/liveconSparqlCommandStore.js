@@ -800,10 +800,6 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
             }
         },
 
-
-
-
-
         getPublication : {
             dataType : "JSONP",
             method : "GET",
@@ -907,8 +903,6 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
                 }
             }
         },
-
-
 
         getEventByCategory : {
             dataType : "JSONP",
@@ -1219,7 +1213,6 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
                             parameters.contentEl.append($('<a href="'+eventInfo.eventHomepage+'">'+eventInfo.eventHomepage+'</p>'));
                         }
 
-
                         if(parameters.JSONdata.hasRoles) {
 
                             for(var roleName in parameters.JSONdata.hasRoles){
@@ -1263,11 +1256,6 @@ define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterT
                 }
             }
         },
-
-
-
-
-
 
         /** Command used Schedule of the conf **/
         getConferenceSchedule : {
