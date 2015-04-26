@@ -11,11 +11,6 @@
 				   
 *   Tags:  JSON, ENDPOINT, SPARQL
 **/
-
-/*
-define(['model/datasources/SWDFCommandStore', 'model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStore','model/datasources/GoogleCommandStore','model/datasources/swcEventCommandStore', 'model/datasources/DPCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore'],
- function(SWDFCommandStore, DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, swcEventCommandStore, DPCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
- */
 define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStore','model/datasources/GoogleCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore'],
 	function(DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
 		return {
@@ -24,13 +19,13 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 			},
 			//Defnition of the conference
 			"conference" : {
-				"id": "1",
-				"eventId": "1",
-				"name": "11th ESWC2015",
+//				"id": "http://data.semanticweb.org/conference/eswc/2015",
+//				"eventId": "http://data.semanticweb.org/conference/eswc/2015",
+				"name": "12th ESWC2015",
 				"acronym": "ESWC2015",
-				"logoUri": "img/logo.png",
+				"logoUri": "data/images/miniLogo_eswc15_red_0.png",
 				"website": "http://2015.eswc-conferences.org/",
-				"baseUri": "http://sparql.sympozer.com/resource/conference/38/3811th-eswc-2014",
+				"baseUri": "http://data.semanticweb.org/conference/eswc/2015",
 				"lang" : "EN",
 				"storage": "on"
 			},
@@ -76,10 +71,9 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 		    "Home" : {
 					"hash" : "",
 					"view" : "home",
-					"graphView" : "no",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getConferenceEvent"
 						}
 					]
@@ -87,7 +81,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 		    	"Schedule" : {
 					"hash" : "schedule/*locationLabel",
 					"view" : "schedule",
-					"graphView" : "no",
 					"title": "schedule",
 					"commands" : [
 						{
@@ -103,7 +96,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"WhatsNext" : {
 					"hash" : "whatsnext/",
 					"view" : "whatsnext",
-					"graphView" : "no",
 					"title": "whatsnext",
 					"commands" : [
 						{
@@ -115,7 +107,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"person-by-role" : { 
 					"hash" : "person-by-role/:name/*uri",
 					"view" : "person-by-role",
-					"graphView" : "no",
 					"title": "allRole",
 					"commands" : [
 					    {
@@ -127,7 +118,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 			    "Proceedings-search-by-theme" : { 
 					"hash" : "search/by-theme/*uri",
 					"view" : "",
-					"graphView" : "no",
 					"title": "allTopic",
 					"commands" : [
 					    {
@@ -139,7 +129,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 			    "Proceedings-search-by-category" : { 
 					"hash" : "search/by-category/*uri",
 					"view" : "",
-					"graphView" : "no",
 					"title": "allCategory",
 					"commands" : [
 					    {
@@ -151,7 +140,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Events" : {
 					"hash" : "events",
 					"view" : "events",
-					"graphView" : "no",
 					"title": "allEvent",
 					"commands" : [
 						{
@@ -163,7 +151,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Event" : { 
 					"hash" : "event/:name/*uri",
 					"view" : "event",
-					"graphView" : "no",
 					"title": "event",
 					"commands" : [
 						{
@@ -179,7 +166,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Event-by-category" : {
 					"hash" : "event-by-category/:name/*uri",
 					"view" : "event-by-category",
-					"graphView" : "no",
 					"title": "searchByCategory",
 					"commands" : [
 					    {
@@ -191,7 +177,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Publication" : {
 					"hash" : "publication/:name/*uri",
 					"view" : "publication",
-					"graphView" : "no",
 					"title": "publication",
 					"commands" : [
 						{
@@ -203,7 +188,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"EventSearch" : {
 					"hash" : "search/event",
 					"view" : "eventSearch",
-					"graphView" : "no",
 					"title": "searchEvent",
 					"commands" : [
 					]
@@ -211,7 +195,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"PersonSearch" : {
 					"hash" : "search/person",
 					"view" : "personSearch",
-					"graphView" : "no",
 					"title": "Search person",
 					"commands" : [
 					]
@@ -219,7 +202,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"PublicationSearch" : {
 					"hash" : "search/publication",
 					"view" : "publicationSearch",
-					"graphView" : "no",
 					"title": "searchPublication",
 					"commands" : [
 					]
@@ -227,7 +209,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Publications" : { 
 					"hash" : "publications",
 					"view" : "publications",
-					"graphView" : "no",
 					"title": "allPublication",
 					"commands" : [
 						{
@@ -239,7 +220,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Locations" : { 
 					"hash" : "locations",
 					"view" : "locations",
-					"graphView" : "no",
 					"title": "allLocation",
 					"commands" : [
 						{
@@ -251,7 +231,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"OrganizationSearch" : {
 					"hash" : "search/organization",
 					"view" : "organizationSearch",
-					"graphView" : "no",
 					"title": "searchOrganization",
 					"commands" : [
 					]
@@ -259,7 +238,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Persons" : {
 					"hash" : "persons",
 					"view" : "persons",
-					"graphView" : "no",
 					"title": "allPerson",
 					"commands" : [
 						{
@@ -271,7 +249,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Person" : {
 					"hash" : "person/:name/*uri",
 					"view" : "person",
-					"graphView" : "no",
 					"title": "person",
 					"commands" : [
 						{
@@ -291,7 +268,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Organizations" : {
 					"hash" : "organizations",
 					"view" : "organizations",
-					"graphView" : "no",
 					"title": "allOrganization",
 					"commands" : [
 						{
@@ -303,7 +279,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Roles" : {
 					"hash" : "roles",
 					"view" : "roles",
-					"graphView" : "no",
 					"title": "allRole",
 					"commands" : [
 						{
@@ -315,7 +290,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Topics" : {
 					"hash" : "topics",
 					"view" : "topics",
-					"graphView" : "no",
 					"title": "allTopic",
 					"commands" : [
 						{
@@ -327,7 +301,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Topic" : {
 					"hash" : "topic/:name/*uri",
 					"view" : "topic",
-					"graphView" : "no",
 					"title": "topic",
 					"commands" : [
 						{
@@ -339,7 +312,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Categories" : {
 					"hash" : "categories",
 					"view" : "categories",
-					"graphView" : "no",
 					"title": "allCategory",
 					"commands" : [
 						{
@@ -352,7 +324,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Category" : {
 					"hash" : "category/:name/*uri",
 					"view" : "category",
-					"graphView" : "no",
 					"title": "category",
 					"commands" : [
 						{
@@ -364,7 +335,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Authors" : {
 					"hash" : "authors",
 					"view" : "authors",
-					"graphView" : "no",
 					"title": "allAuthor",
 					"commands" : [
 						{
@@ -376,7 +346,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"ExternPublication" : {
 					"hash" : "externPublication/*uri",
 					"view" : "externPublication",
-					"graphView" : "no",
 					"title": "externalPublication",
 					"commands" : [
 					    {
@@ -392,7 +361,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Organization" : {
 					"hash" : "organization/:name/*uri",
 					"view" : "organization",
-					"graphView" : "no",
 					"title": "organization",
 					"commands" : [
 						{
@@ -408,7 +376,6 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 				"Recommendation" : {
 					"hash" : "recommendation",
 					"view" : "recommendation",
-					"graphView" : "no",
 					"title": "recommendation",
 					"commands" : [
 						{

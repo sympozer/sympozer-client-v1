@@ -92,6 +92,9 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
             console.log("Retrieving all publications in DAO...");
             for(var k in publicationData) {
                 var tempPubli = publicationData[k];
+                //THIS IS A HACK!
+                //Assume the image, if present is stored in the www/data/images folder
+                tempPubli.thumbnail = tempPubli.thumbnail ? "data/images/" + tempPubli.thumbnail : null;
                 publicationMap[tempPubli.id] = tempPubli;
                 publicationLinkMap[tempPubli.id] = {
                     id: tempPubli.id,
@@ -177,6 +180,8 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
                     return publicationLinkMap;
                 case "getEvent":
                     return eventMap[query.key];
+                case "getConferenceEvent":
+                    return eventMap[query.key];
                 case "getEventIcs":
                     return eventMap[query.key];
                 case "getEventLink":
@@ -189,6 +194,8 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
                     return categoryLinkMap[query.key];
                 case "getAllCategories":
                     return categoryLinkMap;
+                default:
+                    return null;
             }
         }
     }

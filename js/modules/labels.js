@@ -1,8 +1,7 @@
 define([],function() {
-
-    var labels = {
+    return {
         'EN' : {
-            'noResults' : 'No results found',
+            'noResults' : 'No result found',
             'navBar' : {
                 'schedule' : 'Schedule',
                 'persons' : 'Persons',
@@ -10,7 +9,6 @@ define([],function() {
                 "publications" : 'Publications',
                 "affiliations" : 'Organizations',
                 "made" : 'Publications'
-
             },
             'publication' : {
                 'allPublication' : 'Publications',
@@ -20,7 +18,6 @@ define([],function() {
                 'url' : 'Url',
                 'topics' : 'Topics',
                 'publishBy' : 'Published by'
-
             },
             'otherPublication' : {
                 'year' : 'Year',
@@ -29,7 +26,6 @@ define([],function() {
                 'reference' : 'Reference',
                 'publisher' : 'Publisher',
                 'link' : 'Link'
-
             },
             'person' : {
                 'contact' : 'Contact',
@@ -41,26 +37,19 @@ define([],function() {
                 'otherPublications' :'Other publication(s)',
                 'holdsRole': 'Role(s)'
             },
-
             'organization' : {
-
                 'abstract' : 'Abstract',
                 'homepage' : 'Homepage',
                 'country' : 'Country',
                 'members' : 'Members'
-
             },
-
             'conference' : {
                 'description' : 'Description',
                 'homepage' : 'Homepage',
                 'comment' : 'Comment',
                 'location' : 'Location'
-
-
             },
             'event' : {
-
                 'startAt' : 'Starts at',
                 'startAtLe' : 'Starts at',
                 'endAt' : 'Ends at',
@@ -70,7 +59,7 @@ define([],function() {
                 'duration' : 'Duration',
                 'location' : 'Location',
                 'description' : 'Description',
-                'relatedDocument' : 'Related document(s)',
+                'relatedDocument' : 'Related documents',
                 'comment' : 'Comment',
                 'homepage': 'Homepage',
                 'contact': 'Contact',
@@ -78,24 +67,17 @@ define([],function() {
                 'from' : 'from',
                 'to' : 'to',
                 'last' : 'Last'
-
             },
-
             'topic' : {
-
                 'relatedPublications' : 'Related publications',
                 'relatedEvents' : 'Related events'
-
             },
-
             'role' : {
-
                 'ProgrammCommiteeMember': 'Programm Commitee Member',
                 'Presenter': 'Presenter',
                 'Chair': 'Chair',
                 'Delegate': 'Delegate'
             },
-
             'category' : {
                 'sessionEvent' : "Session",
                 'conferenceEvent' : "Conference",
@@ -113,9 +95,7 @@ define([],function() {
                 'presentationEvent' : "Presentation",
                 'breakEvent' : "Break"
             },
-
             'search' : {
-
                 'searchByName' :'by name',
                 'searchByRole' :'by role',
                 'searchByOrganization' :'by organization',
@@ -125,17 +105,15 @@ define([],function() {
                 'searchByPerson' :'by person',
                 'searchByLocation' :'by location',
                 'searchByCategory' :'by category'
-
             },
-
             'settingsPanel' : {
                 'storage' : 'Storage',
                 'on' : 'On',
                 'off' : 'Off'
             },
-
             'pageTitles' : {
-                'conference' : 'Conference',
+                'welcomeStart' : 'Welcome to the',
+                'welcomeEnd' : 'app!',
                 'schedule' : 'Schedule',
                 'whatsnext' : 'What\'s next ?',
                 'event' : 'Event',
@@ -162,25 +140,19 @@ define([],function() {
                 'searchOrganization' : 'Search an organization',
                 'searchPublication' : 'Search a publication',
                 'searchEvent' :'Search an event'
-
             },
-
             'specialButtons' : {
                 'addToCal' : 'Add to my cal'
             }
-
-
         },
 
         'FR' : {
-
             'noResults' : 'Aucun résultat trouvé',
             'navBar' : {
                 'schedule' : 'Planning',
                 'persons' : 'Participants',
                 "affiliations" : 'Organisations',
                 "made" : 'Publications'
-
             },
             'publication' : {
                 'abstract' : 'Résumé',
@@ -197,7 +169,6 @@ define([],function() {
                 'reference' : 'Reference',
                 'publisher' : 'Editeur',
                 'link' : 'Lien'
-
             },
             'person' : {
                 'contact' : 'Contact',
@@ -209,23 +180,17 @@ define([],function() {
                 'otherPublications' :'Autre(s) publication(s)',
                 'holdsRole': 'Rôle(s)'
             },
-
             'organization' : {
-
                 'abstract' : 'Résumé',
                 'homepage' : 'Site web',
                 'country' : 'Pays',
                 'members' : 'Membres'
-
             },
-
             'conference' : {
                 'description' : 'Description',
                 'homepage' : 'Site web',
                 'comment' : 'Commentaire',
                 'location' : 'Localisation'
-
-
             },
             'event' : {
                 'startAt' : 'Débute à',
@@ -245,24 +210,18 @@ define([],function() {
                 'from' : 'du',
                 'to' : 'au',
                 'last' : 'Durée'
-
             },
-
             'topic' : {
                 'allTopic' : 'Themes',
                 'relatedPublications' : 'Publications',
                 'relatedEvents' : 'Evènements'
-
             },
-
             'role' : {
-
-                'ProgrammCommiteeMember': 'Membre du commité d\'organisation',
-                'Presenter': 'Presenter',
+                'ProgrammCommiteeMember': 'Membre du comité d\'organisation',
+                'Presenter': 'Présentateurr',
                 'Chair': 'Chair',
                 'Delegate': 'Delegate'
             },
-
             'category' : {
                 'sessionEvent' : "Session",
                 'conferenceEvent' : "Conference",
@@ -280,9 +239,7 @@ define([],function() {
                 'presentationEvent' : "Presentation",
                 'breakEvent' : "Break"
             },
-
             'search' : {
-
                 'searchByName' :'par nom',
                 'searchByRole' :'par rôle',
                 'searchByOrganization' :'par organisation',
@@ -292,53 +249,45 @@ define([],function() {
                 'searchByPerson' :'par participant',
                 'searchByLocation' :'par salle',
                 'searchByCategory' :'par catégorie'
-
             },
-
             'settingsPanel' : {
                 'storage' : 'Storage',
                 'on' : 'Activer',
                 'off' : 'Désactiver'
             },
-
             'pageTitles' : {
-                'conference' : 'Conference',
+                'welcomeStart' : 'Bienvenue sur l\'appli',
+                'welcomeEnd' : ' !',
                 'schedule' : 'Planning',
-                'whatsnext' : 'What\'s next ?',
-                'event' : 'Event',
+                'whatsnext' : 'Tout de suite...',
+                'event' : 'Événement',
                 'publication' : 'Publication',
-                'organization' : 'Organization',
-                'recommendation' : 'Recommendation',
-                'category' : 'Category',
-                'person' : 'Person',
+                'organization' : 'Organisation',
+                'recommendation' : 'Recommandation',
+                'category' : 'Catégorie',
+                'person' : 'Personne',
                 'topic' : 'Thème',
-                'allRole' : 'Roles',
+                'allRole' : 'Rôles',
                 'allTopic' : 'Thèmes',
                 'allCategory' : 'Categories',
-                'allEvent' : 'Evènements',
+                'allEvent' : 'Événements',
                 'allOrganization' : 'Organisations',
                 'allCountry' : 'Pays',
                 'allPerson' : 'Participants',
                 'allAuthor' : 'Auteurs',
-                'allLocation' : 'Locations',
+                'allLocation' : 'Localisations',
                 'allPublication' : 'Publications',
-                'searchByCategory' : 'Search by category',
-                'externalPublication' : 'External publication',
+                'searchByCategory' : 'Recherche par catégorie',
+                'externalPublication' : 'Autre publication',
                 'searchPerson' : 'Rechercher un participant',
                 'searchTopic' : 'Rechercher un thème',
                 'searchOrganization' : 'Rechercher une organisation',
                 'searchPublication' : 'Rechercher une publication',
-                'searchEvent' :'Filtrer les évènements'
+                'searchEvent' :'Filtrer les événements'
             },
-
             'specialButtons' : {
                 'addToCal' : 'Ajouter à mon calendrier'
             }
-
         }
-
-    }
-
-    return labels;
-})
-
+    };
+});

@@ -541,7 +541,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 //Reasoner.getMoreSpecificKeywords();
                 if (parameters.JSONdata != null) {
                     if (_.size(parameters.JSONdata) > 0) {
-                        if (parameters.JSONdata.img) {
+                        if (parameters.JSONdata.depiction) {
                             parameters.contentEl.append($('<div style="min-height:50px; width:20%"><img style="width:100%;height:auto;" src="' + parameters.JSONdata.depiction + '"/></div>'));
                         }
                         if (parameters.JSONdata.name) {
@@ -676,7 +676,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     "abstract": dataJSON.abstract,
                     "authors": dataJSON.authors,
                     "track": dataJSON.track ? dataJSON.track : null,
-                    "img": dataJSON.thumbnail ? dataJSON.thumbnail : null,
+                    "thumbnail": dataJSON.thumbnail ? dataJSON.thumbnail : null,
                     "hashtag": dataJSON.hashtag ? dataJSON.hashtag : null
                 };
                 return JSONToken;
@@ -690,6 +690,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     if (_.size(parameters.JSONdata) > 0) {
                         if (parameters.JSONdata.title) {
                             $("[data-role = page]").find("#header-title").html(parameters.JSONdata.title);
+                        }
+                        if (parameters.JSONdata.thumbnail) {
+                            parameters.contentEl.append($('<div style="min-height:50px; width:20%"><img style="width:100%;height:auto;" src="' + parameters.JSONdata.thumbnail + '"/></div>'));
                         }
                         if (parameters.JSONdata.abstract) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.abstract + '</h2>'));
@@ -770,118 +773,69 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         },
 
         /** Command used to get the panel events of a given conference **/
-        //TODO
         getConferenceEvent: {
-            dataType: "JSONP",
-            method: "GET",
-            serviceUri: "",
             getQuery: function (parameters) {
-                var prefix = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#>         ' +
-                    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>               ' +
-                    'PREFIX dc: <http://purl.org/dc/elements/1.1/>                      ' +
-                    'PREFIX ical: <http://www.w3.org/2002/12/cal/ical#> 				' +
-                    'PREFIX swrc: <http://swrc.ontoware.org/ontology#>                  ' +
-                    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ';
-
-                var query = 'SELECT DISTINCT  ?eventSummary ?eventStart ?eventEnd ?eventDesc ?eventComent ?eventUrl ?eventContact ?locationUri ?locationName ?subEventSummary ?subEventUri ?roleUri ?subEventUri ?personUri ?personName ?eventTwitterWidgetUrl ?eventTwitterWidgetToken WHERE  {  ' +
-                    '{ <' + parameters.uri + '>  ical:dtstart ?eventStart;' +
-                    '	 ical:dtend ?eventEnd;' +
-                    ' OPTIONAL {<' + parameters.uri + '> ical:description ?eventDesc.}' +
-                    '	OPTIONAL {<' + parameters.uri + '>  ical:comment ?eventComent.}' +
-                    '	OPTIONAL {<' + parameters.uri + '>  ical:url ?eventUrl.}' +
-                    '	OPTIONAL {<' + parameters.uri + '>  ical:resources ?eventTwitterWidgetUrl.}' +
-                    '	OPTIONAL {<' + parameters.uri + '>  ical:attach ?eventTwitterWidgetToken.}' +
-                    '	OPTIONAL {<' + parameters.uri + '>  ical:contact ?eventContact.}' +
-                    ' } UNION {	<' + parameters.uri + '>  swc:hasLocation ?locationUri. ' +
-                    '   ?locationUri  rdfs:label ?locationName. ' +
-                    ' }' +
-                    '}';
-                var ajaxData = {query: prefix + query, output: "json"};
-                return ajaxData;
+                return {
+                    "command": "getConferenceEvent",
+                    "data": {
+                        "key": parameters.uri,
+                        "nestedQueries": null /*[
+                        {
+                            datasource: "localDatasource",
+                            command: "getEventLink",
+                            targetProperty: "children"
+                        }]*/
+                    }
+                };
             },
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = {};
-                var results = dataJSON.results.bindings;
-                if (_.size(results) > 0) {
 
-                    var JSONToken = {};
-                    JSONfile.eventLabel = results[0].eventSummary ? results[0].eventSummary.value : null;
-                    JSONfile.eventDescription = results[0].eventDesc ? results[0].eventDesc.value : null;
-                    JSONfile.eventTwitterWidgetUrl = results[0].eventTwitterWidgetUrl ? results[0].eventTwitterWidgetUrl.value : null;
-                    JSONfile.eventTwitterWidgetToken = results[0].eventTwitterWidgetToken ? results[0].eventTwitterWidgetToken.value : null;
-                    JSONfile.eventComment = results[0].eventComent ? results[0].eventComent.value : null;
-                    JSONfile.eventHomepage = results[0].eventUrl ? results[0].eventUrl.value : null;
-                    JSONfile.eventStart = results[0].eventStart ? results[0].eventStart.value : null;
-                    JSONfile.eventEnd = results[0].eventEnd ? results[0].eventEnd.value : null;
-
-                    JSONfile.hasRoles = [];
-                    JSONfile.locations = [];
-                    j = 0;
-                    k = 0;
-
-                    $.each(results, function (i, token) {
-                        if (token.hasOwnProperty("roleUri")) {
-                            JSONfile.hasRoles[j] = token;
-                            j++;
-                        }
-                        if (token.hasOwnProperty("locationUri")) {
-                            JSONfile.locations[k] = token;
-                            k++;
-                        }
-                    });
-                }
-
-                //StorageManager.pushCommandToStorage(currentUri, "getConferenceEvent", JSONfile);
-                return JSONfile;
+            ModelCallBack: function (dataJSON) {
+                return dataJSON?dataJSON:null;
             },
 
             ViewCallBack: function (parameters) {
-                var JSONdata = parameters.JSONdata;
-                var conferenceUri = parameters.conferenceUri;
+                var eventInfo = parameters.JSONdata;
+                if (_.size(eventInfo) > 0) {
+                    if (eventInfo.name) {
+                        $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].pageTitles.welcomeStart + ' ' + eventInfo.name + ' ' + labels[parameters.conference.lang].pageTitles.welcomeEnd);
+//                        $("[data-role = page]").find("#header-title").html(eventInfo.name);
+                    }
 
-                if (parameters.JSONdata != null) {
+                    if (eventInfo.description) {
+                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.description + '</h2>'));
+                        parameters.contentEl.append($('<p>' + eventInfo.description + '</p>'));
+                    }
 
-                    var eventInfo = parameters.JSONdata;
+                    if (eventInfo.homepage) {
+                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.homepage + '</h2>'));
+                        parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.homepage + '</a>'));
+                    }
 
-                    if (_.size(eventInfo) > 0) {
-                        if (eventInfo.eventLabel) {
-                            $("[data-role = page]").find("#header-title").html(eventInfo.eventLabel);
-                        }
+                    if (eventInfo.twitterWidgetToken) {
+                        ViewAdapterText.appendTwitterTimeline(parameters.contentEl, eventInfo.twitterWidgetToken, {});
+                    }
 
-                        if (eventInfo.eventStart && eventInfo.eventEnd) {
-                            parameters.contentEl.append($('<p style="text-align:center">' + labels[parameters.conference.lang].event.from + ' ' + moment(eventInfo.eventStart).format('LLLL') + ' ' + labels[parameters.conference.lang].event.to + ' ' + moment(eventInfo.eventEnd).format('LLLL') + '</p>'));
-                        }
+                    if (eventInfo.startsAt) {
+                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.startAtLe + ' : <span class="inline">' + moment(eventInfo.startsAt).format('LLLL') + '</span></h2>'));
+                    }
 
-                        if (eventInfo.eventDescription) {
-                            parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].conference.description + '</h2>'));
-                            parameters.contentEl.append($('<p>' + eventInfo.eventDescription + '</p>'));
-                        }
-                        if (eventInfo.eventComment) {
-                            parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].conference.comment + '</h2>'));
-                            parameters.contentEl.append($('<p>' + eventInfo.eventComment + '</p>'));
-                        }
-                        if (eventInfo.eventHomepage) {
-                            parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].conference.homepage + '</h2>'));
-                            parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.eventHomepage + '</a>'));
-                        }
+                    if (eventInfo.endsAt) {
+                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.endAt + ' : <span class="inline">' + moment(eventInfo.endsAt).format('LLLL') + '</span></h2>'));
+                    }
 
-                        // if( && eventInfo.eventStart){
-                        // 	parameters.contentEl.append($('<h2>Duration : <span class="inline">'+ moment(eventInfo.eventStart).from(moment(eventInfo.eventEnd),true)+'</span></h2>'));
-                        // }
+//                    TODO: Twitter widget
+//                    parameters.contentEl.append('<div id="block-twitter-block-1" class="block block-twitter-block clearfix"><div class="content"><a href="https://twitter.com/" class="twitter-timeline" data-widget-id="373072714841333760" data-chrome="nofooter" data-aria-polite="polite">Tweets by </a></div></div>');
 
-                        if (_.size(parameters.JSONdata.locations) > 0) {
-                            parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].conference.location + '</h2>'));
-                            for (var i = 0; i < parameters.JSONdata.locations.length; i++) {
-                                var location = parameters.JSONdata.locations[i];
-                                parameters.contentEl.append($('<p>' + location.locationName.value + '</p>'));
-                            }
-                            ;
-                        }
-
-                        if (eventInfo.eventTwitterWidgetToken) {
-                            ViewAdapterText.appendTwitterTimeline(parameters.contentEl, eventInfo.eventTwitterWidgetToken, {});
+                    //TODO: see if we keep this one
+/*
+                    if (_.size(eventInfo.children) > 0) {
+                        parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].event.subEvent + '</h2>');
+                        for (var i = 0; i < eventInfo.children.length; i++) {
+                            var subEvent = eventInfo.children[i];
+                            ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(subEvent.name) + "/" + Encoder.encode(subEvent.id), subEvent.name, {tiny: 'true'});
                         }
                     }
+*/
                 }
             }
         },
@@ -938,9 +892,22 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         $("[data-role = page]").find("#header-title").append(eventInfo.name);
                     }
 
+                    if (eventInfo.description) {
+                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.description + '</h2>'));
+                        parameters.contentEl.append($('<p>' + eventInfo.description + '</p>'));
+                    }
+
+                    if (eventInfo.homepage) {
+                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.homepage + '</h2>'));
+                        parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.homepage + '</a>'));
+                    }
+
+                    if (eventInfo.twitterWidgetToken) {
+                        ViewAdapterText.appendTwitterTimeline(parameters.contentEl, eventInfo.twitterWidgetToken, {});
+                    }
+
                     if (eventInfo.startsAt) {
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.startAtLe + ' : <span class="inline">' + moment(eventInfo.startsAt).format('LLLL') + '</span></h2>'));
-                        isDefined = true;
                     }
                     if (eventInfo.endsAt) {
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.endAt + ' : <span class="inline">' + moment(eventInfo.endsAt).format('LLLL') + '</span></h2>'));
@@ -956,16 +923,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             var location = eventInfo.locations[i];
                             ViewAdapterText.appendButton(parameters.contentEl, '#schedule/' + Encoder.encode(location.name), location.name, {tiny: true});
                         }
-                    }
-
-                    if (eventInfo.description) {
-                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.description + '</h2>'));
-                        parameters.contentEl.append($('<p>' + eventInfo.description + '</p>'));
-                    }
-
-                    if (eventInfo.homepage) {
-                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.homepage + '</h2>'));
-                        parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.homepage + '</a>'));
                     }
 
                     //TODO change that and classify by role names
@@ -1013,10 +970,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         for (var i = 0; i < eventInfo.resources.length; i++) {
                             var resource = eventInfo.resources[i];
                             parameters.contentEl.append($('<a href="' + resource + '">' + resource + '</a>'));                        }
-                    }
-
-                    if (eventInfo.twitterWidgetToken) {
-                        ViewAdapterText.appendTwitterTimeline(parameters.contentEl, eventInfo.twitterWidgetToken, {});
                     }
                 }
             }

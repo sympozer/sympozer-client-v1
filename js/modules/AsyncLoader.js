@@ -10,7 +10,7 @@
 define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageManager'], function($, Promise, config, dao, StorageManager){
     var conference = {};
     var asyncL;
-    var AsyncLoader = {
+    return {
         initialize: function () {
             asyncL = this;
             conference = config.conference;
@@ -39,7 +39,7 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                         };
                         //Before resolving the nested query, nestedData only contains the URI(s) of the element(s) to retrieve
                         var nestedData = nestedQueriesParams.data[nestedQuery.targetProperty];
-                        if(nestedData != null){
+                        if (nestedData != null) {
                             if (Array.isArray(nestedData)) {
                                 for (var j in nestedData) {
                                     nestedQueryParams.currentUri = nestedData[j];
@@ -56,8 +56,8 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                             }
                         }
                     }
-                    if(nestedPromises.length >0) {
-                        Promise.all(nestedPromises).then(function() {
+                    if (nestedPromises.length > 0) {
+                        Promise.all(nestedPromises).then(function () {
                             nestedQueriesParams.data.solved = true;
                             resolve(nestedQueriesParams.data)
                         });
@@ -129,7 +129,15 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                             asyncL.processNestedQueries({
                                 nestedQueries: query.data ? query.data.nestedQueries : null,
                                 data: data
-                            }).then(resolve);
+                            }).then(resolve).catch(function(error) {
+                                reject({
+                                    "message": "Error in nested query: " + error.message,
+                                    "parameters": {
+                                        nestedQueries: query.data ? query.data.nestedQueries : null,
+                                        data: data
+                                    }
+                                });
+                            });
                         } else {
                             reject({
                                 "message": query.data.key+ " not found in " + currentDatasource.uri,
@@ -182,5 +190,4 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
             });
         }
     };
-    return AsyncLoader;
 });
