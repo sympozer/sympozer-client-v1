@@ -90,11 +90,11 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 						{
 						    "datasource" : "localDatasource",
 						    "name" : "getConferenceSchedule"
-						},
+						}/*,
 						{
 							"datasource" : "eventDatasource",
 							"name" : "getConferenceScheduleIcs"
-						}
+						}*/
 					]
 				},
 				"WhatsNext" : {

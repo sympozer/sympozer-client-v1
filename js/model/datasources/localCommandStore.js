@@ -973,10 +973,97 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
             //Here we need to sort the events
             ModelCallBack: function (dataJSON) {
+                /**
+                 * Utility functions to sort the event list
+                 */
+                var eventFunctions = {
+                    /*
+                     * Moment.js utility that indicates how to sort events
+                     */
+                    sortByDateAsc: function (lhs, rhs) {
+                        return lhs > rhs ? 1 : lhs < rhs ? -1 : 0;
+                    },
 
+                    /*
+                     * Constructs a map of (moment-formatted dates; objects) from an array of objects
+                     * parameters: propertyName the name of a property of the objects that represent a date, in a moment.js-understandable format
+                     */
+                    constructMap: function(eventArray, propertyName) {
+                        var eventMap = {};
+                        for(var i in eventArray) {
+                            var event = eventArray[i];
+                            var formattedDate = moment(event[propertyName]).format();
+                            if(!eventMap[formattedDate]) {
+                                eventMap[formattedDate] = [];
+                            }
+                            eventMap[formattedDate].push(event);
+                        }
+                        return eventMap;
+                    },
+
+                    /*
+                     * sorts a map of (moment-formatted dates; objects)
+                     */
+                    sortMap: function(unsortedEventMap) {
+                        //get the unsorted array of formatted dates
+                        var dateKeys = Object.getOwnPropertyNames(unsortedEventMap);
+
+                        //Sort this array
+                        var momentArray = [];
+                        for(var i in dateKeys) {
+                            momentArray.push(moment(dateKeys[i]));
+                        }
+
+                        //Reconstruct the map using the sorted array
+                        var sortedEventMap = {};
+                        momentArray.sort(this.sortByDateAsc);
+                        for (var j in momentArray) {
+                            sortedEventMap[momentArray[j].format()] = unsortedEventMap[momentArray[j].format()];
+                        }
+
+                        return sortedEventMap;
+                    },
+
+                    /*
+                     * Does the full job: sorts a map of (moment-formatted dates; objects), by start and end times
+                     */
+                    doubleSortEventsInMap: function(eventArray) {
+                        var doubleSortedEventMap = this.sortMap(this.constructMap(eventArray, "startsAt"));
+                        for (i in doubleSortedEventMap) {
+                            var internalMap = this.sortMap(this.constructMap(doubleSortedEventMap[i], "endsAt"));
+                            var internalArray = [];
+                            for(var j in internalMap) {
+                                for(var k in internalMap[j]) {
+                                    internalArray.push(internalMap[j][k]);
+                                }
+                            }
+                            doubleSortedEventMap[i]  = internalArray;
+                        }
+                        return doubleSortedEventMap;
+                    },
+
+                    /*
+                     * Does the full job: sorts a map of (moment-formatted dates; objects), by start and end times
+                     */
+                    doubleSortEventsInArray: function(eventArray) {
+                        var doubleSortedEventMap = this.sortMap(this.constructMap(eventArray, "startsAt"));
+                        var internalArray = [];
+                        for (i in doubleSortedEventMap) {
+                            var internalMap = this.sortMap(this.constructMap(doubleSortedEventMap[i], "endsAt"));
+                            for(var j in internalMap) {
+                                for(var k in internalMap[j]) {
+                                    internalArray.push(internalMap[j][k]);
+                                }
+                            }
+                        }
+                        return internalArray;
+                    }
+                };
+
+                var events = eventFunctions.doubleSortEventsInArray(dataJSON);
                 var JSONfile = {};
-                for(var i in dataJSON) {
-                    var event = dataJSON[i];
+                for(var i in events) {
+                    var event = events[i];
                     if(!event.categories || !event.categories[0]) {
                         event.categories = ["none"];
                     }
@@ -1218,13 +1305,14 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             locationText += (i>0)?", ":"" + eventInfo.locations[j].name;
                         }
 
+                        //TODO: put timezone data in the config file.
                         var eventStartICS = moment(eventInfo.startsAt, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDDTHHmmss");
                         var eventEndICS = moment(eventInfo.endsAt, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDDTHHmmss");
                         var icsEvent = "BEGIN:VCALENDAR\n" +
                             "VERSION:2.0\n" +
                             'PRODID: //' + eventInfo.name + '//ES//EN\n' +
                             "BEGIN:VTIMEZONE\n" +
-                            "TZID:Europe/Paris\n" +
+                            "TZID:Europe/Ljubljana\n" +
                             "BEGIN:DAYLIGHT\n" +
                             "TZOFFSETFROM:+0100\n" +
                             "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\n" +
@@ -1242,8 +1330,8 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             "END:VTIMEZONE\n" +
                             "BEGIN:VEVENT\n" +
                             "CATEGORIES:" + categoryText + "\n" +
-                            "DTSTART;TZID=Europe/Paris:" + eventStartICS + "\n" +
-                            "DTEND;TZID=Europe/Paris:" + eventEndICS + "\n" +
+                            "DTSTART;TZID=Europe/Ljubljana:" + eventStartICS + "\n" +
+                            "DTEND;TZID=Europe/Ljubljana:" + eventEndICS + "\n" +
                             "SUMMARY:" + eventInfo.name + "\n" +
                             "DESCRIPTION:" + eventInfo.description + homepageText + "\n" +
                             "LOCATION:" + locationText + "\n" +
