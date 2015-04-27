@@ -227,7 +227,7 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"title": "allLocation",
 					"commands" : [
 						{
-							"datasource" : "eventDatasource",
+							"datasource" : "localDatasource",
 							"name" : "getAllLocations"
 						}
 					]

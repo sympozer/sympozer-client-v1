@@ -33,6 +33,9 @@ define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, enco
     //Conference schedule
     var confScheduleList = [];
 
+    //Locations
+    var locationLinkMap = {};
+
     return {
         /**
          * Populating it with information from the dataset
@@ -145,6 +148,14 @@ define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, enco
                 }
             }
 
+            //Locations
+            var locationData = localData.locations;
+            console.log("Retrieving all locations in DAO...");
+            for(var o in locationData) {
+                var tempLocation = locationData[o];
+                locationLinkMap[tempLocation.id] = tempLocation;
+            }
+
             //TODO: remove this.
             //Test if the previous functions is called once or each time...
             console.log("DAO INITIALIZATION FINISHED");
@@ -202,6 +213,10 @@ define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, enco
                     return categoryLinkMap;
                 case "getConferenceSchedule":
                     return confScheduleList;
+                case "getAllLocations":
+                    return locationLinkMap;
+                case "getLocationLink":
+                    return locationLinkMap[query.key];
                 default:
                     return null;
             }

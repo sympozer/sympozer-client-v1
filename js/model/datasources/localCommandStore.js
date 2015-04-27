@@ -73,36 +73,16 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        //TODO
         getAllLocations: {
-            dataType: "JSONP",
-            method: "GET",
-            serviceUri: "",
             getQuery: function (parameters) {
-                var prefix = 'PREFIX dc: <http://purl.org/dc/elements/1.1/> PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#> PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ';
-
-                var query = 'SELECT DISTINCT ?locationName  ?locationUri WHERE  {\
-							 <' + parameters.uri + '>    swc:isSuperEventOf    ?eventUri.\
-							  	?eventUri swc:hasLocation ?locationUri.\
-							  	?locationUri rdfs:label ?locationName.\
-							 } ORDER BY ASC(?locationName) ';
-
-                var ajaxData = {query: prefix + query, output: "json"};
-
-                return ajaxData;
+                return {
+                    "command": "getAllLocations",
+                    "data": null
+                };
             },
 
             ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = {};
-                $.each(dataJSON.results.bindings, function (i) {
-                    var JSONToken = {};
-                    JSONToken.uri = this.locationUri ? this.locationUri.value : null;
-                    JSONToken.name = this.locationName ? this.locationName.value : null;
-                    JSONfile[i] = JSONToken;
-                });
-                //console.log(JSONfile);
-                //StorageManager.pushCommandToStorage(currentUri, "getAllTopics", JSONfile);
-                return JSONfile;
+                return dataJSON?dataJSON:null;
             },
 
             ViewCallBack: function (parameters) {
@@ -134,7 +114,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 return {
                     "command": "getAllEvents",
                     "data": null
-                }
+                };
             },
 
             ModelCallBack: function (dataJSON) {
@@ -855,7 +835,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         }, {
                             datasource: "localDatasource",
                             command: "getLocationLink",
-                            targetProperty: "location"
+                            targetProperty: "locations"
                         }]
                     }
                 };
@@ -961,7 +941,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         },
 
         /** Command used Schedule of the conf **/
-        //TODO
         getConferenceSchedule: {
             //Retrieves the first level events (direct children of the conference event)
             //TODO see if it is not better to retrieve session events (since they are "sub-track events", scheduled on one particular day od half-day)
@@ -1022,24 +1001,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         }
 
                         return sortedEventMap;
-                    },
-
-                    /*
-                     * Does the full job: sorts a map of (moment-formatted dates; objects), by start and end times
-                     */
-                    doubleSortEventsInMap: function(eventArray) {
-                        var doubleSortedEventMap = this.sortMap(this.constructMap(eventArray, "startsAt"));
-                        for (i in doubleSortedEventMap) {
-                            var internalMap = this.sortMap(this.constructMap(doubleSortedEventMap[i], "endsAt"));
-                            var internalArray = [];
-                            for(var j in internalMap) {
-                                for(var k in internalMap[j]) {
-                                    internalArray.push(internalMap[j][k]);
-                                }
-                            }
-                            doubleSortedEventMap[i]  = internalArray;
-                        }
-                        return doubleSortedEventMap;
                     },
 
                     /*
@@ -1126,9 +1087,24 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                     for (var eventType in bigEvents) {
 
                                         for (var i = 0; i < bigEvents[eventType].length; i++) {
+                                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
+
+                                            var newLabel = $('<h3>' + bigEvents[eventType][i].name + '</h3>');
+                                            newEventlink.append(newLabel);
+
+/*
+                                            TODO: can only be fixed if nested queries can be sent on arrays (yet only map objects), since it requires categories to be expanded
+                                            for(var catIndex in bigEvents[eventType][i].categories) {
+                                                //TODO use category name instead of splitting the URI
+                                                var labelCategory = labels[parameters.conference.lang].category[bigEvents[eventType][i].categories[catIndex].split("#")[1]] || "";
+                                                var newCategory = $('<p>' + labelCategory + '</p>');
+                                                newEventlink.append(newCategory);
+                                            }
+*/
+                                            var newLast = $('<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>');
+                                            newEventlink.append(newLast);
 
                                             var LocationHtml = '';
-
                                             if (parameters.name && parameters.name != "null" && parameters.name != "") {
                                                 LocationHtml = '<p>' + parameters.name + '</p>';
                                             } else {
@@ -1137,21 +1113,10 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                                     LocationHtml += '<p><a href="#schedule/' + Encoder.encode(bigEvents[eventType][i].location) + '" data-role="button" data-icon="search" data-inline="true">' + bigEvents[eventType][i].location + '</a></p>';
                                                 }
                                             }
-
-                                            //TODO use category name instead of splitting the URI
-                                            var labelCategory = labels[parameters.conference.lang].category[bigEvents[eventType][i].categories[0].split("#")[1]] || "";
-                                            var newLi = $('<li data-inset="true" ></li>');
-                                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
-                                            var newLabel = $('<h3>' + bigEvents[eventType][i].name + '</h3>');
-                                            var newCategory = $('<p>' + labelCategory + '</p>');
-                                            var newLast = $('<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>');
-
-                                            newEventlink.append(newLabel);
-                                            newEventlink.append(newCategory);
-                                            newEventlink.append(newLast);
                                             newEventlink.append(LocationHtml);
-                                            newLi.append(newEventlink);
 
+                                            var newLi = $('<li data-inset="true" ></li>');
+                                            newLi.append(newEventlink);
                                             currentUl.append(newLi);
                                         }
                                     }
@@ -1445,10 +1410,14 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        //TODO
         getLocationLink: {
-            getQuery: function () {
-                return null;
+            getQuery: function (parameters) {
+                return {
+                    "command": "getLocationLink",
+                    "data": {
+                        "key": parameters.uri
+                    }
+                };
             }
         }
     };
