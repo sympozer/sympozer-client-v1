@@ -72,10 +72,14 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"hash" : "",
 					"view" : "home",
 					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getConferenceEvent"
-						}
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getConferenceEvent"
+                        },
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getEventIcs"
+                        }
 					]
 				},
 		    	"Schedule" : {
@@ -84,7 +88,7 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"title": "schedule",
 					"commands" : [
 						{
-						    "datasource" : "eventDatasource",
+						    "datasource" : "localDatasource",
 						    "name" : "getConferenceSchedule"
 						},
 						{

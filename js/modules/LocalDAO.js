@@ -1,7 +1,7 @@
 /**
  * Created by Lionel on 29/01/2015.
  */
-define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
+define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, encoder, config) {
     /**
      * Creating internal DAO objects
      */
@@ -30,7 +30,10 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
     var eventMap = {};
     var eventLinkMap = {};
 
-    var dao ={
+    //Conference schedule
+    var confScheduleList = [];
+
+    return {
         /**
          * Populating it with information from the dataset
          **/
@@ -131,11 +134,14 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
                     name: tempEvent.name,
                     //Yet, no property named "thumbnail" exists, but why not...
                     thumbnail: tempEvent.thumbnail ? tempEvent.thumbnail : null
-                }
+                };
                 //Add the event to the categories it refers to.
                 for(var n in tempEvent.categories) {
-                    var tempCategory = categoryMap[tempEvent.categories[n]];
-                    tempCategory.events.push(tempEvent.id);
+                    var tempEventCategory = categoryMap[tempEvent.categories[n]];
+                    tempEventCategory.events.push(tempEvent.id);
+                }
+                if(tempEvent.parent === config.conference.baseUri) {
+                    confScheduleList.push(tempEvent);
                 }
             }
 
@@ -194,10 +200,11 @@ define(['localData', 'jquery', 'encoder'], function(localData, $, encoder) {
                     return categoryLinkMap[query.key];
                 case "getAllCategories":
                     return categoryLinkMap;
+                case "getConferenceSchedule":
+                    return confScheduleList;
                 default:
                     return null;
             }
         }
-    }
-    return dao;
+    };
 });

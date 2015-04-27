@@ -87,9 +87,11 @@ define(['backbone', 'jquery', 'jqueryMobile', 'config', 'encoder', 'view/ViewAda
                                 conference : config.conference
                             });
                             ViewAdapter.generateJQMobileElement();
+/*
                         }).catch(function(ex) {
                             console.log(ex);
                             jqueryMobile.loading('hide');
+*/
                         });
                     });
 

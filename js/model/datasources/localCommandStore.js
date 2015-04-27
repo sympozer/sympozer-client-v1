@@ -137,7 +137,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON ? dataJSON : null;
             },
 
@@ -173,7 +173,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON ? dataJSON : null;
             },
 
@@ -211,7 +211,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON ? dataJSON : null;
             },
 
@@ -249,7 +249,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON ? dataJSON : null;
             },
 
@@ -286,7 +286,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON ? dataJSON : null;
             },
 
@@ -323,7 +323,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 };
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON ? dataJSON : null;
             },
 
@@ -362,7 +362,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON ? dataJSON : null;
             },
 
@@ -400,7 +400,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 };
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON ? dataJSON : null;
             },
 
@@ -443,7 +443,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 return ajaxData;
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 var JSONToken = {};
                 var results = dataJSON.results.bindings;
                 if (_.size(results) > 0) {
@@ -521,7 +521,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 };
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 if (_.size(dataJSON.holdsRole) >0) {
                     for(var i in dataJSON.holdsRole) {
                         var role = dataJSON.holdsRole[i];
@@ -609,23 +609,16 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
-                    "name": dataJSON.name,
-                    "img": dataJSON.depiction ? dataJSON.depiction : null,
-                    "homepage": dataJSON.homepage ? dataJSON.homepage : null,
-                    "based_near" : dataJSON.based_near ? dataJSON.based_near : null,
-                    "members": dataJSON.members ? dataJSON.members : []
-                };
-                return JSONToken;
+            ModelCallBack: function (dataJSON) {
+                return dataJSON?dataJSON:null;
             },
 
             ViewCallBack: function (parameters) {
                 //Reasoner.getMoreSpecificKeywords();
                 if (parameters.JSONdata != null) {
                     if (_.size(parameters.JSONdata) > 0) {
-                        if (parameters.JSONdata.orgaName) {
-                            $("[data-role = page]").find("#header-title").html(parameters.JSONdata.orgaName);
+                        if (parameters.JSONdata.name) {
+                            $("[data-role = page]").find("#header-title").html(parameters.JSONdata.name);
                         }
 
                         if (parameters.JSONdata.homepage) {
@@ -670,16 +663,8 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 };
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
-                var JSONToken = {"id": currentUri, // "@context": "http://json-ld.org/contexts/person.jsonld"
-                    "title": dataJSON.title,
-                    "abstract": dataJSON.abstract,
-                    "authors": dataJSON.authors,
-                    "track": dataJSON.track ? dataJSON.track : null,
-                    "thumbnail": dataJSON.thumbnail ? dataJSON.thumbnail : null,
-                    "hashtag": dataJSON.hashtag ? dataJSON.hashtag : null
-                };
-                return JSONToken;
+            ModelCallBack: function (dataJSON) {
+                return dataJSON?dataJSON:null;
             },
 
             //In previous versions, it was possible to retrieve the publisher, publication date, as well as the location of the paper PDF.
@@ -757,7 +742,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 };
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON?dataJSON:null;
             },
 
@@ -876,7 +861,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 };
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 dataJSON.locations = dataJSON.locations?dataJSON.locations:null;
                 return dataJSON;
             },
@@ -945,7 +930,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     }
 
                     if (_.size(eventInfo.papers) > 0) {
-                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication + '</h2>'));
+                        parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.allPublication + '</h2>'));
                         for (var i = 0; i < eventInfo.papers.length; i++) {
                             var publication = eventInfo.papers[i];
                             ViewAdapterText.appendButton(parameters.contentEl, '#publication/' + Encoder.encode(publication.title) + '/' + Encoder.encode(publication.id), publication.title, {tiny: true});
@@ -978,75 +963,47 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         /** Command used Schedule of the conf **/
         //TODO
         getConferenceSchedule: {
-
-            dataType: "JSONP",
-            method: "GET",
-            serviceUri: "",
+            //Retrieves the first level events (direct children of the conference event)
+            //TODO see if it is not better to retrieve session events (since they are "sub-track events", scheduled on one particular day od half-day)
             getQuery: function (parameters) {
-                var prefix = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#>         ' +
-                    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>               ' +
-                    'PREFIX dc: <http://purl.org/dc/elements/1.1/>                      ' +
-                    'PREFIX ical: <http://www.w3.org/2002/12/cal/ical#> 				' +
-                    'PREFIX swrc: <http://swrc.ontoware.org/ontology#>                  ' +
-                    'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>			' +
-                    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ';
-
-                var query = 'SELECT DISTINCT  ?eventUri ?eventSummary ?eventStart ?eventEnd ?eventType ?locationUri ?locationName WHERE  {  ' +
-                    '  <' + parameters.conference.baseUri + '>  swc:isSuperEventOf ?eventUri. ' +
-                    '	  ?eventUri ical:summary ?eventSummary;' +
-                    '   ical:dtstart ?eventStart;' +
-                    '   ical:dtend ?eventEnd;' +
-                    '   rdf:type ?eventType.' +
-                    '   OPTIONAL {?eventUri  swc:hasLocation ?locationUri. ' +
-                    '   ?locationUri  rdfs:label ?locationName. }' +
-                    '}ORDER BY ASC(?eventStart)';
-
-                var ajaxData = {query: prefix + query, output: "json"};
-                return ajaxData;
+                return {
+                    "command": "getConferenceSchedule",
+                    "data": null
+                }
             },
-            //Declaring the callback function to use when sending the command
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            //Here we need to sort the events
+            ModelCallBack: function (dataJSON) {
 
                 var JSONfile = {};
-                $(dataJSON.results.bindings).each(function (i, event) {
-                    //console.log(event);
+                for(var i in dataJSON) {
+                    var event = dataJSON[i];
+                    if(!event.categories || !event.categories[0]) {
+                        event.categories = ["none"];
+                    }
 
-                    //////////////////////////////
-                    /// look for special event ///
-                    //////////////////////////////
-                    var currentEvent = {};
-                    currentEvent.eventType = event.eventType ? event.eventType.value : "";
+                    //retrieve current Start Slot
+                    if (!JSONfile[event.startsAt]) {
+                        JSONfile[event.startsAt] = {};
+                    }
+                    var currentStartSlot = JSONfile[event.startsAt];
 
-                    if (currentEvent.eventType != "Event" && currentEvent.eventType != "http://data.semanticweb.org/ns/swc/ontology#ConferenceEvent") {
-
-                        //retrieve current Start Slot
-                        var currentStartSlot = event.eventStart.value;
-                        if (!JSONfile[currentStartSlot]) JSONfile[currentStartSlot] = {};
-                        currentStartSlot = JSONfile[currentStartSlot];
-
-                        //retrieve current End Slot
-                        var currentEndSlot = event.eventEnd.value;
-                        if (!currentStartSlot[currentEndSlot]) currentStartSlot[currentEndSlot] = {
+                    //retrieve current End Slot
+                    if (!currentStartSlot[event.endsAt]) {
+                        currentStartSlot[event.endsAt] = {
                             bigEvents: {},
                             events: []
                         };
-                        currentEndSlot = currentStartSlot[currentEndSlot];
-
-                        //retrieve current eventType slot
-                        if (!currentEndSlot.bigEvents[currentEvent.eventType]) currentEndSlot.bigEvents[currentEvent.eventType] = [];
-
-                        //then push to the correct start/end slot
-                        if (event.eventStart.value)
-                            currentEvent.eventUri = event.eventUri ? event.eventUri.value : null;
-                        currentEvent.eventLabel = event.eventSummary ? event.eventSummary.value : null;
-                        //  currentEvent.eventDesc =  $(this).find("[name = eventDesc]").text();
-                        currentEvent.locationLabel = event.locationName ? event.locationName.value : null;
-                        currentEndSlot.bigEvents[currentEvent.eventType].push(currentEvent);
-                    } else {
-                        //currentEndSlot.events.push(currentEvent);
                     }
-                });
-                //StorageManager.pushCommandToStorage(currentUri, "getConferenceSchedule", JSONfile);
+                    var currentEndSlot = currentStartSlot[event.endsAt];
+
+                    //retrieve current eventType slot
+                    if (!currentEndSlot.bigEvents[event.categories[0]]) {
+                        currentEndSlot.bigEvents[event.categories[0]] = [];
+                    }
+
+                    //then push to the correct start/end slot
+                    currentEndSlot.bigEvents[event.categories[0]].push(event);
+                }
                 return JSONfile;
             },
 
@@ -1061,7 +1018,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
                             //if the day has changed
                             if (currentDay != moment(startAt).format('MMMM Do YYYY')) {
-                                currentCollabsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + moment(startAt).format('LL') + '</h2></div>');
+                                var currentCollabsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + moment(startAt).format('LL') + '</h2></div>');
                                 currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
                                 //content.append(currentUl);
                                 content.append(currentCollabsible);
@@ -1088,16 +1045,17 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                             if (parameters.name && parameters.name != "null" && parameters.name != "") {
                                                 LocationHtml = '<p>' + parameters.name + '</p>';
                                             } else {
-                                                if (bigEvents[eventType][i].locationLabel) {
+                                                if (bigEvents[eventType][i].location) {
 
-                                                    LocationHtml += '<p><a href="#schedule/' + Encoder.encode(bigEvents[eventType][i].locationLabel) + '" data-role="button" data-icon="search" data-inline="true">' + bigEvents[eventType][i].locationLabel + '</a></p>';
+                                                    LocationHtml += '<p><a href="#schedule/' + Encoder.encode(bigEvents[eventType][i].location) + '" data-role="button" data-icon="search" data-inline="true">' + bigEvents[eventType][i].location + '</a></p>';
                                                 }
                                             }
 
-                                            var labelCategory = labels[parameters.conference.lang].category[bigEvents[eventType][i].eventType.split("#")[1]] || "";
+                                            //TODO use category name instead of splitting the URI
+                                            var labelCategory = labels[parameters.conference.lang].category[bigEvents[eventType][i].categories[0].split("#")[1]] || "";
                                             var newLi = $('<li data-inset="true" ></li>');
-                                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].eventLabel) + '/' + Encoder.encode(bigEvents[eventType][i].eventUri) + '">');
-                                            var newLabel = $('<h3>' + bigEvents[eventType][i].eventLabel + '</h3>');
+                                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
+                                            var newLabel = $('<h3>' + bigEvents[eventType][i].name + '</h3>');
                                             var newCategory = $('<p>' + labelCategory + '</p>');
                                             var newLast = $('<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>');
 
@@ -1221,8 +1179,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         },
 
         /************************** ICS   ********************************/
-
-        /** Command used to get and display the name, the start and end time and location of a given event  **/
         getEventIcs: {
             getQuery: function (parameters) {
                 return {
@@ -1242,7 +1198,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 };
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON?dataJSON:null;
             },
 
@@ -1258,8 +1214,8 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         var homepageText = eventInfo.homepage?(" - More info at: " + eventInfo.homepage):"";
 
                         var locationText = "";
-                        for(var i in eventInfo.locations) {
-                            locationText += (i>0)?", ":"" + eventInfo.locations[i].name;
+                        for(var j in eventInfo.locations) {
+                            locationText += (i>0)?", ":"" + eventInfo.locations[j].name;
                         }
 
                         var eventStartICS = moment(eventInfo.startsAt, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDDTHHmmss");
@@ -1306,27 +1262,24 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         },
 
         /** Command used to get and display the name, the start and end time and location of a given event  **/
-        //TODO
+        //TODO: modify to have a request that contains the list of event ICS and allow their importation in 1 button
+        // getQuery and modelCallback should be OK, viewCallback and DAO must be modified.
         getConferenceScheduleIcs: {
-            dataType: "text",
-            method: "GET",
-            serviceUri: "schedule_event.ics?",
-            getQuery: function (parameters) {
-                var ajaxData = {id: parameters.conference.eventId};
-                return ajaxData;
+            getQuery: function () {
+                return {
+                    "command": "getConferenceScheduleIcs",
+                    "data": null
+                };
             },
 
-            ModelCallBack: function (dataXML, conferenceUri, datasourceUri, currentUri) {
-                var JSONfile = {"ics": dataXML};
-                //StorageManager.pushCommandToStorage(currentUri,"getEvent",JSONfile);
-                return JSONfile;
+            ModelCallBack: function (dataXML) {
+                return dataXML?dataXML:null;
             },
 
             ViewCallBack: function (parameters) {
                 var JSONdata = parameters.JSONdata;
-                var conferenceUri = parameters.conferenceUri;
 
-                var icsButton = $('<button data-role="button" data-inline="true"><i class="fa fa-download"></i>  Add to calendar</button>');
+                var icsButton = $('<button data-role="button" data-inline="true"><i class="fa fa-download"></i> Add all conference events to your calendar!</button>');
                 icsButton.click(function () {
                     var blob = new Blob([JSONdata.ics], {type: "text/calendar;charset=utf-8"});
                     saveAs(blob, "icsEvent.ics");
@@ -1406,7 +1359,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
         //TODO
         getLocationLink: {
-            getQuery: function (parameters) {
+            getQuery: function () {
                 return null;
             }
         }
