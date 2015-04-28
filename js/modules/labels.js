@@ -33,6 +33,7 @@ define([],function() {
                 'description' : 'Description',
                 'homepage' : 'Homepage',
                 "affiliations" : 'Organization(s)',
+                'socialAccounts': 'Social account(s)',
                 "made" :'Conference publication(s)',
                 'otherPublications' :'Other publication(s)',
                 'holdsRole': 'Role(s)'
@@ -142,7 +143,8 @@ define([],function() {
                 'searchEvent' :'Search an event'
             },
             'specialButtons' : {
-                'addToCal' : 'Add to my cal'
+                'addToCal' : 'Add to my cal',
+                'twitterLink': 'Twitter link'
             }
         },
 
@@ -177,6 +179,7 @@ define([],function() {
                 'homepage' : 'Homepage',
                 "affiliations" : 'Organisations',
                 "made" :'Publication(s) de la conférence',
+                'socialAccounts': 'Réseaux sociaux',
                 'otherPublications' :'Autre(s) publication(s)',
                 'holdsRole': 'Rôle(s)'
             },
@@ -286,7 +289,8 @@ define([],function() {
                 'searchEvent' :'Filtrer les événements'
             },
             'specialButtons' : {
-                'addToCal' : 'Ajouter à mon calendrier'
+                'addToCal' : 'Ajouter à mon calendrier',
+                'twitterLink': 'Lien Twitter'
             }
         }
     };
