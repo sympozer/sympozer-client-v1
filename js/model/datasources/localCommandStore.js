@@ -704,7 +704,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         var track = tokens[tokens.length - 2];
                         //if(track == 'demo' || track =='poster'){
                         if(track == 'research' || track == 'in-use'){
-                        	parameters.contentEl.append($('<br><span><h2 style="display:inline;">Vote for best demo track</h2><img src="img/vote.gif" style="width:30px;height:30px"/></span>'));
+                        	parameters.contentEl.append($('<br><span><h2 style="display:inline;">Vote for best '+track.toUpperCase()+' track award</h2><img src="img/vote.gif" style="width:30px;height:30px"/></span>'));
                         	parameters.contentEl.append($('<p>Attention! You can only vote once for one demo/poster! Enter your personal code and press "Vote!" button.</p>'));
                         	parameters.contentEl.append($('<input id="personalCode" type="text" size="10" value="code"/>'));
                         	parameters.contentEl.append($('<p id="msg" style="color:red"></p>'));

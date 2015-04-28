@@ -2,46 +2,50 @@
 // Fuqi Song, wimmics, inria - i3s
 // 21 March 2015
 
-function vote(paperTrack, paperId){
-	//if(!$.support.cors){
-	//	$('#msg').html('Warning! Browser doesn\'t support CORS!');
-	//	return;
-	//}
-
-	var persCode = $('#personalCode').val().trim();
+function vote(paperTrack, paperId) {
+	//1 check personal code
+  	var persCode = $('#personalCode').val().trim();
 	if(persCode == ''){
 		$('#msg').html('Warning! Please enter your personal code!');
 		return;
 	}
 	
-   	var url = 'http://wit.istc.cnr.it/eswc2015/vote';
-    console.log('[vote] track:' + paperTrack + ', id ' + paperId + ', code: '+persCode);
+	//2 Create XHR object
+   	var url = 'http://wit.istc.cnr.it/eswc2015/vote?id='+paperId+'&track='+paperTrack+'&code='+persCode;
+  	var xhr = new XMLHttpRequest();
+  	if ("withCredentials" in xhr) {
+    	xhr.open('GET', url, true);
+  	} else if (typeof XDomainRequest != "undefined") {
+    	// XDomainRequest for IE.
+    	xhr = new XDomainRequest();
+    	xhr.open('GET', url);
+  	} else {
+    	$('#msg').html('CORS not supported');
+    	return;
+  	}
 
-    $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: url,
-        data: {'track': paperTrack, 'id': paperId, 'code': persCode},
-        crossDomain: true,
-        statusCode: {
-      	200: function (response) {
-         	var msg = 'Vote successfully, thanks for your participation!';
+	//3 Process the response
+  	xhr.onload = function() {
+    	var status = xhr.status;
+    	if(status == 200){
+    		var msg = 'Your vote has been saved successfully, thanks for your participation!';
             $('#personalCode').hide();
             $('#voteButton').hide();
             $('#msg').html(msg);
-      	},
-      	404: function (response) {
-         	$('#msg').html("Error! The code is wrong!");
-      	},
-      	409: function (response) {
-         	$('#msg').html("Error! The code has been used, you have already voted!");   
-         },     
-      	412: function (response) {
-         	$('#msg').html("Error! The format of paper Id or personal code is wrong, cannot resolve!");
-      	},
-      	//0: function (response){
-      	//	$('#msg').html("Error! Not connected to network!");
-      	//}
-      	}
-    });
+    	} else if (status == 404){
+    		$('#msg').html("Error! The code is wrong!");
+    	} else if (status == 409){
+    		$('#msg').html("Error! The code has been used, you have already voted!");  
+    	} else if (status == 412){
+    		$('#msg').html("Error! The format of paper id, track or personal code is wrong, cannot resolve!");
+    	} else{
+    		$('#msg').html("Error! Reason not detected!");
+    	}
+  	};
+
+  	xhr.onerror = function() {
+    	$('#msg').html("Error making the request!");
+  	};
+
+  	xhr.send();
 }
