@@ -3,8 +3,8 @@
 * 	License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing 
 *   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LE PEUTREC, Benoît DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
 *   Description: This object contains method for save and pick JSON file in local storage/in a local javascript object if not supported.
-*				 The method pushCommandToStorage(uri, commandName,JSONdata) check if data doesn't exist in local storage, in that case save data JSONData in paramaters with the key,id.
-*				 The methode pullCommandFromStorage(uri, commandName,id) look for the data with the Key ,id .If something exist, return the JSONFile corresponding to the key, else return undefined.
+*				 The method pushCommandToStorage(uri, commandName,JSONdata) checks if data doesn't exist in local storage, in that case save data JSONData in paramaters with the key,id.
+*				 The method pullCommandFromStorage(uri, commandName,id) looks for the data with the Key ,id .If something exist, return the JSONFile corresponding to the key, else return undefined.
 *   Version: 1.2
 *   Tags:  JSON, Local Storage
 **/

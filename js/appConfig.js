@@ -11,7 +11,7 @@
 				   
 *   Tags:  JSON, ENDPOINT, SPARQL
 **/
-define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStore','model/datasources/GoogleCommandStore', 'model/datasources/liveconSparqlCommandStore', 'model/datasources/localCommandStore'],
+define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'liveconSparqlCommandStore', 'localCommandStore'],
 	function(DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
 		return {
 			"app" : {
@@ -19,15 +19,21 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 			},
 			//Defnition of the conference
 			"conference" : {
-//				"id": "http://data.semanticweb.org/conference/eswc/2015",
-//				"eventId": "http://data.semanticweb.org/conference/eswc/2015",
 				"name": "12th ESWC2015",
 				"acronym": "ESWC2015",
 				"logoUri": "data/images/miniLogo_eswc15_red_0.png",
 				"website": "http://2015.eswc-conferences.org/",
 				"baseUri": "http://data.semanticweb.org/conference/eswc/2015",
-				"lang" : "EN",
-				"storage": "on"
+                "lang" : "EN",
+                "momentLang" : "EN_us",
+				"storage": "on",
+                "timeZone": {
+                    "name": "Europe/Ljubljana",
+                    "standardOffset": "+01",
+                    "daylightOffset": "+02",
+                    "changeToDaylightMonth": "3",
+                    "changeToStandardMonth": "10"
+                }
 			},
 
 			//Defnition of the datasources
@@ -50,11 +56,13 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"crossDomainMode" : "JSONP",
 					"commands" : GoogleCommandStore
                 },
+/*
                 "eventDatasource" : {
                     "uri" : "http://sparql.sympozer.com/sparql",
                     "crossDomainMode" : "JSONP",
                     "commands" : liveconSparqlCommandStore
                 },
+*/
                 "localDatasource" : {
                     "uri" : "local:/embedded",
                     //local configuration
@@ -103,11 +111,11 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 					"title": "whatsnext",
 					"commands" : [
 						{
-						    "datasource" : "eventDatasource",
+						    "datasource" : "localDatasource",
 						    "name" : "getWhatsNext"
 						}
 					]
-				},  
+				},
 				"person-by-role" : { 
 					"hash" : "person-by-role/:name/*uri",
 					"view" : "person-by-role",
@@ -119,28 +127,28 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 						}
 					]
 				},
-			    "Proceedings-search-by-theme" : { 
-					"hash" : "search/by-theme/*uri",
-					"view" : "",
-					"title": "allTopic",
-					"commands" : [
-					    {
-							"datasource" : "eventDatasource",
-							"name" : "getAllTheme"
-						}
-					]
-				},
-			    "Proceedings-search-by-category" : { 
-					"hash" : "search/by-category/*uri",
-					"view" : "",
-					"title": "allCategory",
-					"commands" : [
-					    {
-							"datasource" : "eventDatasource",
-							"name" : "getAllCategories"
-						}
-					]
-				},
+                //"Proceedings-search-by-theme" : {
+				//	"hash" : "search/by-theme/*uri",
+				//	"view" : "",
+				//	"title": "allTopic",
+				//	"commands" : [
+				//	    {
+				//			"datasource" : "eventDatasource",
+				//			"name" : "getAllTheme"
+				//		}
+				//	]
+				//},
+                //"Proceedings-search-by-category" : {
+				//	"hash" : "search/by-category/*uri",
+				//	"view" : "",
+				//	"title": "allCategory",
+				//	"commands" : [
+				//	    {
+				//			"datasource" : "eventDatasource",
+				//			"name" : "getAllCategories"
+				//		}
+				//	]
+				//},
 				"Events" : {
 					"hash" : "events",
 					"view" : "events",
@@ -291,28 +299,28 @@ define(['model/datasources/DBLPCommandStore', 'model/datasources/DDGoCommandStor
 						}
 					]
 				},
-				"Topics" : {
-					"hash" : "topics",
-					"view" : "topics",
-					"title": "allTopic",
-					"commands" : [
-						{
-							"datasource" : "eventDatasource",
-							"name" : "getAllTopics"
-						}
-					]
-				},
-				"Topic" : {
-					"hash" : "topic/:name/*uri",
-					"view" : "topic",
-					"title": "topic",
-					"commands" : [
-						{
-							"datasource" : "eventDatasource",
-							"name" : "getTopic"
-						}
-					]
-				},
+				//"Topics" : {
+				//	"hash" : "topics",
+				//	"view" : "topics",
+				//	"title": "allTopic",
+				//	"commands" : [
+				//		{
+				//			"datasource" : "eventDatasource",
+				//			"name" : "getAllTopics"
+				//		}
+				//	]
+				//},
+				//"Topic" : {
+				//	"hash" : "topic/:name/*uri",
+				//	"view" : "topic",
+				//	"title": "topic",
+				//	"commands" : [
+				//		{
+				//			"datasource" : "eventDatasource",
+				//			"name" : "getTopic"
+				//		}
+				//	]
+				//},
 				"Categories" : {
 					"hash" : "categories",
 					"view" : "categories",

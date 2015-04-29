@@ -1,13 +1,13 @@
 /**
  * 	Copyright <c> Claude Bernard - University Lyon 1 -  2013
  * 	License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing
- *   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LEPEUTREC, Beno�t DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
+ *   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LEPEUTREC, Benoît DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
  *   Description: Object in charge of executing commands
  *   Version: 1.2
  *   Tags:  JSON, SPARQL, AJAX
  **/
 
-define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageManager'], function($, Promise, config, dao, StorageManager){
+define(['jquery', 'promise', 'configuration', 'localDao', 'localStorage/localStorageManager'], function($, Promise, config, dao, StorageManager){
     var conference = {};
     var asyncL;
     return {
@@ -150,7 +150,7 @@ define(['jquery', 'promise', 'config', 'localDao', 'localStorage/localStorageMan
                             "parameters": parameters
                         });
                     }
-                //Query distant datasource
+                    //Query distant datasource
                 } else {
                     //Trying to retrieve data from local storage, if any...
                     var data = StorageManager.pullCommandFromStorage(parameters.currentUri, parameters.command);

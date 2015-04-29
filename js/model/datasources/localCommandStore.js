@@ -9,7 +9,7 @@
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'labels'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, labels) {
+define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, labels, eventHelper) {
     var localCommandStore = {
 
         /**
@@ -399,7 +399,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         },
 
         /**
-         * Retrieve list elements (individuals)
+         * Retrieve list elements
          */
         //TODO
         getTopic: {
@@ -555,11 +555,11 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
                         if (_.size(parameters.JSONdata.holdsRole) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.holdsRole + '</h2>'));
-                            for (var i in parameters.JSONdata.holdsRole) {
+                            for (i in parameters.JSONdata.holdsRole) {
                                 var role = parameters.JSONdata.holdsRole[i];
                                 ViewAdapterText.appendButton(parameters.contentEl, '#person-by-role/' + Encoder.encode(role.label) + '/' + Encoder.encode(role.id), role.label, {tiny: true});
                                 if (role.isRoleAt) {
-                                    parameters.contentEl.append($(' at '));
+                                    parameters.contentEl.append(' at ');
                                     var event = role.isRoleAt;
                                     ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(event.name) + '/' + Encoder.encode(event.id), event.name, {tiny: true});
                                 }
@@ -568,7 +568,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
                         if (_.size(parameters.JSONdata.made) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.made + '</h2>'));
-                            for (var i in parameters.JSONdata.made) {
+                            for (i in parameters.JSONdata.made) {
                                 var publication = parameters.JSONdata.made[i];
                                 try {
                                     // LM: Should work as soon as organizations are available
@@ -697,13 +697,13 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 ViewAdapterText.appendButton(parameters.contentEl, '#topic/' + Encoder.encode(keyword.keywordLabel.value) + '/' + Encoder.encode(keyword.keywordUri.value), keyword.keywordLabel.value, {tiny: true});
                             }
                         }
-                        
+
                         //voting system
                         var tokens = parameters.JSONdata.id.split('/');
                         var id = tokens[tokens.length - 1];
                         var track = tokens[tokens.length - 2];
-                        //if(track == 'demo' || track =='poster'){
-                        if(track == 'research' || track == 'in-use'){
+                        if(track == 'demo' || track =='poster'){
+                        //if(track == 'research' || track == 'in-use'){
                         	parameters.contentEl.append($('<br><span><h2 style="display:inline;">Vote for best demo track</h2><img src="img/vote.gif" style="width:30px;height:30px"/></span>'));
                         	parameters.contentEl.append($('<p>Attention! You can only vote once for one demo/poster! Enter your personal code and press "Vote!" button.</p>'));
                         	parameters.contentEl.append($('<input id="personalCode" type="text" size="10" value="code"/>'));
@@ -745,7 +745,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        /** Command used to get the panel events of a given conference **/
+        /**
+         * Command used to get the event panel of the conference
+         */
         getConferenceEvent: {
             getQuery: function (parameters) {
                 return {
@@ -784,9 +786,11 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.homepage + '</a>'));
                     }
 
+/*
                     if (eventInfo.twitterWidgetToken) {
                         ViewAdapterText.appendTwitterTimeline(parameters.contentEl, eventInfo.twitterWidgetToken, {});
                     }
+*/
 
                     if (eventInfo.startsAt) {
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.startAtLe + ' : <span class="inline">' + moment(eventInfo.startsAt).format('LLLL') + '</span></h2>'));
@@ -962,87 +966,22 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
         getConferenceSchedule: {
             //Retrieves the first level events (direct children of the conference event)
             //TODO see if it is not better to retrieve session events (since they are "sub-track events", scheduled on one particular day od half-day)
-            getQuery: function (parameters) {
+            getQuery: function () {
                 return {
                     "command": "getConferenceSchedule",
                     "data": null
                 }
             },
-            //Here we need to sort the events
+            /**
+             * Constructs a hierarchy of objects:
+             * - a map of objects classified by starting dates
+             * - maps of arrays classified by ending dates
+             * - arrays of events
+             */
             ModelCallBack: function (dataJSON) {
-                /**
-                 * Utility functions to sort the event list
-                 */
-                var eventFunctions = {
-                    /*
-                     * Moment.js utility that indicates how to sort events
-                     */
-                    sortByDateAsc: function (lhs, rhs) {
-                        return lhs > rhs ? 1 : lhs < rhs ? -1 : 0;
-                    },
-
-                    /*
-                     * Constructs a map of (moment-formatted dates; objects) from an array of objects
-                     * parameters: propertyName the name of a property of the objects that represent a date, in a moment.js-understandable format
-                     */
-                    constructMap: function(eventArray, propertyName) {
-                        var eventMap = {};
-                        for(var i in eventArray) {
-                            var event = eventArray[i];
-                            var formattedDate = moment(event[propertyName]).format();
-                            if(!eventMap[formattedDate]) {
-                                eventMap[formattedDate] = [];
-                            }
-                            eventMap[formattedDate].push(event);
-                        }
-                        return eventMap;
-                    },
-
-                    /*
-                     * sorts a map of (moment-formatted dates; objects)
-                     */
-                    sortMap: function(unsortedEventMap) {
-                        //get the unsorted array of formatted dates
-                        var dateKeys = Object.getOwnPropertyNames(unsortedEventMap);
-
-                        //Sort this array
-                        var momentArray = [];
-                        for(var i in dateKeys) {
-                            momentArray.push(moment(dateKeys[i]));
-                        }
-
-                        //Reconstruct the map using the sorted array
-                        var sortedEventMap = {};
-                        momentArray.sort(this.sortByDateAsc);
-                        for (var j in momentArray) {
-                            sortedEventMap[momentArray[j].format()] = unsortedEventMap[momentArray[j].format()];
-                        }
-
-                        return sortedEventMap;
-                    },
-
-                    /*
-                     * Does the full job: sorts a map of (moment-formatted dates; objects), by start and end times
-                     */
-                    doubleSortEventsInArray: function(eventArray) {
-                        var doubleSortedEventMap = this.sortMap(this.constructMap(eventArray, "startsAt"));
-                        var internalArray = [];
-                        for (i in doubleSortedEventMap) {
-                            var internalMap = this.sortMap(this.constructMap(doubleSortedEventMap[i], "endsAt"));
-                            for(var j in internalMap) {
-                                for(var k in internalMap[j]) {
-                                    internalArray.push(internalMap[j][k]);
-                                }
-                            }
-                        }
-                        return internalArray;
-                    }
-                };
-
-                var events = eventFunctions.doubleSortEventsInArray(dataJSON);
                 var JSONfile = {};
-                for(var i in events) {
-                    var event = events[i];
+                for(var i in dataJSON) {
+                    var event = dataJSON[i];
                     if(!event.categories || !event.categories[0]) {
                         event.categories = ["none"];
                     }
@@ -1085,7 +1024,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         for (var startAt in parameters.JSONdata) {
 
                             //if the day has changed
-                            if (currentDay != moment(startAt).format('MMMM Do YYYY')) {
+                            if (!currentDay || currentDay != moment(startAt).format('MMMM Do YYYY')) {
                                 var currentCollabsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + moment(startAt).format('LL') + '</h2></div>');
                                 currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
                                 //content.append(currentUl);
@@ -1150,72 +1089,47 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        /** Command used Schedule of the conf **/
-        //TODO
+        /**
+         * Retrieves the next events in the schedule and sorts them by location
+         **/
         getWhatsNext: {
-
-            dataType: "JSONP",
-            method: "GET",
-            serviceUri: "",
-            getQuery: function (parameters) {
-
-                var prefix = 'PREFIX swc: <http://data.semanticweb.org/ns/swc/ontology#>         ' +
-                    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>               ' +
-                    'PREFIX dc: <http://purl.org/dc/elements/1.1/>                      ' +
-                    'PREFIX ical: <http://www.w3.org/2002/12/cal/ical#> 				' +
-                    'PREFIX swrc: <http://swrc.ontoware.org/ontology#>                  ' +
-                    'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>			' +
-                    'PREFIX foaf: <http://xmlns.com/foaf/0.1/>            		        ';
-
-                var query = 'SELECT DISTINCT  ?eventUri ?eventSummary ?eventStart ?eventEnd ?eventType ?locationUri ?locationName WHERE  {  ' +
-                    '  <' + parameters.conference.baseUri + '>  swc:isSuperEventOf ?eventUri. ' +
-                    ' ?eventUri ical:summary ?eventSummary;' +
-                    '	ical:dtstart ?eventStart;' +
-                    '	ical:dtend ?eventEnd;' +
-                    '	 rdf:type ?eventType.' +
-                    '   OPTIONAL {?eventUri  swc:hasLocation ?locationUri. ' +
-                    '   ?locationUri  rdfs:label ?locationName. }' +
-                    '} ORDER BY ASC(?eventStart)';
-
-                var ajaxData = {query: prefix + query, output: "json"};
-                return ajaxData;
+            getQuery: function () {
+                return {
+                    "command": "getWhatsNext",
+                    "data": null
+/*
+                    "data": {
+                        "nestedQueries": [{
+                            datasource: "localDatasource",
+                            command: "getLocationLink",
+                            targetProperty: "locations"
+                        }]
+                    }
+*/
+                }
             },
-            //Declaring the callback function to use when sending the command
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
 
+            ModelCallBack: function (dataJSON, conferenceUri) {
                 if (dataJSON.length != 0) {
                     var JSONfile = {};
                     var seenLocation = [];
-                    $(dataJSON.results.bindings).each(function (i, event) {
-                        //console.log(event);
-                        if (event.eventStart) {
+                    for(var i in dataJSON) {
+                        var event = dataJSON[i];
+                        if (event.id !== conferenceUri && _.size(event.locations) >0 && event.startsAt) {
                             var now = new Date();
-                            if (moment(now).isBefore(event.eventStart.value)) {
-                                var currentEvent = {};
-                                currentEvent.eventType = event.eventType ? event.eventType.value : "";
-                                currentEvent.eventLocation = event.locationName ? event.locationName.value : "";
-
-                                if (currentEvent.eventType != "Event" && currentEvent.eventType != "http://data.semanticweb.org/ns/swc/ontology#ConferenceEvent" && currentEvent.eventLocation != "") {
-
-                                    //retrieve first event by location
-                                    var currentLocation = event.locationName.value;
-                                    if (_.indexOf(seenLocation, currentLocation) == -1) {
-                                        seenLocation.push(currentLocation);
-                                        JSONfile[i] = {};
-
-                                        currentEvent.eventUri = event.eventUri ? event.eventUri.value : null;
-                                        currentEvent.eventLabel = event.eventSummary ? event.eventSummary.value : null;
-                                        currentEvent.eventStart = event.eventStart ? event.eventStart.value : null;
-                                        currentEvent.eventEnd = event.eventEnd ? event.eventEnd.value : null;
-
-                                        JSONfile[i].location = currentLocation;
-                                        JSONfile[i].event = currentEvent;
-                                    }
+                            if (moment(now).isBefore(event.startsAt)) {
+                                //retrieve first event by location
+                                var currentLocation = event.locations[0];
+                                if (_.indexOf(seenLocation, currentLocation) == -1) {
+                                    seenLocation.push(currentLocation);
+                                    JSONfile[i] = {
+                                        location: currentLocation,
+                                        event: event
+                                    };
                                 }
                             }
                         }
-                    });
-                    //StorageManager.pushCommandToStorage(currentUri,"getWhatsNext",JSONfile);
+                    }
                     return JSONfile;
                 }
                 return null;
@@ -1227,19 +1141,19 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].pageTitles.whatsnext);
 
                         var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
-                        var currentDay, currentUl;
-                        $.each(parameters.JSONdata, function (i, location) {
-                            var lasts = moment(location.event.eventStart).from(moment(location.event.eventEnd), true);
-                            var formatedStart = moment(location.event.eventStart).format('h:mm a')
-                            currentCollabsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + location.location + '</h2></div>');
+                        var currentUl;
+                        $.each(parameters.JSONdata, function (i, eventContainer) {
+                            var lasts = moment(eventContainer.event.startsAt).from(moment(eventContainer.event.endsAt), true);
+                            var formattedStart = moment(eventContainer.event.startsAt).format('h:mm a')
+                            var currentCollapsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + eventContainer.location.name + '</h2></div>');
                             currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
-                            content.append(currentCollabsible);
-                            currentCollabsible.append(currentUl);
+                            content.append(currentCollapsible);
+                            currentCollapsible.append(currentUl);
 
-                            currentUl.append('<li data-inset="true"  ><a href="#event/' + Encoder.encode(location.event.eventLabel) + '/' + Encoder.encode(location.event.eventUri) + '">\
-							                <h3>' + location.event.eventLabel + '</h3>\
-							                <p>' + location.event.eventType + '</p>\
-							                <p>' + labels[parameters.conference.lang].event.startAt + ' : <strong>' + formatedStart + '</p>\
+                            currentUl.append('<li data-inset="true"  ><a href="#event/' + Encoder.encode(eventContainer.event.name) + '/' + Encoder.encode(eventContainer.event.id) + '">\
+							                <h3>' + eventContainer.event.name + '</h3>\
+							                <p>' + eventContainer.event.categories[0] + '</p>\
+							                <p>' + labels[parameters.conference.lang].event.startAt + ' : <strong>' + formattedStart + '</p>\
 											<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>\
 							                </a></li>');
                         })
@@ -1250,7 +1164,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        /************************** ICS   ********************************/
+        /************************** ICS ********************************/
         getEventIcs: {
             getQuery: function (parameters) {
                 return {
@@ -1279,49 +1193,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     var eventInfo = parameters.JSONdata;
 
                     if (_.size(eventInfo) > 0) {
-                        var categoryText = "";
-                        for(var i in eventInfo.categories) {
-                            categoryText += ((i>0)?", ":"") + labels[parameters.conference.lang].category[eventInfo.categories[i].name];
-                        }
-                        var homepageText = eventInfo.homepage?(" - More info at: " + eventInfo.homepage):"";
-
-                        var locationText = "";
-                        for(var j in eventInfo.locations) {
-                            locationText += (i>0)?", ":"" + eventInfo.locations[j].name;
-                        }
-
-                        //TODO: put timezone data in the config file.
-                        var eventStartICS = moment(eventInfo.startsAt, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDDTHHmmss");
-                        var eventEndICS = moment(eventInfo.endsAt, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDDTHHmmss");
-                        var icsEvent = "BEGIN:VCALENDAR\n" +
-                            "VERSION:2.0\n" +
-                            'PRODID: //' + eventInfo.name + '//ES//EN\n' +
-                            "BEGIN:VTIMEZONE\n" +
-                            "TZID:Europe/Ljubljana\n" +
-                            "BEGIN:DAYLIGHT\n" +
-                            "TZOFFSETFROM:+0100\n" +
-                            "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\n" +
-                            "DTSTART:19810329T020000\n" +
-                            "TZNAME:GMT+02:00\n" +
-                            "TZOFFSETTO:+0200\n" +
-                            "END:DAYLIGHT\n" +
-                            "BEGIN:STANDARD\n" +
-                            "TZOFFSETFROM:+0200\n" +
-                            "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\n" +
-                            "DTSTART:19961027T030000\n" +
-                            "TZNAME:GMT+01:00\n" +
-                            "TZOFFSETTO:+0100\n" +
-                            "END:STANDARD\n" +
-                            "END:VTIMEZONE\n" +
-                            "BEGIN:VEVENT\n" +
-                            "CATEGORIES:" + categoryText + "\n" +
-                            "DTSTART;TZID=Europe/Ljubljana:" + eventStartICS + "\n" +
-                            "DTEND;TZID=Europe/Ljubljana:" + eventEndICS + "\n" +
-                            "SUMMARY:" + eventInfo.name + "\n" +
-                            "DESCRIPTION:" + eventInfo.description + homepageText + "\n" +
-                            "LOCATION:" + locationText + "\n" +
-                            "END:VEVENT\n" +
-                            "END:VCALENDAR";
+                        var icsEvent = eventHelper.getEventIcsDescription(eventInfo);;
 
                         var icsButton = $('<button data-role="button" data-inline="true" data-mini="true"><i class="fa fa-download"></i>  ' + labels[parameters.conference.lang].specialButtons.addToCal + '</button>');
                         icsButton.click(function () {

@@ -12,7 +12,7 @@
  *	Version: 1.2
  *   Tags:  BACKBONE, AJAX, ROUTING
  **/
-define(['backbone', 'jquery', 'jqueryMobile', 'config', 'encoder', 'view/ViewAdapter', 'asyncLoader'], function(Backbone, $, jqueryMobile, config, Encoder, ViewAdapter, AsyncLoader){
+define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/ViewAdapter', 'asyncLoader'], function(Backbone, $, jqueryMobile, config, Encoder, ViewAdapter, AsyncLoader){
 
     return Backbone.Router.extend({
 

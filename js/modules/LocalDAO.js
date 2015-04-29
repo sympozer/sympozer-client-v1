@@ -1,7 +1,7 @@
 /**
  * Created by Lionel on 29/01/2015.
  */
-define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, encoder, config) {
+define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], function(localData, $, encoder, eventHelper, config) {
     /**
      * Creating internal DAO objects
      */
@@ -30,7 +30,7 @@ define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, enco
     var eventMap = {};
     var eventLinkMap = {};
 
-    //Conference schedule
+    //Conference schedule (ordered)
     var confScheduleList = [];
 
     //Locations
@@ -128,6 +128,7 @@ define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, enco
 
             //Events
             var eventData = localData.events;
+            var tempEventList = []; // unordered event list from the DAO
             console.log("Retrieving all events in DAO...");
             for(var l in eventData) {
                 var tempEvent = eventData[l];
@@ -144,9 +145,11 @@ define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, enco
                     tempEventCategory.events.push(tempEvent.id);
                 }
                 if(tempEvent.parent === config.conference.baseUri) {
-                    confScheduleList.push(tempEvent);
+                    tempEventList.push(tempEvent);
                 }
             }
+            //Sorting the events according to start and end dates
+            confScheduleList = eventHelper.doubleSortEventsInArray(tempEventList);
 
             //Locations
             var locationData = localData.locations;
@@ -212,6 +215,8 @@ define(['localData', 'jquery', 'encoder', 'config'], function(localData, $, enco
                 case "getAllCategories":
                     return categoryLinkMap;
                 case "getConferenceSchedule":
+                    return confScheduleList;
+                case "getWhatsNext":
                     return confScheduleList;
                 case "getAllLocations":
                     return locationLinkMap;

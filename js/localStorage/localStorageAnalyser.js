@@ -6,10 +6,10 @@
 *   Version: 1.2
 *   Tags:  JSON, Local Storage
 **/
-define(['jquery', 'underscore', 'localStorage/localStorageAnalyser'], function($, _, StorageManager){
-	var StorageAnalyser = {
+define(['jquery', 'underscore', 'localStorage/localStorageManager'], function($, _, StorageManager){
+	return {
 		getMostViewKeyword : function(){
-			keywordStore = StorageManager.get("keyword");
+			var keywordStore = StorageManager.get("keyword");
 			var maxOccurKeyword = 0;
 			var maxOccurKeywordLabelTab = [];
 			$.each(keywordStore, function(i,keyword){
@@ -26,7 +26,7 @@ define(['jquery', 'underscore', 'localStorage/localStorageAnalyser'], function($
 		},
 
 		getMostViewEntity : function(){
-			keywordStore = StorageManager.get("keyword");
+			var keywordStore = StorageManager.get("keyword");
 			var maxOccurKeyword = 0;
 			var maxOccurKeywordLabel = "";
 			$.each(keywordStore, function(i,keyword){
@@ -38,5 +38,4 @@ define(['jquery', 'underscore', 'localStorage/localStorageAnalyser'], function($
 			});
 		}
 	};
-	return StorageAnalyser;
 });

@@ -38,7 +38,7 @@ function vote(paperTrack, paperId){
          },     
       	412: function (response) {
          	$('#msg').html("Error! The format of paper Id or personal code is wrong, cannot resolve!");
-      	},
+      	}
       	//0: function (response){
       	//	$('#msg').html("Error! Not connected to network!");
       	//}

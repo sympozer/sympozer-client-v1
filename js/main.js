@@ -1,3 +1,9 @@
+/**
+ * 3 things in this file
+ * - require configuration
+ * - call require and apply this config
+ * - start the app
+ */
 
 //Require.js configurations
 require.config({
@@ -32,7 +38,7 @@ require.config({
         },
         'jqueryMobile.config': {
             deps: [
-                'jquery',
+                'jquery'
             ]
         },
         'twttr' :{
@@ -46,6 +52,7 @@ require.config({
         }
     },
     paths: {
+//Libraries
         'jquery' : 'lib/jquery',
         'underscore' : 'lib/underscore-min',
         'backbone' : 'lib/backbone',
@@ -58,25 +65,33 @@ require.config({
         'fileSaver' : 'lib/FileSaver',
         'jStorage' : 'lib/jstorage.min',
         'moment' : 'lib/moment.min',
-/* Unused for the moment (LM)
-        'socialite': 'lib/socialite.min',
-        'jsw' : 'reasoner/jsw',
-        'jswui' : 'reasoner/jswui',
-        'query' : 'reasoner/query',*/
-//Specific modules
-        'tpl' : 'modules/templateLoader',
+//App specific modules
+        'configuration' : './appConfig',
         'labels' : 'modules/labels',
+        'eventHelper': 'modules/EventHelper',
+        'tpl' : 'modules/templateLoader',
         'asyncLoader' : 'modules/AsyncLoader',
         'localDao': 'modules/LocalDAO',
-        'localData' : '../data/data_ESWC2015'
+        'localData' : '../data/data_ESWC2015',
+//Data sources
+        'DBLPCommandStore': 'model/datasources/DBLPCommandStore',
+        'DDGoCommandStore': 'model/datasources/DDGoCommandStore',
+        'GoogleCommandStore': 'model/datasources/GoogleCommandStore',
+        'liveconSparqlCommandStore': '../unused/datasources/liveconSparqlCommandStore',
+        'localCommandStore': 'model/datasources/localCommandStore'
+/* Unused for the moment (LM)
+         'socialite': 'lib/socialite.min',
+         'jsw' : 'reasoner/jsw',
+         'jswui' : 'reasoner/jswui',
+         'query' : 'reasoner/query',*/
     }
 });
 
 //Configurations
-require(['config', 'tpl', 'moment'], function(configuration, tpl, moment){
+require(['configuration', 'tpl', 'moment'], function(config, tpl, moment){
 
     //Modules configuration
-    var modules = []
+    var modules = [];
 
     //Add publications and organizations support
     modules.push("publications");
@@ -86,7 +101,7 @@ require(['config', 'tpl', 'moment'], function(configuration, tpl, moment){
     tpl.uri = "templates/";
 
     //Language configuration
-    moment.lang('EN_us');
+    moment.lang(config.conference.momentLang);
 });
 
 //Entry point
