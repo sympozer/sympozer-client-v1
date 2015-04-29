@@ -11,8 +11,8 @@
 				   
 *   Tags:  JSON, ENDPOINT, SPARQL
 **/
-define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'liveconSparqlCommandStore', 'localCommandStore'],
-	function(DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, liveconSparqlCommandStore, LocalCommandStore) {
+define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localCommandStore'],
+	function(DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, LocalCommandStore) {
 		return {
 			"app" : {
 				"liveconLogo" : "livecon.png"

@@ -77,7 +77,7 @@ require.config({
         'DBLPCommandStore': 'model/datasources/DBLPCommandStore',
         'DDGoCommandStore': 'model/datasources/DDGoCommandStore',
         'GoogleCommandStore': 'model/datasources/GoogleCommandStore',
-        'liveconSparqlCommandStore': '../unused/datasources/liveconSparqlCommandStore',
+//        'liveconSparqlCommandStore': '../unused/datasources/liveconSparqlCommandStore',
         'localCommandStore': 'model/datasources/localCommandStore'
 /* Unused for the moment (LM)
          'socialite': 'lib/socialite.min',
