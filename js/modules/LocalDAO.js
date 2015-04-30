@@ -147,8 +147,9 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                 locationLinkMap[tempLocation.id] = tempLocation;
             }
 
-            //Categories
+            //Categories (1/2)
             //Must be initialized before events
+            //Construct and sort a map of all categories
             var categoryData = localData.categories.sort(function (a, b) {
                 if (a.name > b.name)
                     return 1;
@@ -161,12 +162,6 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                 var tempCategory = categoryData[m];
                 categoryMap[tempCategory.id] = tempCategory;
                 categoryMap[tempCategory.id].events = [];
-                categoryLinkMap[tempCategory.id] = {
-                    id: tempCategory.id,
-                    name: tempCategory.name,
-                    //Yet, no property named "thumbnail" exists, but why not...
-                    thumbnail: tempCategory.thumbnail ? tempCategory.thumbnail : null
-                }
             }
 
             //Events
@@ -181,46 +176,74 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
             console.log("Retrieving all events in DAO...");
             for(var l in eventData) {
                 var tempEvent = eventData[l];
-                /**
-                 * TODO:
-                 * - find event category: if presentation then look for parent, if conference, don't look for parent
-                 * - create eventLink
-                 * - push it into eventLinkMap
-                 * - get rid of presentationEventLinkMap
-                 */
-                eventMap[tempEvent.id] = tempEvent;
-                eventLinkMap[tempEvent.id] = {
+                var tempEventLink = {
                     id: tempEvent.id,
                     name: tempEvent.name,
                     //Yet, no property named "thumbnail" exists, but why not...
-                    thumbnail: tempEvent.thumbnail ? tempEvent.thumbnail : null
+                    thumbnail: tempEvent.thumbnail ? tempEvent.thumbnail : null,
+                    startsAt: tempEvent.startsAt,
+                    endsAt: tempEvent.endsAt,
+                    location: _.size(tempEvent.locations)>0?locationLinkMap[tempEvent.locations[0]].name:null,
+                    //To construct the presentationEventLinkMap and further use...
+                    isPresentationEvent: function() {
+                        for(var i in tempEvent.categories) {
+                            return (tempEvent.categories[i] == config.app.presentationEventCategory);
+                        }
+                        return false;
+                    },
+                    //Search for the main category of the event (i.e. other than presentation)
+                    //Must not be called before eventMap is completely initialized
+                    getCategoryHierarchy: function() {
+                        var hierarchy = [];
+                        var relatedEvent = eventMap[this.id];
+                        $.each(relatedEvent.categories, function(i) {
+                            hierarchy.push(relatedEvent.categories[i]);
+                        });
+                        if(relatedEvent.parent) {
+                            var relatedEventParent = eventLinkMap[relatedEvent.parent.id?relatedEvent.parent.id:relatedEvent.parent];
+                            var parentCategories = relatedEventParent.getCategoryHierarchy();
+                            $.each(parentCategories, function(i) {
+                                hierarchy.push(parentCategories[i]);
+                            });
+                        }
+                        return hierarchy;
+                    }
                 };
+
+                //Push into the corresponding maps
+                eventMap[tempEvent.id] = tempEvent;
+                eventLinkMap[tempEvent.id] = tempEventLink;
+                if(tempEventLink.isPresentationEvent()) {
+                    presentationEventLinkMap[tempEvent.id] = tempEventLink;
+                }
+
                 //Add the event to the categories it refers to.
                 for(var n in tempEvent.categories) {
-                    var tempEventCategory = categoryMap[tempEvent.categories[n]];
-                    tempEventCategory.events.push(tempEvent.id);
+                     var tempCategoryMap = categoryMap[tempEvent.categories[n]];
+                    tempCategoryMap.events.push(tempEvent.id);
                 }
+
                 //Get main events (direct children of the conference)
                 if(tempEvent.parent === config.conference.baseUri) {
-                    tempEvent.location = _.size(tempEvent.locations)>0?locationLinkMap[tempEvent.locations[0]].name:null;
-                    tempEventList.push(tempEvent);
+                    tempEventList.push(tempEventLink);
                 }
             }
             //Sort events according to start and end dates
             confScheduleList = eventHelper.doubleSortEventsInArray(tempEventList);
-            //Construct the presentation events map
-            for(var p in categoryMap[config.app.presentationEventUri].events) {
-                var tempPresEvent = eventMap[categoryMap[config.app.presentationEventUri].events[p]];
-                if(tempPresEvent.parent && _.size(eventMap[tempPresEvent.parent].categories) >0) {
-                    var tempPresLinkEvent = {
-                        id: tempPresEvent.id,
-                        name: tempPresEvent.name,
-                        startsAt: tempPresEvent.startsAt,
-                        endsAt: tempPresEvent.endsAt,
-                        location: _.size(tempPresEvent.locations)>0?locationLinkMap[tempPresEvent.locations[0]].name:null,
-                        category: eventMap[tempPresEvent.parent].categories[0]
-                    };
-                    presentationEventLinkMap[tempPresLinkEvent.id] = tempPresLinkEvent;
+
+            //Categories (2/2)
+            //Remove unused categories
+            for(var p in categoryMap) {
+                var tempCategory = categoryMap[p];
+                if(tempCategory.events.length == 0) {
+                    categoryMap[p] = undefined;
+                } else {
+                    categoryLinkMap[p] = {
+                        id: p,
+                        name: tempCategory.name,
+                        //Yet, no property named "thumbnail" exists, but why not...
+                        thumbnail: tempCategory.thumbnail ? tempCategory.thumbnail : null
+                    }
                 }
             }
 
@@ -269,9 +292,15 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                 case "getEventIcs":
                     return eventMap[query.key];
                 case "getEventLink":
+/*
+                    var eventLink = eventLinkMap[query.key];
+                    if(eventLink && !eventLink.mainCategory) {
+                        eventLink.mainCategory = eventLink.getCategoryHierarchy();
+                        //remove complicated processing
+                        eventLink.getCategoryHierarchy = undefined;
+                    }
+*/
                     return eventLinkMap[query.key];
-                case "getPresentationEventLink":
-                    return presentationEventLinkMap[query.key];
                 case "getAllEvents":
                     return eventLinkMap;
                 case "getCategory":

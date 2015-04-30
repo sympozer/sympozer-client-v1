@@ -654,7 +654,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             {
                                 //Retrieve presentation event
                                 datasource: "localDatasource",
-                                command: "getPresentationEventLink",
+                                command: "getEventLink",
                                 targetProperty: "presentedIn"
                             }
                         ]
@@ -958,6 +958,8 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     if (eventInfo.parent) {
                         parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].event.parentEvent + '</h2>');
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(eventInfo.parent.name) + "/" + Encoder.encode(eventInfo.parent.id), eventInfo.parent.name, {tiny: 'true'});
+                        //TODO: remove this:
+                        console.log("Parent: " + eventInfo.parent.name + "\nParent category: " + eventInfo.parent.getCategoryHierarchy());
                     }
 
                     if (_.size(eventInfo.children) > 0) {
@@ -965,6 +967,8 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         for (var i = 0; i < eventInfo.children.length; i++) {
                             var subEvent = eventInfo.children[i];
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(subEvent.name) + "/" + Encoder.encode(subEvent.id), subEvent.name, {tiny: 'true'});
+                            //TODO: remove this:
+                            console.log("Child: " + subEvent.name + "\nChild category: " + subEvent.getCategoryHierarchy());
                         }
                     }
 
@@ -1311,17 +1315,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             getQuery: function (parameters) {
                 return {
                     "command": "getEventLink",
-                    "data": {
-                        "key": parameters.uri
-                    }
-                };
-            }
-        },
-
-        getPresentationEventLink: {
-            getQuery: function (parameters) {
-                return {
-                    "command": "getPresentationEventLink",
                     "data": {
                         "key": parameters.uri
                     }

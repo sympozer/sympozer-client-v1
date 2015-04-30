@@ -16,7 +16,8 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
 		return {
 			"app" : {
 				"appLogo" : "Sympozer_logo.png",
-                "presentationEventUri": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event"
+                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
+                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event"
 			},
 			//Defnition of the conference
 			"conference" : {
