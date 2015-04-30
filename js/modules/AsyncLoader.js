@@ -43,16 +43,16 @@ define(['jquery', 'promise', 'configuration', 'localDao', 'localStorage/localSto
                             if (Array.isArray(nestedData)) {
                                 for (var j in nestedData) {
                                     nestedQueryParams.currentUri = nestedData[j];
-                                    nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams, i, j).then(function (result) {
+                                    nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams, reject, i, j).then(function (result) {
                                         //Replace the URI with the result of the nested query
                                         nestedQueriesParams.data[nestedQueriesParams.nestedQueries[result.position1].targetProperty].splice(result.position2, 1, result.data);
-                                    }));
+                                    }).catch(reject));
                                 }
                             } else {
                                 nestedQueryParams.currentUri = nestedData;
-                                nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams, i).then(function (result) {
+                                nestedPromises.push(asyncL.executeNestedCommand(nestedQueryParams, reject, i).then(function (result) {
                                     nestedQueriesParams.data[nestedQueriesParams.nestedQueries[result.position1].targetProperty] = result.data;
-                                }));
+                                }).catch(reject));
                             }
                         }
                     }
@@ -72,7 +72,7 @@ define(['jquery', 'promise', 'configuration', 'localDao', 'localStorage/localSto
          * Actually solves nested queries by recursively calling the executeCommand method
          * Note: pos1 & pos2 are here to keep the indexes of the calling function, so that it can reuse them in the callback
          */
-        executeNestedCommand: function(nestedQueryParams, pos1, pos2) {
+        executeNestedCommand: function(nestedQueryParams, reject, pos1, pos2) {
             // Fix the input parameters since they will be used after other calls to executeNestedCommand
             var nestedDatasource = config.datasources[nestedQueryParams.datasource];
             var nestedCommand    = nestedDatasource.commands[nestedQueryParams.command];
@@ -86,7 +86,7 @@ define(['jquery', 'promise', 'configuration', 'localDao', 'localStorage/localSto
                     data: results
 //                    data: nestedCommand.ModelCallBack(results, config.conference, nestedDatasource.uri, nestedUri, nestedName)
                 };
-            });
+            }).catch(reject);
         },
 
         /**
@@ -130,13 +130,13 @@ define(['jquery', 'promise', 'configuration', 'localDao', 'localStorage/localSto
                                 nestedQueries: query.data ? query.data.nestedQueries : null,
                                 data: data
                             }).then(resolve).catch(function(error) {
-                                reject({
+                                console.log({
                                     "message": "Error in nested query: " + error.message,
                                     "parameters": {
-                                        nestedQueries: query.data ? query.data.nestedQueries : null,
-                                        data: data
+                                        nestedQueries: query.data ? query.data.nestedQueries : null
                                     }
                                 });
+                                resolve(data);
                             });
                         } else {
                             reject({

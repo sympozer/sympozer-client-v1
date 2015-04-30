@@ -7,7 +7,7 @@
 *				-> All the datasources defined by their uris, the cross domain  mode they use, and the commandStore (see /model) related to them.
 *				   This command store contains the definition of all the command (a specific parameters+query+callback implementation) that can be send on it.
 *				-> All the routes that the app will use. Each route is configured to display a specific view, if a template exist for this view name (see /templates)
-				   it is rendered, otherwise a generic view is used. The commands we want to send are specified in a "command" array to explicit which command has to be send when the route is catched
+				   it is rendered, otherwise a generic view is used. The commands we want to send are specified in a "command" array to explicit which command has to be sent when the route is catched
 				   
 *   Tags:  JSON, ENDPOINT, SPARQL
 **/
@@ -15,7 +15,8 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
 	function(DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, LocalCommandStore) {
 		return {
 			"app" : {
-				"liveconLogo" : "livecon.png"
+				"appLogo" : "Sympozer_logo.png",
+                "presentationEventUri": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event"
 			},
 			//Defnition of the conference
 			"conference" : {

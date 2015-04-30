@@ -1,7 +1,7 @@
 /**
  * Created by Lionel on 29/01/2015.
  */
-define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], function(localData, $, encoder, eventHelper, config) {
+define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configuration'], function(localData, $, _, encoder, eventHelper, config) {
     /**
      * Creating internal DAO objects
      */
@@ -29,6 +29,7 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
     //Events
     var eventMap = {};
     var eventLinkMap = {};
+    var presentationEventLinkMap = {};
 
     //Conference schedule (ordered)
     var confScheduleList = [];
@@ -42,28 +43,38 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
          **/
         initialize: function() {
             //Persons
-            var personData = localData.persons;
+            var personData = localData.persons.sort(function (a, b) {
+                if (a.name > b.name)
+                    return 1;
+                if (a.name < b.name)
+                    return -1;
+                return 0;
+            });
             console.log("Retrieving all persons in DAO...");
             for(var i in personData) {
-                //personMap
                 var tempPerson = personData[i];
-                //THIS IS A HACK!
+                //Quick & dirty!
                 //Assume the image, if present is stored in the www/data/images folder
                 tempPerson.depiction = tempPerson.depiction ? "data/images/" + tempPerson.depiction : null;
 
-                personMap[tempPerson.id] = tempPerson;
-                personLinkMap[tempPerson.id] = {
+                var tempPersonLink = {
                     id: tempPerson.id,
                     name: tempPerson.name,
                     depiction: tempPerson.depiction
                 };
+
+                //personMap
+                personMap[tempPerson.id] = tempPerson;
                 //personLinkMap
-                if(personMap[tempPerson.id].made) {
+                personLinkMap[tempPerson.id] = tempPersonLink;
+                //authorLinkMap
+                if(tempPerson.made) {
                     authorLinkMap[tempPerson.id] = personLinkMap[tempPerson.id];
                 }
-                //Extracting both role map and personLinkMapByRole from person descriptions
-                $.each(personMap[tempPerson.id].holdsRole, function(j) {
-                    var role = personMap[tempPerson.id].holdsRole[j];
+
+                //Extract both role map and personLinkMapByRole from person descriptions
+                $.each(tempPerson.holdsRole, function(j) {
+                    var role = tempPerson.holdsRole[j];
                     if(!personLinkMapByRole[role]) {
                         //Very simple role description
                         roleMap[role] = {
@@ -72,12 +83,18 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
                         };
                         personLinkMapByRole[role] = [];
                     }
-                    personLinkMapByRole[role].push(personLinkMap[tempPerson.id]);
+                    personLinkMapByRole[role].push(tempPersonLink);
                 });
             }
 
             //Organizations
-            var organizationData = localData.organizations;
+            var organizationData = localData.organizations.sort(function (a, b) {
+                if (a.label > b.label)
+                    return 1;
+                if (a.label < b.label)
+                    return -1;
+                return 0;
+            });
             console.log("Retrieving all organizations in DAO...");
             for(var j in organizationData) {
                 var tempOrga = organizationData[j];
@@ -94,7 +111,13 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
             }
 
             //Publications
-            var publicationData = localData.publications;
+            var publicationData = localData.publications.sort(function (a, b) {
+                if (a.title > b.title)
+                    return 1;
+                if (a.title < b.title)
+                    return -1;
+                return 0;
+            });
             console.log("Retrieving all publications in DAO...");
             for(var k in publicationData) {
                 var tempPubli = publicationData[k];
@@ -110,9 +133,29 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
                 }
             }
 
+            //Locations
+            var locationData = localData.locations.sort(function (a, b) {
+                if (a.name > b.name)
+                    return 1;
+                if (a.name < b.name)
+                    return -1;
+                return 0;
+            });
+            console.log("Retrieving all locations in DAO...");
+            for(var o in locationData) {
+                var tempLocation = locationData[o];
+                locationLinkMap[tempLocation.id] = tempLocation;
+            }
+
             //Categories
             //Must be initialized before events
-            var categoryData = localData.categories;
+            var categoryData = localData.categories.sort(function (a, b) {
+                if (a.name > b.name)
+                    return 1;
+                if (a.name < b.name)
+                    return -1;
+                return 0;
+            });
             console.log("Retrieving all categories in DAO...");
             for(var m in categoryData) {
                 var tempCategory = categoryData[m];
@@ -127,11 +170,24 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
             }
 
             //Events
-            var eventData = localData.events;
+            var eventData = localData.events.sort(function (a, b) {
+                if (a.name > b.name)
+                    return 1;
+                if (a.name < b.name)
+                    return -1;
+                return 0;
+            });
             var tempEventList = []; // unordered event list from the DAO
             console.log("Retrieving all events in DAO...");
             for(var l in eventData) {
                 var tempEvent = eventData[l];
+                /**
+                 * TODO:
+                 * - find event category: if presentation then look for parent, if conference, don't look for parent
+                 * - create eventLink
+                 * - push it into eventLinkMap
+                 * - get rid of presentationEventLinkMap
+                 */
                 eventMap[tempEvent.id] = tempEvent;
                 eventLinkMap[tempEvent.id] = {
                     id: tempEvent.id,
@@ -144,23 +200,31 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
                     var tempEventCategory = categoryMap[tempEvent.categories[n]];
                     tempEventCategory.events.push(tempEvent.id);
                 }
+                //Get main events (direct children of the conference)
                 if(tempEvent.parent === config.conference.baseUri) {
+                    tempEvent.location = _.size(tempEvent.locations)>0?locationLinkMap[tempEvent.locations[0]].name:null;
                     tempEventList.push(tempEvent);
                 }
             }
-            //Sorting the events according to start and end dates
+            //Sort events according to start and end dates
             confScheduleList = eventHelper.doubleSortEventsInArray(tempEventList);
-
-            //Locations
-            var locationData = localData.locations;
-            console.log("Retrieving all locations in DAO...");
-            for(var o in locationData) {
-                var tempLocation = locationData[o];
-                locationLinkMap[tempLocation.id] = tempLocation;
+            //Construct the presentation events map
+            for(var p in categoryMap[config.app.presentationEventUri].events) {
+                var tempPresEvent = eventMap[categoryMap[config.app.presentationEventUri].events[p]];
+                if(tempPresEvent.parent && _.size(eventMap[tempPresEvent.parent].categories) >0) {
+                    var tempPresLinkEvent = {
+                        id: tempPresEvent.id,
+                        name: tempPresEvent.name,
+                        startsAt: tempPresEvent.startsAt,
+                        endsAt: tempPresEvent.endsAt,
+                        location: _.size(tempPresEvent.locations)>0?locationLinkMap[tempPresEvent.locations[0]].name:null,
+                        category: eventMap[tempPresEvent.parent].categories[0]
+                    };
+                    presentationEventLinkMap[tempPresLinkEvent.id] = tempPresLinkEvent;
+                }
             }
 
             //TODO: remove this.
-            //Test if the previous functions is called once or each time...
             console.log("DAO INITIALIZATION FINISHED");
         },
         /**
@@ -206,6 +270,8 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
                     return eventMap[query.key];
                 case "getEventLink":
                     return eventLinkMap[query.key];
+                case "getPresentationEventLink":
+                    return presentationEventLinkMap[query.key];
                 case "getAllEvents":
                     return eventLinkMap;
                 case "getCategory":
@@ -216,6 +282,9 @@ define(['localData', 'jquery', 'encoder', 'eventHelper', 'configuration'], funct
                     return categoryLinkMap;
                 case "getConferenceSchedule":
                     return confScheduleList;
+                //Only need the event URIs, as the ICS will be calculated in the model callback
+                case "getConferenceScheduleIcs":
+                    return Object.keys(eventLinkMap);
                 case "getWhatsNext":
                     return confScheduleList;
                 case "getAllLocations":

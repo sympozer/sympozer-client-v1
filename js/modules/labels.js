@@ -17,7 +17,9 @@ define([],function() {
                 'publishDate' : 'Published date',
                 'url' : 'Url',
                 'topics' : 'Topics',
-                'publishBy' : 'Published by'
+                'publishBy' : 'Published by',
+                'presentedIn': 'Presented',
+                'locationPrefix': 'in'
             },
             'otherPublication' : {
                 'year' : 'Year',
@@ -162,7 +164,9 @@ define([],function() {
                 'publishDate' : 'Date de publication',
                 'url' : 'Url',
                 'topics' : 'Themes',
-                'publishBy' : 'Publié par'
+                'publishBy' : 'Publié par',
+                'presentedIn': 'Présenté',
+                'locationPrefix': 'à'
             },
             'otherPublication' : {
                 'year' : 'Année',

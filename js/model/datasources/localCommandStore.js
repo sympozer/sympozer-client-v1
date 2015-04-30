@@ -304,7 +304,13 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON) {
-                return dataJSON ? dataJSON : null;
+                return dataJSON ? (dataJSON.sort(function (a, b) {
+                    if (a.location > b.location)
+                        return 1;
+                    if (a.location < b.location)
+                        return -1;
+                    return 0;
+                })) : null;
             },
 
             ViewCallBack: function (parameters) {
@@ -638,14 +644,19 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     "command": "getPublication",
                     "data": {
                         "key": parameters.uri,
-                        "nestedQueries": [{
-                            //Retrieve authors
-                            datasource: "localDatasource",
-                            command: "getPersonLink",
-                            targetProperty: "authors"
-                        }
-                           //TODO
-                           //Retrieve the corresponding track of the conference
+                        "nestedQueries": [
+                            {
+                                //Retrieve authors
+                                datasource: "localDatasource",
+                                command: "getPersonLink",
+                                targetProperty: "authors"
+                            },
+                            {
+                                //Retrieve presentation event
+                                datasource: "localDatasource",
+                                command: "getPresentationEventLink",
+                                targetProperty: "presentedIn"
+                            }
                         ]
                     }
                 };
@@ -690,9 +701,14 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(author.name) + '/' + Encoder.encode(author.id), author.name, {tiny: true});
                             }
                         }
+                        if (_.size(parameters.JSONdata.presentedIn.startsAt) > 0) {
+                            parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.presentedIn + '</h2>'));
+                            var presentationEventDesc = moment(parameters.JSONdata.presentedIn.startsAt).format('LLLL') + ' ' + labels[parameters.conference.lang].publication.locationPrefix + ' ' + parameters.JSONdata.presentedIn.location;
+                            ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(parameters.JSONdata.presentedIn.name) + '/' + Encoder.encode(parameters.JSONdata.presentedIn.id), presentationEventDesc, {tiny: true});
+                        }
                         if (_.size(parameters.JSONdata.keywords) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.topics + '</h2>'));
-                            for (var i = 0; i < parameters.JSONdata.keywords.length; i++) {
+                            for (i = 0; i < parameters.JSONdata.keywords.length; i++) {
                                 var keyword = parameters.JSONdata.keywords[i];
                                 ViewAdapterText.appendButton(parameters.contentEl, '#topic/' + Encoder.encode(keyword.keywordLabel.value) + '/' + Encoder.encode(keyword.keywordUri.value), keyword.keywordLabel.value, {tiny: true});
                             }
@@ -1097,40 +1113,37 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 return {
                     "command": "getWhatsNext",
                     "data": null
-/*
-                    "data": {
-                        "nestedQueries": [{
-                            datasource: "localDatasource",
-                            command: "getLocationLink",
-                            targetProperty: "locations"
-                        }]
-                    }
-*/
                 }
             },
 
             ModelCallBack: function (dataJSON, conferenceUri) {
                 if (dataJSON.length != 0) {
-                    var JSONfile = {};
+                    var JSONfile = [];
                     var seenLocation = [];
                     for(var i in dataJSON) {
                         var event = dataJSON[i];
-                        if (event.id !== conferenceUri && _.size(event.locations) >0 && event.startsAt) {
+                        if (event.id !== conferenceUri && event.location && event.startsAt) {
                             var now = new Date();
                             if (moment(now).isBefore(event.startsAt)) {
                                 //retrieve first event by location
-                                var currentLocation = event.locations[0];
+                                var currentLocation = event.location;
                                 if (_.indexOf(seenLocation, currentLocation) == -1) {
                                     seenLocation.push(currentLocation);
-                                    JSONfile[i] = {
+                                    JSONfile.push({
                                         location: currentLocation,
                                         event: event
-                                    };
+                                    });
                                 }
                             }
                         }
                     }
-                    return JSONfile;
+                    return JSONfile.sort(function (a, b) {
+                        if (a.location > b.location)
+                            return 1;
+                        if (a.location < b.location)
+                            return -1;
+                        return 0;
+                    });
                 }
                 return null;
             },
@@ -1145,14 +1158,13 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         $.each(parameters.JSONdata, function (i, eventContainer) {
                             var lasts = moment(eventContainer.event.startsAt).from(moment(eventContainer.event.endsAt), true);
                             var formattedStart = moment(eventContainer.event.startsAt).format('h:mm a')
-                            var currentCollapsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + eventContainer.location.name + '</h2></div>');
+                            var currentCollapsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + eventContainer.location + '</h2></div>');
                             currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
                             content.append(currentCollapsible);
                             currentCollapsible.append(currentUl);
 
                             currentUl.append('<li data-inset="true"  ><a href="#event/' + Encoder.encode(eventContainer.event.name) + '/' + Encoder.encode(eventContainer.event.id) + '">\
 							                <h3>' + eventContainer.event.name + '</h3>\
-							                <p>' + eventContainer.event.categories[0] + '</p>\
 							                <p>' + labels[parameters.conference.lang].event.startAt + ' : <strong>' + formattedStart + '</p>\
 											<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>\
 							                </a></li>');
@@ -1193,7 +1205,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     var eventInfo = parameters.JSONdata;
 
                     if (_.size(eventInfo) > 0) {
-                        var icsEvent = eventHelper.getEventIcsDescription(eventInfo);;
+                        var icsEvent = eventHelper.getEventIcsDescription(eventInfo);
 
                         var icsButton = $('<button data-role="button" data-inline="true" data-mini="true"><i class="fa fa-download"></i>  ' + labels[parameters.conference.lang].specialButtons.addToCal + '</button>');
                         icsButton.click(function () {
@@ -1206,7 +1218,11 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         },
 
-        /** Command used to get and display the name, the start and end time and location of a given event  **/
+        /**
+         * Get an ICS file containing all conference events
+         * Not sure it is useful / efficient
+         * Doesn't work yet
+         **/
         //TODO: modify to have a request that contains the list of event ICS and allow their importation in 1 button
         // getQuery and modelCallback should be OK, viewCallback and DAO must be modified.
         getConferenceScheduleIcs: {
@@ -1295,6 +1311,17 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             getQuery: function (parameters) {
                 return {
                     "command": "getEventLink",
+                    "data": {
+                        "key": parameters.uri
+                    }
+                };
+            }
+        },
+
+        getPresentationEventLink: {
+            getQuery: function (parameters) {
+                return {
+                    "command": "getPresentationEventLink",
                     "data": {
                         "key": parameters.uri
                     }
