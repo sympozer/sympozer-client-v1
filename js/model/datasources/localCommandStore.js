@@ -10,7 +10,7 @@
  *   Tags:  JSON, SPARQL, AJAX
  **/
 define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'lib/Twitter_widget_ESWC2015.min', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, config, labels, eventHelper) {
-    var twitter_init = null;
+//    var twitter_init = null;
     return {
 
         /**
@@ -839,10 +839,10 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
                     //Twitter timeline (not generic: extracted grom ESWC2015 website)
                     parameters.contentEl.append('<div id="block-twitter-block-1" class="block block-twitter-block clearfix"><div class="content"><a href="https://twitter.com/" class="twitter-timeline" data-widget-id="373072714841333760" data-chrome="nofooter" data-aria-polite="polite">Tweets by #eswc2015</a></div></div>');
-                    if(!twitter_init) {
+//                    if(!twitter_init) {
                         twitter.execute();
-                        twitter_init = true;
-                    }
+//                        twitter_init = true;
+//                    }
                 }
             }
         },
@@ -1217,7 +1217,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     if (_.size(eventInfo) > 0) {
                         var icsEvent = eventHelper.getEventIcsDescription(eventInfo);
 
-                        var icsButton = $('<button data-role="button" data-inline="true" data-mini="true"><i class="fa fa-download"></i>  ' + labels[parameters.conference.lang].specialButtons.addToCal + '</button>');
+                        var icsButton = $('<button data-role="button" data-inline="true" data-mini="true" class="ics-button"><i class="fa fa-download"></i>  ' + labels[parameters.conference.lang].specialButtons.addToCal + '</button>');
                         icsButton.click(function () {
                             var blob = new Blob([icsEvent], {type: "text/calendar;charset=utf-8"});
                             saveAs(blob, "icsEvent.ics");

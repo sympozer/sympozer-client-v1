@@ -108,10 +108,10 @@ p{
     color: #f3f6e6 !important;
 }
 .poster{
-    background: #f3e6f6 !important;
+    background: #E5ECF5 !important;
 }
 .posterInverse{
-    color: #f3e6f6 !important;
+    color: #E5ECF5 !important;
 }
 .demo{
     background: #e3f6c6 !important;
@@ -138,10 +138,20 @@ p{
     color: #e3e6c6 !important;
 }
 .keynote{
-    background: #e3e6e6 !important;
+/*    background: #e3e6e6 !important;*/
+    background: #FFF3D6 !important;
 }
 .keynoteInverse{
-    color: #e3e6e6 !important;
+    color: #FFF3D6 !important;
+}
+
+/********************** ICS button ************************/
+.ics-button{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    text-overflow: ellipsis;
+    max-width: 30%;
 }
 
 /**********************   Footer ************************/
@@ -154,17 +164,17 @@ p{
   color: #000000 !important;
 }
 
-
-
 .button *{
-
 }
 
 .content .ui-btn{
-  background: #f2f2f2 !important;
-/*  color: #000 !important;*/
-  color: #242c4c !important;
-  border: 1px solid #36487f !important;
+    background: none !important;
+    /*  background: #f2f2f2 !important;
+      color: #000 !important;
+    */
+      border: 1px solid #36487f !important;
+    color: #242c4c !important;
+    border: 1px solid #36487f;
 }
 
 /*Special buttons*/
