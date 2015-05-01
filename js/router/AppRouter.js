@@ -83,12 +83,12 @@ define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/
                             return currentCommand.ModelCallBack(results, config.conference, currentDatasource.uri, uri, name);
                         }).then(function(data) {
                             jqueryMobile.loading('hide');
-                            viewTypeClassName = viewTypeClassName || currentCommand.ViewCallBack({
+                            viewTypeClassName = currentCommand.ViewCallBack({
                                 JSONdata : data,
                                 contentEl : currentPage.find("#" + commandItem.name),
                                 name : name,
                                 conference : config.conference
-                            });
+                            }) || viewTypeClassName;
                             ViewAdapter.generateJQMobileElement(viewTypeClassName);
 /*
                         }).catch(function(ex) {
