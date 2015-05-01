@@ -9,7 +9,7 @@
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, labels, eventHelper) {
+define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, config, labels, eventHelper) {
     var localCommandStore = {
 
         /**
@@ -701,15 +701,16 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                                 ViewAdapterText.appendButton(parameters.contentEl, '#person/' + Encoder.encode(author.name) + '/' + Encoder.encode(author.id), author.name, {tiny: true});
                             }
                         }
+                        var eventCategory = null;
                         if (_.size(parameters.JSONdata.presentedIn.startsAt) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.presentedIn + '</h2>'));
                             var presentationEventDesc = moment(parameters.JSONdata.presentedIn.startsAt).format('LLLL') + ' ' + labels[parameters.conference.lang].publication.locationPrefix + ' ' + parameters.JSONdata.presentedIn.location;
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(parameters.JSONdata.presentedIn.name) + '/' + Encoder.encode(parameters.JSONdata.presentedIn.id), presentationEventDesc, {tiny: true});
                             //TODO: remove this:
                             console.log("Presented in: " + parameters.JSONdata.presentedIn.name + "\nPresented in category: " + parameters.JSONdata.presentedIn.mainCategory);
-                            if(parameters.JSONdata.presentedIn.mainCategory === "http://data.semanticweb.org/conference/eswc/2015/category/poster-event") {
-                                //$("div.ui-page-active").addClass("poster");
-                            }
+
+                            //Get main category for styling
+                            eventCategory = config.app.styleMatching[parameters.JSONdata.presentedIn.mainCategory];
                         }
                         if (_.size(parameters.JSONdata.keywords) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.topics + '</h2>'));
@@ -733,6 +734,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         }
                     }
                 }
+                return eventCategory;
             }
         },
 
@@ -969,8 +971,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     if (eventInfo.parent) {
                         parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].event.parentEvent + '</h2>');
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(eventInfo.parent.name) + "/" + Encoder.encode(eventInfo.parent.id), eventInfo.parent.name, {tiny: 'true'});
-                        //TODO: remove this:
-                        console.log("Parent: " + eventInfo.parent.name + "\nParent category: " + eventInfo.parent.mainCategory);
                     }
 
                     if (_.size(eventInfo.children) > 0) {
@@ -978,8 +978,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         for (var i = 0; i < eventInfo.children.length; i++) {
                             var subEvent = eventInfo.children[i];
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(subEvent.name) + "/" + Encoder.encode(subEvent.id), subEvent.name, {tiny: 'true'});
-                            //TODO: remove this:
-                            console.log("Child: " + subEvent.name + "\nChild category: " + subEvent.mainCategory);
                         }
                     }
 
@@ -990,6 +988,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             parameters.contentEl.append($('<a href="' + resource + '">' + resource + '</a>'));                        }
                     }
                 }
+
+                //Get main category for styling
+                return config.app.styleMatching[parameters.JSONdata.mainCategory];
             }
         },
 

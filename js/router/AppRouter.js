@@ -59,6 +59,9 @@ define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/
                         }
                     }
 
+                    //Common variable that can be set by any of the command items
+                    var viewTypeClassName = null;
+
                     var hashtag = Encoder.getHashtag(config.conference.acronym, name);
 
                     //Appending button and keeping track of new route
@@ -80,13 +83,13 @@ define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/
                             return currentCommand.ModelCallBack(results, config.conference, currentDatasource.uri, uri, name);
                         }).then(function(data) {
                             jqueryMobile.loading('hide');
-                            currentCommand.ViewCallBack({
+                            viewTypeClassName = viewTypeClassName || currentCommand.ViewCallBack({
                                 JSONdata : data,
                                 contentEl : currentPage.find("#" + commandItem.name),
                                 name : name,
                                 conference : config.conference
                             });
-                            ViewAdapter.generateJQMobileElement();
+                            ViewAdapter.generateJQMobileElement(viewTypeClassName);
 /*
                         }).catch(function(ex) {
                             console.log(ex);
@@ -96,7 +99,7 @@ define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/
                     });
 
                     //When all commands are done
-                    ViewAdapter.generateJQMobileElement();
+//                    ViewAdapter.generateJQMobileElement();
                 });
             });
         }

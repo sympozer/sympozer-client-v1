@@ -16,8 +16,17 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
 		return {
 			"app" : {
 				"appLogo" : "Sympozer_logo.png",
-                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
-                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event"
+//                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
+                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event",
+                styleMatching: {
+                    "http://data.semanticweb.org/conference/eswc/2015/category/poster-event": "poster",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/session-event": "research",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/demo-event": "demo",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/workshop-event": "workshop",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/tutorial-event": "tutorial",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/in-use-event": "inUse",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/keynote-event": "keynote"
+                }
 			},
 			//Defnition of the conference
 			"conference" : {

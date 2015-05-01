@@ -7,7 +7,12 @@
  *   Version: 1.2
  **/
 define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/AbstractView', 'localStorage/localStorageManager'], function($, jqueryMobile, encoder, ViewAdapterText, AbstractView, StorageManager){
-    var ViewAdapter = {
+
+    //Specific class management, depending on the element type (poster, demo...)
+    var oldClassName = null,
+        currentClassName = null;
+
+    return {
         update : function(routeItem, hashtag, conference, datasources, uri, name) {
             this.template = routeItem.view;
             this.conference = conference;
@@ -49,6 +54,7 @@ define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/Abstr
                 $(event.currentTarget).remove();
             });
 
+
             return $(page.el);
         },
 
@@ -58,6 +64,22 @@ define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/Abstr
             },this);
 
             this.addControlButton();
+        },
+
+        /**
+         * Changes current page CSS class to render according to business rules
+         */
+        setSpecificStyle: function() {
+            if(oldClassName) {
+                this.currentPage.removeClass(oldClassName);
+                $("header div").removeClass(oldClassName);
+                $("#navBar *").removeClass(oldClassName + "Inverse");
+            }
+            if(currentClassName) {
+                this.currentPage.addClass(currentClassName);
+                $("header div").addClass(currentClassName);
+                $("#navBar *").addClass(currentClassName + "Inverse");
+            }
         },
 
         addControlButton : function (){
@@ -87,10 +109,14 @@ define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/Abstr
             });
         },
 
-        generateJQMobileElement : function(){
+        generateJQMobileElement : function(className){
+            //Managing specific style from ViewCallbacks
+            oldClassName = currentClassName;
+            currentClassName = className;
+            this.setSpecificStyle();
+
             this.currentPage.trigger("create");
         }
     };
-    return ViewAdapter;
 });
 
