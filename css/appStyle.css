@@ -99,6 +99,12 @@ p{
   text-align: center;
 }
 
+
+/********************** Specific Content ************************/
+.poster{
+    background: #f3f6c6 !important;
+}
+
 /**********************   Footer ************************/
 #footer{
   background: #f2f2f2 !important;

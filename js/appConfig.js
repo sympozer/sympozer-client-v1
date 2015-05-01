@@ -85,11 +85,11 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
                         {
                             "datasource" : "localDatasource",
                             "name" : "getConferenceEvent"
-                        },
+                        }/*,
                         {
                             "datasource" : "localDatasource",
                             "name" : "getEventIcs"
-                        }
+                        }*/
 					]
 				},
 		    	"Schedule" : {

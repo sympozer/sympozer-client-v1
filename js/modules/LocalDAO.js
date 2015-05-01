@@ -29,7 +29,6 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
     //Events
     var eventMap = {};
     var eventLinkMap = {};
-    var presentationEventLinkMap = {};
 
     //Conference schedule (ordered)
     var confScheduleList = [];
@@ -183,11 +182,15 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                     thumbnail: tempEvent.thumbnail ? tempEvent.thumbnail : null,
                     startsAt: tempEvent.startsAt,
                     endsAt: tempEvent.endsAt,
-                    location: _.size(tempEvent.locations)>0?locationLinkMap[tempEvent.locations[0]].name:null,
+                    location: _.size(tempEvent.locations)>0?locationLinkMap[tempEvent.locations[0]].name:null
+                    /*
+                    ,
                     //To construct the presentationEventLinkMap and further use...
-                    isPresentationEvent: function() {
-                        for(var i in tempEvent.categories) {
-                            return (tempEvent.categories[i] == config.app.presentationEventCategory);
+                    getMainCategory: function() {
+                        for(var i in this.categories) {
+                            if(this.categories[i] !== config.app.presentationEventCategory)
+                                return this.categories[i];
+                            return null;
                         }
                         return false;
                     },
@@ -208,14 +211,12 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                         }
                         return hierarchy;
                     }
+*/
                 };
 
                 //Push into the corresponding maps
                 eventMap[tempEvent.id] = tempEvent;
                 eventLinkMap[tempEvent.id] = tempEventLink;
-                if(tempEventLink.isPresentationEvent()) {
-                    presentationEventLinkMap[tempEvent.id] = tempEventLink;
-                }
 
                 //Add the event to the categories it refers to.
                 for(var n in tempEvent.categories) {
@@ -245,6 +246,22 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                         thumbnail: tempCategory.thumbnail ? tempCategory.thumbnail : null
                     }
                 }
+            }
+
+            //Construct the event category hierarchies
+            var constructCategoryHierarchy = function(eventId) {
+                for(var i in eventMap[eventId].categories) {
+                    var tempCat = eventMap[eventId].categories[i];
+                    if(tempCat !== config.app.presentationEventCategory)
+                        return tempCat;
+                }
+                if(eventMap[eventId].parent) {
+                    return constructCategoryHierarchy(eventMap[eventId].parent);
+                }
+                return null;
+            };
+            for(var q in eventLinkMap) {
+                eventMap[q].mainCategory = eventLinkMap[q].mainCategory = constructCategoryHierarchy(q);
             }
 
             //TODO: remove this.
@@ -292,14 +309,6 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                 case "getEventIcs":
                     return eventMap[query.key];
                 case "getEventLink":
-/*
-                    var eventLink = eventLinkMap[query.key];
-                    if(eventLink && !eventLink.mainCategory) {
-                        eventLink.mainCategory = eventLink.getCategoryHierarchy();
-                        //remove complicated processing
-                        eventLink.getCategoryHierarchy = undefined;
-                    }
-*/
                     return eventLinkMap[query.key];
                 case "getAllEvents":
                     return eventLinkMap;
