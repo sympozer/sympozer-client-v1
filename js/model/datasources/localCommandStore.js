@@ -9,7 +9,7 @@
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, config, labels, eventHelper) {
+define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'lib/Twitter_widget_ESWC2015.min', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, config, labels, eventHelper) {
     var localCommandStore = {
 
         /**
@@ -829,26 +829,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.endAt + ' : <span class="inline">' + moment(eventInfo.endsAt).format('LLLL') + '</span></h2>'));
                     }
 
-//                    TODO: fix Twitter widget to add an embedded timeline here
-//                    parameters.contentEl.append('<div id="block-twitter-block-1" class="block block-twitter-block clearfix"><div class="content"><a href="https://twitter.com/" class="twitter-timeline" data-widget-id="373072714841333760" data-chrome="nofooter" data-aria-polite="polite">Tweets by </a></div></div>');
-
-                    if (eventInfo.twitterWidgetToken) {
-                        parameters.contentEl.append($('<h3>' + labels[parameters.conference.lang].specialButtons.twitterLink + '</h3>'));
-//                        ViewAdapterText.appendTwitterTimeline(parameters.contentEl, eventInfo.twitterWidgetToken, {});
-                        parameters.contentEl.append('<a class="twitter-timeline" href="https://twitter.com/hashtag/' + Encoder.encode(eventInfo.twitterWidgetToken) + '" data-widget-id="581139399905316864" id="twitter-wjs" target="_twitter_timeline">#eswc2015 Tweets</a>');
-                        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-                    }
-
-                    //TODO: see if we keep this one
-/*
-                    if (_.size(eventInfo.children) > 0) {
-                        parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].event.subEvent + '</h2>');
-                        for (var i = 0; i < eventInfo.children.length; i++) {
-                            var subEvent = eventInfo.children[i];
-                            ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(subEvent.name) + "/" + Encoder.encode(subEvent.id), subEvent.name, {tiny: 'true'});
-                        }
-                    }
-*/
+                    //Twitter timeline (not generic: extracted grom ESWC2015 website)
+                    parameters.contentEl.append('<div id="block-twitter-block-1" class="block block-twitter-block clearfix"><div class="content"><a href="https://twitter.com/" class="twitter-timeline" data-widget-id="373072714841333760" data-chrome="nofooter" data-aria-polite="polite">Tweets by #eswc2015</a></div></div>');
+                    twitter.execute();
                 }
             }
         },
