@@ -10,7 +10,8 @@
  *   Tags:  JSON, SPARQL, AJAX
  **/
 define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'lib/Twitter_widget_ESWC2015.min', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, config, labels, eventHelper) {
-    var localCommandStore = {
+    var twitter_init = null;
+    return {
 
         /**
          * Retrieve lists
@@ -304,13 +305,20 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             },
 
             ModelCallBack: function (dataJSON) {
-                return dataJSON ? (dataJSON.sort(function (a, b) {
+                var roleList = [];
+                var roleIndexes = Object.keys(dataJSON).sort(function (a, b) {
                     if (a.location > b.location)
                         return 1;
                     if (a.location < b.location)
                         return -1;
                     return 0;
-                })) : null;
+                });
+                if(dataJSON) {
+                    for(var i in roleIndexes) {
+                        roleList.push(dataJSON[roleIndexes[i]]);
+                    }
+                }
+                return roleList;
             },
 
             ViewCallBack: function (parameters) {
@@ -831,7 +839,10 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
 
                     //Twitter timeline (not generic: extracted grom ESWC2015 website)
                     parameters.contentEl.append('<div id="block-twitter-block-1" class="block block-twitter-block clearfix"><div class="content"><a href="https://twitter.com/" class="twitter-timeline" data-widget-id="373072714841333760" data-chrome="nofooter" data-aria-polite="polite">Tweets by #eswc2015</a></div></div>');
-                    twitter.execute();
+                    if(!twitter_init) {
+                        twitter.execute();
+                        twitter_init = true;
+                    }
                 }
             }
         },
@@ -1328,5 +1339,4 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         }
     };
-    return localCommandStore;
 });
