@@ -16,7 +16,10 @@ define(['jquery', 'promise', 'configuration', 'localDao', 'localStorage/localSto
             conference = config.conference;
             //Initialize depending objects
             dao.initialize();
-            StorageManager.initialize({conference : config.conference});
+            StorageManager.initialize({
+                conference: config.conference.baseUri,
+                preferences : config.preferences
+            });
         },
 
         /**

@@ -28,6 +28,10 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
                     "http://data.semanticweb.org/conference/eswc/2015/category/keynote-event": "keynote"
                 }
 			},
+            //User preferences
+            "preferences": {
+                "storage": "on"
+            },
 			//Defnition of the conference
 			"conference" : {
 				"name": "12th ESWC2015",
@@ -87,10 +91,10 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
 			// title : the title to display on the header when showing the view
 			// commands : array of datasource/name to precise which command of which datasource to send when catching the route
 			"routes" : {
-		    "Home" : {
-					"hash" : "",
-					"view" : "home",
-					"commands" : [
+                "Home" : {
+                    "hash" : "",
+                    "view" : "home",
+                    "commands" : [
                         {
                             "datasource" : "localDatasource",
                             "name" : "getConferenceEvent"
@@ -99,315 +103,326 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
                             "datasource" : "localDatasource",
                             "name" : "getEventIcs"
                         }
-					]
-				},
-		    	"Schedule" : {
-					"hash" : "schedule/*locationLabel",
-					"view" : "schedule",
-					"title": "schedule",
-					"commands" : [
-						{
-						    "datasource" : "localDatasource",
-						    "name" : "getConferenceSchedule"
-						}/*,
-						{
-							"datasource" : "eventDatasource",
-							"name" : "getConferenceScheduleIcs"
-						}*/
-					]
-				},
-				"WhatsNext" : {
-					"hash" : "whatsnext/",
-					"view" : "whatsnext",
-					"title": "whatsnext",
-					"commands" : [
-						{
-						    "datasource" : "localDatasource",
-						    "name" : "getWhatsNext"
-						}
-					]
-				},
-				"person-by-role" : { 
-					"hash" : "person-by-role/:name/*uri",
-					"view" : "person-by-role",
-					"title": "allRole",
-					"commands" : [
-					    {
-							"datasource" : "localDatasource",
-							"name" : "getPersonsByRole"
-						}
-					]
-				},
+                    ]
+                },
+                "Schedule" : {
+                    "hash" : "schedule/*locationLabel",
+                    "view" : "schedule",
+                    "title": "schedule",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getConferenceSchedule"
+                        }/*,
+                         {
+                         "datasource" : "eventDatasource",
+                         "name" : "getConferenceScheduleIcs"
+                         }*/
+                    ]
+                },
+                "WhatsNext" : {
+                    "hash" : "whatsnext/",
+                    "view" : "whatsnext",
+                    "title": "whatsnext",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getWhatsNext"
+                        }
+                    ]
+                },
+                "person-by-role" : {
+                    "hash" : "person-by-role/:name/*uri",
+                    "view" : "person-by-role",
+                    "title": "allRole",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getPersonsByRole"
+                        }
+                    ]
+                },
                 //"Proceedings-search-by-theme" : {
-				//	"hash" : "search/by-theme/*uri",
-				//	"view" : "",
-				//	"title": "allTopic",
-				//	"commands" : [
-				//	    {
-				//			"datasource" : "eventDatasource",
-				//			"name" : "getAllTheme"
-				//		}
-				//	]
-				//},
+                //	"hash" : "search/by-theme/*uri",
+                //	"view" : "",
+                //	"title": "allTopic",
+                //	"commands" : [
+                //	    {
+                //			"datasource" : "eventDatasource",
+                //			"name" : "getAllTheme"
+                //		}
+                //	]
+                //},
                 //"Proceedings-search-by-category" : {
-				//	"hash" : "search/by-category/*uri",
-				//	"view" : "",
-				//	"title": "allCategory",
-				//	"commands" : [
-				//	    {
-				//			"datasource" : "eventDatasource",
-				//			"name" : "getAllCategories"
-				//		}
-				//	]
-				//},
-				"Events" : {
-					"hash" : "events",
-					"view" : "events",
-					"title": "allEvent",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getAllEvents"
-						}
-					]
-				},
-				"Event" : { 
-					"hash" : "event/:name/*uri",
-					"view" : "event",
-					"title": "event",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getEvent"	
-						},
-						{
-							"datasource" : "localDatasource",
-							"name" : "getEventIcs"
-						}						
-					]
-				},
-				"Event-by-category" : {
-					"hash" : "event-by-category/:name/*uri",
-					"view" : "event-by-category",
-					"title": "searchByCategory",
-					"commands" : [
-					    {
-							"datasource" : "localDatasource",
-							"name" : "getCategory"
-						}
-					]
-				},
-				"Publication" : {
-					"hash" : "publication/:name/*uri",
-					"view" : "publication",
-					"title": "publication",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getPublication"
-						}
-					]
-				},
-				"EventSearch" : {
-					"hash" : "search/event",
-					"view" : "eventSearch",
-					"title": "searchEvent",
-					"commands" : [
-					]
-				},
-				"PersonSearch" : {
-					"hash" : "search/person",
-					"view" : "personSearch",
-					"title": "Search person",
-					"commands" : [
-					]
-				},
-				"PublicationSearch" : {
-					"hash" : "search/publication",
-					"view" : "publicationSearch",
-					"title": "searchPublication",
-					"commands" : [
-					]
-				},
-				"Publications" : { 
-					"hash" : "publications",
-					"view" : "publications",
-					"title": "allPublication",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getAllPublications"
-						}
-					]
-				},
-				"Locations" : { 
-					"hash" : "locations",
-					"view" : "locations",
-					"title": "allLocation",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getAllLocations"
-						}
-					]
-				},
-				"OrganizationSearch" : {
-					"hash" : "search/organization",
-					"view" : "organizationSearch",
-					"title": "searchOrganization",
-					"commands" : [
-					]
-				},
-				"Persons" : {
-					"hash" : "persons",
-					"view" : "persons",
-					"title": "allPerson",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getAllPersons"
-						}
-					]
-				},
-				"Person" : {
-					"hash" : "person/:name/*uri",
-					"view" : "person",
-					"title": "person",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getPerson"
-						},
-						{
-							"datasource" : "GoogleDataSource",
-							"name" : "getAuthorPersonalPage"
-						},
-						{
-							"datasource" : "DblpDatasource",
-							"name" : "getAuthorPublications"
-						}
-					]
-				},
-				"Organizations" : {
-					"hash" : "organizations",
-					"view" : "organizations",
-					"title": "allOrganization",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getAllOrganizations"
-						}
-					]
-				},
-				"Roles" : {
-					"hash" : "roles",
-					"view" : "roles",
-					"title": "allRole",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getAllRoles"
-						}
-					]
-				},
-				//"Topics" : {
-				//	"hash" : "topics",
-				//	"view" : "topics",
-				//	"title": "allTopic",
-				//	"commands" : [
-				//		{
-				//			"datasource" : "eventDatasource",
-				//			"name" : "getAllTopics"
-				//		}
-				//	]
-				//},
-				//"Topic" : {
-				//	"hash" : "topic/:name/*uri",
-				//	"view" : "topic",
-				//	"title": "topic",
-				//	"commands" : [
-				//		{
-				//			"datasource" : "eventDatasource",
-				//			"name" : "getTopic"
-				//		}
-				//	]
-				//},
-				"Categories" : {
-					"hash" : "categories",
-					"view" : "categories",
-					"title": "allCategory",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getAllCategories"
-						}
-					]
-				},
+                //	"hash" : "search/by-category/*uri",
+                //	"view" : "",
+                //	"title": "allCategory",
+                //	"commands" : [
+                //	    {
+                //			"datasource" : "eventDatasource",
+                //			"name" : "getAllCategories"
+                //		}
+                //	]
+                //},
+                "Events" : {
+                    "hash" : "events",
+                    "view" : "events",
+                    "title": "allEvent",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllEvents"
+                        }
+                    ]
+                },
+                "Event" : {
+                    "hash" : "event/:name/*uri",
+                    "view" : "event",
+                    "title": "event",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getEvent"
+                        },
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getEventIcs"
+                        }
+                    ]
+                },
+                "Event-by-category" : {
+                    "hash" : "event-by-category/:name/*uri",
+                    "view" : "event-by-category",
+                    "title": "searchByCategory",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getCategory"
+                        }
+                    ]
+                },
+                "Events-by-location" : {
+                    "hash" : "events-by-location/:name/*uri",
+                    "view" : "events-by-location",
+                    "title": "searchByLocation",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getLocation"
+                        }
+                    ]
+                },
+                "Publication" : {
+                    "hash" : "publication/:name/*uri",
+                    "view" : "publication",
+                    "title": "publication",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getPublication"
+                        }
+                    ]
+                },
+                "EventSearch" : {
+                    "hash" : "search/event",
+                    "view" : "eventSearch",
+                    "title": "searchEvent",
+                    "commands" : [
+                    ]
+                },
+                "PersonSearch" : {
+                    "hash" : "search/person",
+                    "view" : "personSearch",
+                    "title": "Search person",
+                    "commands" : [
+                    ]
+                },
+                "PublicationSearch" : {
+                    "hash" : "search/publication",
+                    "view" : "publicationSearch",
+                    "title": "searchPublication",
+                    "commands" : [
+                    ]
+                },
+                "Publications" : {
+                    "hash" : "publications",
+                    "view" : "publications",
+                    "title": "allPublication",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllPublications"
+                        }
+                    ]
+                },
+                "Locations" : {
+                    "hash" : "locations",
+                    "view" : "locations",
+                    "title": "allLocation",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllLocations"
+                        }
+                    ]
+                },
+                "OrganizationSearch" : {
+                    "hash" : "search/organization",
+                    "view" : "organizationSearch",
+                    "title": "searchOrganization",
+                    "commands" : [
+                    ]
+                },
+                "Persons" : {
+                    "hash" : "persons",
+                    "view" : "persons",
+                    "title": "allPerson",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllPersons"
+                        }
+                    ]
+                },
+                "Person" : {
+                    "hash" : "person/:name/*uri",
+                    "view" : "person",
+                    "title": "person",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getPerson"
+                        },
+                        {
+                            "datasource" : "GoogleDataSource",
+                            "name" : "getAuthorPersonalPage"
+                        },
+                        {
+                            "datasource" : "DblpDatasource",
+                            "name" : "getAuthorPublications"
+                        }
+                    ]
+                },
+                "Organizations" : {
+                    "hash" : "organizations",
+                    "view" : "organizations",
+                    "title": "allOrganization",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllOrganizations"
+                        }
+                    ]
+                },
+                "Roles" : {
+                    "hash" : "roles",
+                    "view" : "roles",
+                    "title": "allRole",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllRoles"
+                        }
+                    ]
+                },
+                //"Topics" : {
+                //	"hash" : "topics",
+                //	"view" : "topics",
+                //	"title": "allTopic",
+                //	"commands" : [
+                //		{
+                //			"datasource" : "eventDatasource",
+                //			"name" : "getAllTopics"
+                //		}
+                //	]
+                //},
+                //"Topic" : {
+                //	"hash" : "topic/:name/*uri",
+                //	"view" : "topic",
+                //	"title": "topic",
+                //	"commands" : [
+                //		{
+                //			"datasource" : "eventDatasource",
+                //			"name" : "getTopic"
+                //		}
+                //	]
+                //},
+                "Categories" : {
+                    "hash" : "categories",
+                    "view" : "categories",
+                    "title": "allCategory",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllCategories"
+                        }
+                    ]
+                },
                 //This one seems useless...
-				"Category" : {
-					"hash" : "category/:name/*uri",
-					"view" : "category",
-					"title": "category",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getCategory"
-						}
-					]
-				},
-				"Authors" : {
-					"hash" : "authors",
-					"view" : "authors",
-					"title": "allAuthor",
-					"commands" : [
-						{
-							"datasource" : "localDatasource",
-							"name" : "getAllAuthors"
-						}
-					]
-				},
-				"ExternPublication" : {
-					"hash" : "externPublication/*uri",
-					"view" : "externPublication",
-					"title": "externalPublication",
-					"commands" : [
-					    {
-							"datasource" : "DblpDatasource",
-							"name" : "getExternPublicationInfo"
-						},
-						{
-							"datasource" : "DblpDatasource",
-							"name" : "getExternPublicationAuthors"
-						}
-					]
-				},
-				"Organization" : {
-					"hash" : "organization/:name/*uri",
-					"view" : "organization",
-					"title": "organization",
-					"commands" : [
-						{
-							"datasource" : "DuckDuckGoDatasource",
-							"name" : "getResultOrganization"
-						},
-						{
-							"datasource" : "localDatasource",
-							"name" : "getOrganization"
-						}
-					]
-				},
-				"Recommendation" : {
-					"hash" : "recommendation",
-					"view" : "recommendation",
-					"title": "recommendation",
-					"commands" : [
-						{
-							"datasource" : "SemanticWebConferenceDatasource",
-							"name" : "getRecommendedPublications"
-						}
-					]
-				}
-			}
+                "Category" : {
+                    "hash" : "category/:name/*uri",
+                    "view" : "category",
+                    "title": "category",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getCategory"
+                        }
+                    ]
+                },
+                "Authors" : {
+                    "hash" : "authors",
+                    "view" : "authors",
+                    "title": "allAuthor",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllAuthors"
+                        }
+                    ]
+                },
+                "ExternPublication" : {
+                    "hash" : "externPublication/*uri",
+                    "view" : "externPublication",
+                    "title": "externalPublication",
+                    "commands" : [
+                        {
+                            "datasource" : "DblpDatasource",
+                            "name" : "getExternPublicationInfo"
+                        },
+                        {
+                            "datasource" : "DblpDatasource",
+                            "name" : "getExternPublicationAuthors"
+                        }
+                    ]
+                },
+                "Organization" : {
+                    "hash" : "organization/:name/*uri",
+                    "view" : "organization",
+                    "title": "organization",
+                    "commands" : [
+                        {
+                            "datasource" : "DuckDuckGoDatasource",
+                            "name" : "getResultOrganization"
+                        },
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getOrganization"
+                        }
+                    ]
+                },
+                "Recommendation" : {
+                    "hash" : "recommendation",
+                    "view" : "recommendation",
+                    "title": "recommendation",
+                    "commands" : [
+                        {
+                            "datasource" : "SemanticWebConferenceDatasource",
+                            "name" : "getRecommendedPublications"
+                        }
+                    ]
+                }
+            }
 		};
     }
 );

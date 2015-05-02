@@ -11,7 +11,7 @@
  **/
 define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'lib/Twitter_widget_ESWC2015.min', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, config, labels, eventHelper) {
 //    var twitter_init = null;
-    return {
+    var localCommandStore = {
 
         /**
          * Retrieve lists
@@ -91,9 +91,9 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     if (_.size(parameters.JSONdata) > 0) {
                         ViewAdapterText.appendList(parameters.JSONdata,
                             {
-                                baseHref: '#schedule/',
-                                hrefCllbck: function (str) {
-                                    return Encoder.encode(str["name"])
+                                baseHref: '#events-by-location/',
+                                hrefCllbck: function (location) {
+                                    return Encoder.encode(location.name) + '/' + Encoder.encode(location.id)
                                 }
                             },
                             "name",
@@ -680,6 +680,12 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 //Reasoner.getMoreSpecificKeywords();
                 if (parameters.JSONdata != null) {
                     if (_.size(parameters.JSONdata) > 0) {
+/*
+                        if (parameters.JSONdata.presentedIn.mainCategory) {
+                            $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].category[parameters.JSONdata.presentedIn.mainCategory] + ': ');
+                        }
+*/
+
                         if (parameters.JSONdata.title) {
                             $("[data-role = page]").find("#header-title").html(parameters.JSONdata.title);
                         }
@@ -771,6 +777,134 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     for (var i in parameters.JSONdata.events) {
                         var event = parameters.JSONdata.events[i];
                         ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(event.name) + '/' + Encoder.encode(event.id), event.name, {tiny: false});
+                    }
+                }
+            }
+        },
+
+        getLocation: {
+            getQuery: function (parameters) {
+                return {
+                    "command": "getLocation",
+                    "data": {
+                        "key": parameters.uri
+                    }
+                };
+            },
+
+            /**
+             * Constructs a hierarchy of objects:
+             * - a map of objects classified by starting dates
+             * - maps of arrays classified by ending dates
+             * - arrays of events
+             */
+            ModelCallBack: function (dataJSON) {
+                var eventList = eventHelper.doubleSortEventsInArray(dataJSON.events);
+                var JSONfile = {};
+                for(var i in eventList) {
+                    var event = eventList[i];
+                    if(!event.categories || !event.categories[0]) {
+                        event.categories = ["none"];
+                    }
+
+                    //retrieve current Start Slot
+                    if (!JSONfile[event.startsAt]) {
+                        JSONfile[event.startsAt] = {};
+                    }
+                    var currentStartSlot = JSONfile[event.startsAt];
+
+                    //retrieve current End Slot
+                    if (!currentStartSlot[event.endsAt]) {
+                        currentStartSlot[event.endsAt] = {
+                            bigEvents: {},
+                            events: []
+                        };
+                    }
+                    var currentEndSlot = currentStartSlot[event.endsAt];
+
+                    //retrieve current eventType slot
+                    if (!currentEndSlot.bigEvents[event.categories[0]]) {
+                        currentEndSlot.bigEvents[event.categories[0]] = [];
+                    }
+
+                    //then push to the correct start/end slot
+                    currentEndSlot.bigEvents[event.categories[0]].push(event);
+                }
+                return JSONfile;
+            },
+
+            ViewCallBack: function (parameters) {
+
+                if (parameters.JSONdata != null) {
+                    $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].navBar.schedule);
+
+                    if (_.size(parameters.JSONdata) > 0) {
+                        if (parameters.name != "null" && parameters.name != "")$("[data-role = page]").find("#header-title").html(parameters.name);
+                        var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
+                        var currentDay, currentUl;
+                        for (var startAt in parameters.JSONdata) {
+
+                            //if the day has changed
+                            if (!currentDay || currentDay != moment(startAt).format('MMMM Do YYYY')) {
+                                var currentCollabsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + moment(startAt).format('LL') + '</h2></div>');
+                                currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
+                                //content.append(currentUl);
+                                content.append(currentCollabsible);
+                                currentCollabsible.append(currentUl);
+                            }
+                            currentDay = moment(startAt).format('MMMM Do YYYY');
+
+                            var startTime = moment(startAt).format('h:mm a');
+
+                            currentUl.append("<li data-role='list-divider' >" + labels[parameters.conference.lang].event.startAt + " " + startTime + "</li>");
+
+                            for (var endAt in parameters.JSONdata[startAt]) {
+
+                                var lasts = moment(startAt).from(moment(endAt), true);
+
+                                var bigEvents = parameters.JSONdata[startAt][endAt].bigEvents;
+                                if (_.size(bigEvents) > 0) {
+                                    for (var eventType in bigEvents) {
+
+                                        for (var i = 0; i < bigEvents[eventType].length; i++) {
+                                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
+
+                                            var newLabel = $('<h3>' + bigEvents[eventType][i].name + '</h3>');
+                                            newEventlink.append(newLabel);
+
+                                            /*
+                                             TODO: can only be fixed if nested queries can be sent on arrays (yet only map objects), since it requires categories to be expanded
+                                             for(var catIndex in bigEvents[eventType][i].categories) {
+                                             //TODO use category name instead of splitting the URI
+                                             var labelCategory = labels[parameters.conference.lang].category[bigEvents[eventType][i].categories[catIndex].split("#")[1]] || "";
+                                             var newCategory = $('<p>' + labelCategory + '</p>');
+                                             newEventlink.append(newCategory);
+                                             }
+                                             */
+                                            var newLast = $('<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>');
+                                            newEventlink.append(newLast);
+
+                                            var LocationHtml = '';
+                                            if (parameters.name && parameters.name != "null" && parameters.name != "") {
+                                                LocationHtml = '<p>' + parameters.name + '</p>';
+                                            } else {
+                                                if (bigEvents[eventType][i].location) {
+
+                                                    LocationHtml += '<p><a href="#schedule/' + Encoder.encode(bigEvents[eventType][i].location) + '" data-role="button" data-icon="search" data-inline="true">' + bigEvents[eventType][i].location + '</a></p>';
+                                                }
+                                            }
+                                            newEventlink.append(LocationHtml);
+
+                                            var newLi = $('<li data-inset="true" ></li>');
+                                            newLi.append(newEventlink);
+                                            currentUl.append(newLi);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].pageTitles.schedule + '</h2>');
+                        parameters.contentEl.append(content);
                     }
                 }
             }
@@ -931,7 +1065,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.location + '</h2>'));
                         for (var i = 0; i < eventInfo.locations.length; i++) {
                             var location = eventInfo.locations[i];
-                            ViewAdapterText.appendButton(parameters.contentEl, '#schedule/' + Encoder.encode(location.name), location.name, {tiny: true});
+                            ViewAdapterText.appendButton(parameters.contentEl, '#events-by-location/' + Encoder.encode(location.name) + '/' + Encoder.encode(location.id), location.name, {tiny: true});
                         }
                     }
 
@@ -1339,4 +1473,5 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         }
     };
+    return localCommandStore;
 });

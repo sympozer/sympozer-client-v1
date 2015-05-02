@@ -29,6 +29,7 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
     //Events
     var eventMap = {};
     var eventLinkMap = {};
+    var eventLinkMapByLocation = {};
 
     //Conference schedule (ordered)
     var confScheduleList = [];
@@ -144,6 +145,9 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
             for(var o in locationData) {
                 var tempLocation = locationData[o];
                 locationLinkMap[tempLocation.id] = tempLocation;
+                //Initialize eventLinkMapByLocation[o]
+                eventLinkMapByLocation[tempLocation.id] = tempLocation;
+                eventLinkMapByLocation[tempLocation.id].events = [];
             }
 
             //Categories (1/2)
@@ -183,40 +187,15 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                     startsAt: tempEvent.startsAt,
                     endsAt: tempEvent.endsAt,
                     location: _.size(tempEvent.locations)>0?locationLinkMap[tempEvent.locations[0]].name:null
-                    /*
-                    ,
-                    //To construct the presentationEventLinkMap and further use...
-                    getMainCategory: function() {
-                        for(var i in this.categories) {
-                            if(this.categories[i] !== config.app.presentationEventCategory)
-                                return this.categories[i];
-                            return null;
-                        }
-                        return false;
-                    },
-                    //Search for the main category of the event (i.e. other than presentation)
-                    //Must not be called before eventMap is completely initialized
-                    getCategoryHierarchy: function() {
-                        var hierarchy = [];
-                        var relatedEvent = eventMap[this.id];
-                        $.each(relatedEvent.categories, function(i) {
-                            hierarchy.push(relatedEvent.categories[i]);
-                        });
-                        if(relatedEvent.parent) {
-                            var relatedEventParent = eventLinkMap[relatedEvent.parent.id?relatedEvent.parent.id:relatedEvent.parent];
-                            var parentCategories = relatedEventParent.getCategoryHierarchy();
-                            $.each(parentCategories, function(i) {
-                                hierarchy.push(parentCategories[i]);
-                            });
-                        }
-                        return hierarchy;
-                    }
-*/
                 };
 
                 //Push into the corresponding maps
                 eventMap[tempEvent.id] = tempEvent;
                 eventLinkMap[tempEvent.id] = tempEventLink;
+                //Pushing the full eventLink in the map -> don't need nested query
+                for(var r in tempEvent.locations) {
+                    eventLinkMapByLocation[tempEvent.locations[r]].events.push(tempEventLink);
+                }
 
                 //Add the event to the categories it refers to.
                 for(var n in tempEvent.categories) {
@@ -312,6 +291,8 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configur
                     return eventLinkMap[query.key];
                 case "getAllEvents":
                     return eventLinkMap;
+                case "getLocation":
+                    return eventLinkMapByLocation[query.key];
                 case "getCategory":
                     return categoryMap[query.key];
                 case "getCategoryLink":

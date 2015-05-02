@@ -11,7 +11,6 @@
 define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
 
 	var StorageManager = {
-
 		initialize : function(parameters){
 			if(!$.jStorage.storageAvailable()){
 				this.commandStore = [];
@@ -22,11 +21,11 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
 
 			var config = StorageManager.get("configurations");
 			if(!config){
-				StorageManager.set("configurations", parameters.conference);
+				StorageManager.set("configurations", parameters);
 			}else{
-				if(StorageManager.get("configurations").id != parameters.conference.id){
+				if(StorageManager.get("configurations").conference != parameters.conference){
 					$.jStorage.flush();
-					this.initialize({conference : parameters.conference});
+					this.initialize(parameters);
 				}
 			}
 			this.maxSize = 500;
@@ -63,6 +62,10 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
         },
 
 		pushCommandToStorage : function (uri, commandName, JSONdata){
+            var config = StorageManager.get("configurations");
+            if(config.storage === "off")
+                return;
+
 			var dataContainer = StorageManager.get(uri);
 
             //Transform the data into a JSON object that is "stringify-able" and can be "de-stringify-ed"
@@ -180,11 +183,14 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
 
 		switchMode : function(mode){
 			var config = StorageManager.get("configurations");
-			config.storage = mode;
+            if(mode === "off") {
+                $.jStorage.flush();
+            }
+            config.storage = mode;
 			this.set("configurations", config);
 		},
 
-		getMode : function(){
+        getMode : function(){
 			return StorageManager.get("configurations").storage;
 		}
     };

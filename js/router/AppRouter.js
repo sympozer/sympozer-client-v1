@@ -5,9 +5,9 @@
  *   Description: This file contains the implementation of the application's router. It has three main role :
  *				INITIALIZATION:
  *					-> The router is initialized to use the route declared in the configuration file (see configuration.js).
- *					-> For each route, the action is prepared and setted to retrieve all commands that have been declared for the route and send an AJAX request.
+ *					-> For each route, the action is prepared and set to retrieve all commands that have been declared for the route and send an AJAX request.
  *				RUNTIME:
- *					-> Using the powerfull routing system of backbone, the router catch url changes. If a change occurs, the router execute the action prepared at initialization time
+ *					-> Using the powerful routing system of backbone, the router catch url changes. If a change occurs, the router execute the action prepared at initialization time
  *					and process the view changes plus the AJAX call.
  *	Version: 1.2
  *   Tags:  BACKBONE, AJAX, ROUTING
@@ -29,9 +29,6 @@ define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/
 
             //Initialize AsyncLoader
             AsyncLoader.initialize();
-
-            //Initialize ViewAdapter to text mode
-//            ViewAdapter.initialize("text");
 
             //Preparing all the routes and their actions
             $.each(config.routes, function(i, routeItem){
@@ -97,7 +94,6 @@ define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/
 */
                         });
                     });
-
                     //When all commands are done
 //                    ViewAdapter.generateJQMobileElement();
                 });

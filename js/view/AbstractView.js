@@ -8,7 +8,7 @@
 *	 Version: 1.2		   
 *   Tags:  TEMPLATE
 **/
-define(['jquery', 'underscore', 'tpl','labels'], function($, _, tpl, labels){
+define(['jquery', 'underscore', 'tpl','labels', 'localStorage/localStorageManager'], function($, _, tpl, labels, localStorageManager){
 	var AbstractView = Backbone.View.extend({
 
 		/** Compilation of the templates **/
@@ -24,7 +24,9 @@ define(['jquery', 'underscore', 'tpl','labels'], function($, _, tpl, labels){
 			this.bonusPanelTpl = _.template(tpl.get("bonusPanel"));
 
 			this.templateName = options.templateName;
-		
+
+//            this.storage = localStorageManager.initToggleButton();
+
 			if(tpl.get(this.templateName)!== undefined){
 				this.contentTpl = _.template(tpl.get(this.templateName));
 			}else{
@@ -40,7 +42,7 @@ define(['jquery', 'underscore', 'tpl','labels'], function($, _, tpl, labels){
 			$(this.el).append(this.navBarTpl({modules : tpl.modules,  labels : labels[this.model.lang]}));
 			$(this.el).append(this.contentTpl({conference : this.model,modules : tpl.modules,  labels : labels[this.model.lang]}));
 			$(this.el).append(this.footerTpl({conference : this.model,  labels : labels[this.model.lang]}));
-			$(this.el).append(this.settingsPanelTpl({conference : this.model, labels : labels[this.model.lang]}));
+			$(this.el).append(this.settingsPanelTpl({conference : this.storage, labels : labels[this.model.lang]}));//.click(localStorageManager.toggleConfig());
 			$(this.el).append(this.bonusPanelTpl({conference : this.model,  labels : labels[this.model.lang]}));
 		}
 	});

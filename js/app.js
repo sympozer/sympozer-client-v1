@@ -5,7 +5,7 @@ define(['router/AppRouter','tpl'], function( appRouter, templateLoader ) {
 
 	function () {
 		//Instantiate the router with configuration (see config.js)
-		var app_router = new appRouter();
+		new appRouter();
 		Backbone.history.start();
 	});
 });
