@@ -7,8 +7,8 @@
 *   Version: 0.8
 *   Tags:  Backbone Jquery-ui-mobile Adapter Linked-Data Graph html5 canvas
 **/
-define(['jquery','twttr'], function($,Twttr){
-	var ViewAdapterText ={
+define(['jquery'], function($){
+	return {
 
 		generateContainer : function(page,commandName){
 			//Creating the content box of the current command
@@ -176,38 +176,8 @@ define(['jquery','twttr'], function($,Twttr){
 			else 
 				el.append(newButton);
 			return newButton;
-		},
-		
-	
-		appendTwitterTimeline: function(el,token,option){
-			if(!token)return;
-			if(!option)var option={};
-
-			var timelineWidget = $('<div id="twitter-timeline"></div>');  
-			if( option.prepend)
-				el.prepend(timelineWidget);
-			else 
-				el.append(timelineWidget);
-	
-			Twttr.widgets.createTimeline(
-				 token,
-				  document.getElementById('twitter-timeline'),
-				  function (el) {
-				    $(".twitter-timeline").css("width", "100%");
-				  },
-				  {
-				    width: '500',
-				    height: '500',
-				    related: ''
-				  }
-
-			);
-			
-			return timelineWidget;
 		}
-		
-	}
-	return ViewAdapterText;
+	};
 });
 
 

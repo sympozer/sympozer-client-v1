@@ -1,21 +1,20 @@
- /**   
-*	Copyright <c> Claude Bernard - University Lyon 1 -  2013
-* 	License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing 
-*   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LEPEUTREC, Benoît DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
-*   Description: This JSON object contains all the configurations of the application. It is a crucial part of the system, it describes :
-*				-> The conference information, the uri, the logo uri and the name.
-*				-> All the datasources defined by their uris, the cross domain  mode they use, and the commandStore (see /model) related to them.
-*				   This command store contains the definition of all the command (a specific parameters+query+callback implementation) that can be send on it.
-*				-> All the routes that the app will use. Each route is configured to display a specific view, if a template exist for this view name (see /templates)
-				   it is rendered, otherwise a generic view is used. The commands we want to send are specified in a "command" array to explicit which command has to be sent when the route is catched
-				   
-*   Tags:  JSON, ENDPOINT, SPARQL
-**/
-define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localCommandStore'],
-	function(DBLPCommandStore, DDGoCommandStore, GoogleCommandStore, LocalCommandStore) {
-		return {
-			"app" : {
-				"appLogo" : "Sympozer_logo.png",
+/**
+ *	Copyright <c> Claude Bernard - University Lyon 1 -  2013
+ * 	License : This file is part of the DataConf application, which is licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported License. See details at : http://liris.cnrs.fr/lionel.medini/wiki/doku.php?id=dataconf&#licensing
+ *   Author: Lionel MEDINI(supervisor), Florian BACLE, Fiona LEPEUTREC, Benoît DURANT-DE-LA-PASTELLIERE, NGUYEN Hoang Duy Tan
+ *   Description: This JSON object contains all the configurations of the application. It is a crucial part of the system, it describes :
+ *				-> The conference information, the uri, the logo uri and the name.
+ *				-> All the datasources defined by their uris, the cross domain  mode they use, and the commandStore (see /model) related to them.
+ *				   This command store contains the definition of all the command (a specific parameters+query+callback implementation) that can be send on it.
+ *				-> All the routes that the app will use. Each route is configured to display a specific view, if a template exist for this view name (see /templates)
+ it is rendered, otherwise a generic view is used. The commands we want to send are specified in a "command" array to explicit which command has to be sent when the route is catched
+
+ *   Tags:  JSON, ENDPOINT, SPARQL
+ **/
+define([], function() {
+        return {
+            "app" : {
+                "appLogo" : "Sympozer_logo.png",
 //                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
                 "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event",
                 styleMatching: {
@@ -27,21 +26,21 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
                     "http://data.semanticweb.org/conference/eswc/2015/category/in-use-event": "inUse",
                     "http://data.semanticweb.org/conference/eswc/2015/category/keynote-event": "keynote"
                 }
-			},
+            },
             //User preferences
             "preferences": {
                 "storage": "on"
             },
-			//Defnition of the conference
-			"conference" : {
-				"name": "12th ESWC2015",
-				"acronym": "ESWC2015",
-				"logoUri": "data/images/miniLogo_eswc15_red_0.png",
-				"website": "http://2015.eswc-conferences.org/",
-				"baseUri": "http://data.semanticweb.org/conference/eswc/2015",
+            //Defnition of the conference
+            "conference" : {
+                "name": "12th ESWC2015",
+                "acronym": "ESWC2015",
+                "logoUri": "data/images/miniLogo_eswc15_red_0.png",
+                "website": "http://2015.eswc-conferences.org/",
+                "baseUri": "http://data.semanticweb.org/conference/eswc/2015",
                 "lang" : "EN",
                 "momentLang" : "EN_us",
-				"storage": "on",
+                "storage": "on",
                 "timeZone": {
                     "name": "Europe/Ljubljana",
                     "standardOffset": "+01",
@@ -49,48 +48,47 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
                     "changeToDaylightMonth": "3",
                     "changeToStandardMonth": "10"
                 }
-			},
+            },
 
-			//Defnition of the datasources
-			// uri : It correspond to the uri to be used to access the service
-			// crossDomainMode : "CORS" or "JSONP" explicits the cross domain technique to be used on the service 
-			// commands : Name of the json var that implements all the commands that can be used on the service
-			"datasources" : {
-				"DblpDatasource" : {
-					"uri" : "http://dblp.rkbexplorer.com/sparql/",
-					"crossDomainMode" : "CORS",
-					"commands" : DBLPCommandStore
-				},
-				"DuckDuckGoDatasource" : {   
-					"uri" : "http://api.duckduckgo.com/",
-					"crossDomainMode" : "JSONP",
-					"commands" : DDGoCommandStore
-				},
-				"GoogleDataSource" : {  
-					"uri" : "https://ajax.googleapis.com/ajax/services/search/web",
-					"crossDomainMode" : "JSONP",
-					"commands" : GoogleCommandStore
+            //Defnition of the datasources
+            // uri : It correspond to the uri to be used to access the service
+            // crossDomainMode : "CORS" or "JSONP" explicits the cross domain technique to be used on the service
+            // commands : Name of the json var that implements all the commands that can be used on the service
+            "datasources" : {
+                "DblpDatasource" : {
+                    "uri" : "http://dblp.rkbexplorer.com/sparql/",
+                    "crossDomainMode" : "CORS",
+                    "commands" : "DBLPCommandStore"
                 },
-/*
-                "eventDatasource" : {
-                    "uri" : "http://sparql.sympozer.com/sparql",
+                "DuckDuckGoDatasource" : {
+                    "uri" : "http://api.duckduckgo.com/",
                     "crossDomainMode" : "JSONP",
-                    "commands" : liveconSparqlCommandStore
+                    "commands" : "DDGoCommandStore"
                 },
-*/
+                "GoogleDataSource" : {
+                    "uri" : "https://ajax.googleapis.com/ajax/services/search/web",
+                    "crossDomainMode" : "JSONP",
+                    "commands" : "GoogleCommandStore"
+                },
                 "localDatasource" : {
                     "uri" : "local:/embedded",
                     //local configuration
                     "local": true,
-                    "commands" : LocalCommandStore
-				}
-			},
-			//Declaration of all the routes to be used by the router
-			// hash : url to be catched by the router
-			// view : the name of the view to display when catching the route (if a template in /templates matches the name, it is used, otherwise a generic view is used)
-			// title : the title to display on the header when showing the view
-			// commands : array of datasource/name to precise which command of which datasource to send when catching the route
-			"routes" : {
+                    "commands" : "LocalCommandStore"
+                },
+                "VotingSystemDatasource" : {
+                    "uri" : "local:/voting",
+                    //local configuration
+                    "local": true,
+                    "commands" : "VotingSystemCommandStore"
+                }
+            },
+            //Declaration of all the routes to be used by the router
+            // hash : url to be catched by the router
+            // view : the name of the view to display when catching the route (if a template in /templates matches the name, it is used, otherwise a generic view is used)
+            // title : the title to display on the header when showing the view
+            // commands : array of datasource/name to precise which command of which datasource to send when catching the route
+            "routes" : {
                 "Home" : {
                     "hash" : "",
                     "view" : "home",
@@ -219,6 +217,10 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
                     "commands" : [
                         {
                             "datasource" : "localDatasource",
+                            "name" : "getPublication"
+                        },
+                        {
+                            "datasource" : "VotingSystemDatasource",
                             "name" : "getPublication"
                         }
                     ]
@@ -423,6 +425,6 @@ define(['DBLPCommandStore', 'DDGoCommandStore','GoogleCommandStore', 'localComma
                     ]
                 }
             }
-		};
+        };
     }
 );

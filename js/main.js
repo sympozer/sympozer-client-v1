@@ -40,16 +40,16 @@ require.config({
             deps: [
                 'jquery'
             ]
-        },
-        'twttr' :{
-            exports : 'widget',
-            init: function () {
-                return this.twttr;
-            }
-        },
-        'localJsonData': {
-            exports: 'localData'
-        }
+        }/*,
+         'twttr' :{
+         exports : 'widget',
+         init: function () {
+         return this.twttr;
+         }
+         },
+         'localJsonData': {
+         exports: 'localData'
+         }*/
     },
     paths: {
 //Libraries
@@ -59,14 +59,13 @@ require.config({
         'jqueryMobile.config' : 'lib/jquerymobile.config',
         'jqueryMobile' : 'lib/jquery.mobile-1.4.0-rc.1.min',
         'promise' : 'lib/promise-done-6.1.0.min',
-        'twttr' :'lib/widget',
         'encoder': 'lib/encoder',
         'blob': 'lib/blob',
         'fileSaver' : 'lib/FileSaver',
         'jStorage' : 'lib/jstorage.min',
         'moment' : 'lib/moment.min',
 //App specific modules
-        'configuration' : './appConfig',
+        'appConfig' : 'appConfig',
         'labels' : 'modules/labels',
         'eventHelper': 'modules/EventHelper',
         'tpl' : 'modules/templateLoader',
@@ -74,21 +73,24 @@ require.config({
         'localDao': 'modules/LocalDAO',
         'localData' : '../data/data_ESWC2015',
 //Data sources
+        'CommandStores': 'model/CommandStores',
         'DBLPCommandStore': 'model/datasources/DBLPCommandStore',
         'DDGoCommandStore': 'model/datasources/DDGoCommandStore',
         'GoogleCommandStore': 'model/datasources/GoogleCommandStore',
-//        'liveconSparqlCommandStore': '../unused/datasources/liveconSparqlCommandStore',
-        'localCommandStore': 'model/datasources/localCommandStore'
+        'LocalCommandStore': 'model/datasources/localCommandStore',
+        'VotingSystemCommandStore': 'model/datasources/VotingSystemCommandStore'
 /* Unused for the moment (LM)
+         'twttr' :'lib/widget',
          'socialite': 'lib/socialite.min',
          'jsw' : 'reasoner/jsw',
          'jswui' : 'reasoner/jswui',
-         'query' : 'reasoner/query',*/
+         'query' : 'reasoner/query',
+*/
     }
 });
 
 //Configurations
-require(['configuration', 'tpl', 'moment'], function(config, tpl, moment){
+require(['appConfig', 'tpl', 'moment'], function(appConfig, tpl, moment){
 
     //Modules configuration
     var modules = [];
@@ -101,7 +103,7 @@ require(['configuration', 'tpl', 'moment'], function(config, tpl, moment){
     tpl.uri = "templates/";
 
     //Language configuration
-    moment.lang(config.conference.momentLang);
+    moment.lang(appConfig.conference.momentLang);
 });
 
 //Entry point

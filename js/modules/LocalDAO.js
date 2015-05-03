@@ -1,7 +1,7 @@
 /**
  * Created by Lionel on 29/01/2015.
  */
-define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'configuration'], function(localData, $, _, encoder, eventHelper, config) {
+define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig'], function(localData, $, _, encoder, eventHelper, config) {
     /**
      * Creating internal DAO objects
      */

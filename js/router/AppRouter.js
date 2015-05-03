@@ -12,7 +12,7 @@
  *	Version: 1.2
  *   Tags:  BACKBONE, AJAX, ROUTING
  **/
-define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/ViewAdapter', 'asyncLoader'], function(Backbone, $, jqueryMobile, config, Encoder, ViewAdapter, AsyncLoader){
+define(['backbone', 'jquery', 'jqueryMobile', 'appConfig', 'CommandStores', 'asyncLoader', 'encoder', 'view/ViewAdapter'], function(Backbone, $, jqueryMobile, config, CommandStores, AsyncLoader, Encoder, ViewAdapter){
 
     return Backbone.Router.extend({
 
@@ -62,12 +62,14 @@ define(['backbone', 'jquery', 'jqueryMobile', 'configuration', 'encoder', 'view/
                     var hashtag = Encoder.getHashtag(config.conference.acronym, name);
 
                     //Appending button and keeping track of new route
-                    var currentPage = ViewAdapter.update(routeItem ,hashtag, config.conference, config.datasources, uri, name);
+                    var currentPage = ViewAdapter.update(routeItem, hashtag, config.conference, config.datasources, uri, name);
 
-                    //Prepare AJAX call according to the commands declared
+                    //Prepare calls according to the commands declared in the config file
                     $.each(routeItem.commands, function(i, commandItem){
+                        //Retrieve datasource in config file
                         var currentDatasource = config.datasources[commandItem.datasource];
-                        var currentCommand    = currentDatasource.commands[commandItem.name];
+                        //Retrieve command in command store according to config file declaration
+                        var currentCommand = CommandStores[currentDatasource.commands][commandItem.name];
 
                         console.log("Call : " + commandItem.name);
                         //asynchronous call

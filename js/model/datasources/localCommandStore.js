@@ -5,13 +5,13 @@
  *   Description: This object contains a json definition of all the commands that will prepare all the queries we want to send on the SemanticWebDogFood sparql endpoint.
  *   Each one of those commands declare the datatype, the method, the query string it is supposed to use on the endpoint and provide a model Callback to store results, a view CallBack to render data stored.
  *   To declare a request, each commands can use the parameters declared for the route they are called in (see Configuration.js). Those parameters can be a name, an uri or both and represents
- *   the entity which we want informations on. After calling a command, the results are stored using the localStorageManager (see localStorage.js) and rendered when needed. It is the role of the router to call those commands according to the configuration file.
+ *   the entity which we want information on. After calling a command, the results are stored using the localStorageManager (see localStorage.js) and rendered when needed. It is the role of the router to call those commands according to the configuration file.
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'lib/Twitter_widget_ESWC2015.min', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, config, labels, eventHelper) {
+define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'lib/Twitter_widget_ESWC2015.min', 'modules/Vote_module_ESWC2015', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, vote, appConfig, labels, eventHelper) {
 //    var twitter_init = null;
-    var localCommandStore = {
+    return {
 
         /**
          * Retrieve lists
@@ -724,7 +724,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             console.log("Presented in: " + parameters.JSONdata.presentedIn.name + "\nPresented in category: " + parameters.JSONdata.presentedIn.mainCategory);
 
                             //Get main category for styling
-                            eventCategory = config.app.styleMatching[parameters.JSONdata.presentedIn.mainCategory];
+                            eventCategory = appConfig.app.styleMatching[parameters.JSONdata.presentedIn.mainCategory];
                         }
                         if (_.size(parameters.JSONdata.keywords) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.topics + '</h2>'));
@@ -734,18 +734,21 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                             }
                         }
 
+/*
                         //voting system
                         var tokens = parameters.JSONdata.id.split('/');
                         var id = tokens[tokens.length - 1];
                         var track = tokens[tokens.length - 2];
                         if(track == 'demo' || track =='poster'){
                         //if(track == 'research' || track == 'in-use'){
-                        	parameters.contentEl.append($('<br><span><h2 style="display:inline;">Vote for best demo track</h2><img src="img/vote.gif" style="width:30px;height:30px"/></span>'));
-                        	parameters.contentEl.append($('<p>Attention! You can only vote once for one demo/poster! Enter your personal code and press "Vote!" button.</p>'));
-                        	parameters.contentEl.append($('<input id="personalCode" type="text" size="10" value="code"/>'));
-                        	parameters.contentEl.append($('<p id="msg" style="color:red"></p>'));
-                        	parameters.contentEl.append($('<button id="voteButton" data-inline="true" class="button" onclick="vote('+"'"+track+"','"+id+"'"+'); return false;">Vote!</button>'));
+                            parameters.contentEl.append($('<br><span><h2 style="display:inline;">Vote for best ' + track + ' track</h2><img src="img/vote.gif" style="width:30px;height:30px"/></span>'));
+                            parameters.contentEl.append($('<p>Attention! You can use the same code to vote for your favorite poster AND your favorite demo! But you can vote only once in each category. Enter your personal code and press "Vote!" button.</p>'));
+                            parameters.contentEl.append($('<input id="personalCode" type="text" size="10" value="code"/>'));
+                            parameters.contentEl.append($('<p id="msg" style="color:red"></p>'));
+                            parameters.contentEl.append($('<script>var vote= ' + vote.vote + ';</script>'));
+                            parameters.contentEl.append($('<button id="voteButton" data-inline="true" class="button" onclick="vote('+"'"+track+"','"+id+"'"+'); return false;">Vote!</button>'));
                         }
+*/
                     }
                 }
                 return eventCategory;
@@ -1118,7 +1121,7 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                 }
 
                 //Get main category for styling
-                return config.app.styleMatching[parameters.JSONdata.mainCategory];
+                return appConfig.app.styleMatching[parameters.JSONdata.mainCategory];
             }
         },
 
@@ -1473,5 +1476,4 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
             }
         }
     };
-    return localCommandStore;
 });

@@ -7,7 +7,7 @@
  *   Tags:  JSON, SPARQL, AJAX
  **/
 
-define(['jquery', 'promise', 'configuration', 'localDao', 'localStorage/localStorageManager'], function($, Promise, config, dao, StorageManager){
+define(['jquery', 'promise', 'appConfig', 'CommandStores', 'localDao', 'localStorage/localStorageManager'], function($, Promise, config, CommandStores, dao, StorageManager){
     var conference = {};
     var asyncL;
     return {
@@ -101,7 +101,7 @@ define(['jquery', 'promise', 'configuration', 'localDao', 'localStorage/localSto
          **/
         executeCommand: function (parameters) {
             var currentDatasource = config.datasources[parameters.datasource];
-            var currentCommand = currentDatasource.commands[parameters.command];
+            var currentCommand = CommandStores[currentDatasource.commands][parameters.command];
             /**
              * Build the query
              */
