@@ -156,12 +156,14 @@ p{
 
 /**********************   Footer ************************/
 #footer{
-  background: #f2f2f2 !important;
+  background: #3a3737 !important;
+/*    background: #f2f2f2 !important;*/
 }
 
 #footer *{
-  background: #f2f2f2 !important;
-  color: #000000 !important;
+  background: #3a3737 !important;
+  color: #f3f6f6;
+/*    color: #000000 !important;*/
 }
 
 .button *{

@@ -8,7 +8,7 @@
  *   Tags:  TEMPLATE
  **/
 define(['backbone', 'jquery', 'promise'], function(Backbone, $, Promise){
-    var tpl = {
+    return {
         // Hash of preloaded templates for the app
         templates:{},
         modules:{},
@@ -38,6 +38,4 @@ define(['backbone', 'jquery', 'promise'], function(Backbone, $, Promise){
             return this.templates[name];
         }
     };
-
-    return tpl;
 });

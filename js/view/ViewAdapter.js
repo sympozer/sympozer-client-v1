@@ -74,11 +74,13 @@ define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/Abstr
                 this.currentPage.removeClass(oldClassName);
                 $("header div").removeClass(oldClassName);
                 $("#navBar *").removeClass(oldClassName + "Inverse");
+                $("#footer *").removeClass(oldClassName + "Inverse");
             }
             if(currentClassName) {
                 this.currentPage.addClass(currentClassName);
                 $("header div").addClass(currentClassName);
                 $("#navBar *").addClass(currentClassName + "Inverse");
+                $("#footer *").addClass(currentClassName + "Inverse");
             }
         },
 

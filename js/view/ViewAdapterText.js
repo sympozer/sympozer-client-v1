@@ -9,7 +9,6 @@
 **/
 define(['jquery'], function($){
 	return {
-
 		generateContainer : function(page,commandName){
 			//Creating the content box of the current command
 			var contentEl = $('<div id="'+commandName+'"></div>');
@@ -60,10 +59,7 @@ define(['jquery'], function($){
 						ulContainer.append(li.append(a));
 					}else{
 						appendToDiv.append(a);
-					}   
-					
-					
-					
+					}
 				}
 				if(option.count){
 					if(currentLabel == remainder){
@@ -116,7 +112,7 @@ define(['jquery'], function($){
 				var currentHref=href.baseHref+href.hrefCllbck(currentData);
 				var currentLabel=currentData[labelProperty];
 				var currentImage=currentData[imageProperty];
-				
+
 				//show
 				if(currentLabel != remainder){ 
 					var a = $('<a href='+currentHref+' '+(isfilter?' ':'data-corners="true" data-role="button" data-iconpos="right" data-icon="arrow-r" data-mini="true" data-shadow="false"')+'></a>');
@@ -137,9 +133,8 @@ define(['jquery'], function($){
 //					}
 					
 					a.append(currentLabel);
-					
-					
 				}
+
 				if(option.count){
 					if(currentLabel == remainder){
 						var currentCount = parseInt(bubbleRemainder.text())+1;
@@ -157,8 +152,6 @@ define(['jquery'], function($){
 //		   if(isfilter)
          ulContainer.appendTo(appendToDiv);
 		},
-
-
 
 		// option { option.theme a|b|c , option.tiny : bool, option.align : right,option.prepend }
 		appendButton: function(el,href,label,option){
@@ -179,10 +172,3 @@ define(['jquery'], function($){
 		}
 	};
 });
-
-
-
-
-
-
-

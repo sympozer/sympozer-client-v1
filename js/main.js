@@ -69,7 +69,7 @@ require.config({
         'labels' : 'modules/labels',
         'eventHelper': 'modules/EventHelper',
         'tpl' : 'modules/templateLoader',
-        'asyncLoader' : 'modules/AsyncLoader',
+        'asyncLoader' : 'router/AsyncLoader',
         'localDao': 'modules/LocalDAO',
         'localData' : '../data/data_ESWC2015',
 //Data sources

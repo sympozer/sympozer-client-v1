@@ -25,8 +25,6 @@ define(['jquery', 'underscore', 'tpl','labels', 'localStorage/localStorageManage
 
 			this.templateName = options.templateName;
 
-//            this.storage = localStorageManager.initToggleButton();
-
 			if(tpl.get(this.templateName)!== undefined){
 				this.contentTpl = _.template(tpl.get(this.templateName));
 			}else{
@@ -42,7 +40,7 @@ define(['jquery', 'underscore', 'tpl','labels', 'localStorage/localStorageManage
 			$(this.el).append(this.navBarTpl({modules : tpl.modules,  labels : labels[this.model.lang]}));
 			$(this.el).append(this.contentTpl({conference : this.model,modules : tpl.modules,  labels : labels[this.model.lang]}));
 			$(this.el).append(this.footerTpl({conference : this.model,  labels : labels[this.model.lang]}));
-			$(this.el).append(this.settingsPanelTpl({conference : this.storage, labels : labels[this.model.lang]}));//.click(localStorageManager.toggleConfig());
+			$(this.el).append(this.settingsPanelTpl({conference : this.storage, labels : labels[this.model.lang]}));
 			$(this.el).append(this.bonusPanelTpl({conference : this.model,  labels : labels[this.model.lang]}));
 		}
 	});
