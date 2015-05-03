@@ -9,8 +9,7 @@
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'moment', 'lib/FileSaver', 'lib/Twitter_widget_ESWC2015.min', 'modules/Vote_module_ESWC2015', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, vote, appConfig, labels, eventHelper) {
-//    var twitter_init = null;
+define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'moment', 'fileSaver', 'Twitter_widget_ESWC2015', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, appConfig, labels, eventHelper) {
     return {
 
         /**
@@ -960,12 +959,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                         parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.homepage + '</a>'));
                     }
 
-/*
-                    if (eventInfo.twitterWidgetToken) {
-                        ViewAdapterText.appendTwitterTimeline(parameters.contentEl, eventInfo.twitterWidgetToken, {});
-                    }
-*/
-
                     if (eventInfo.startsAt) {
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.startAtLe + ' : <span class="inline">' + moment(eventInfo.startsAt).format('LLLL') + '</span></h2>'));
                     }
@@ -973,13 +966,6 @@ define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapter
                     if (eventInfo.endsAt) {
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.endAt + ' : <span class="inline">' + moment(eventInfo.endsAt).format('LLLL') + '</span></h2>'));
                     }
-
-                    //Twitter timeline (not generic: extracted grom ESWC2015 website)
-                    parameters.contentEl.append('<div id="block-twitter-block-1" class="block block-twitter-block clearfix"><div class="content"><a href="https://twitter.com/" class="twitter-timeline" data-widget-id="373072714841333760" data-chrome="nofooter" data-aria-polite="polite">Tweets by #eswc2015</a></div></div>');
-//                    if(!twitter_init) {
-                        twitter.execute();
-//                        twitter_init = true;
-//                    }
                 }
             }
         },

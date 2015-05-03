@@ -40,22 +40,13 @@ require.config({
             deps: [
                 'jquery'
             ]
-        }/*,
-         'twttr' :{
-         exports : 'widget',
-         init: function () {
-         return this.twttr;
-         }
-         },
-         'localJsonData': {
-         exports: 'localData'
-         }*/
+        }
     },
     paths: {
 //Libraries
-        'jquery' : 'lib/jquery',
+        'jquery' : 'lib/jquery-2.1.3.min',
         'underscore' : 'lib/underscore-min',
-        'backbone' : 'lib/backbone',
+        'backbone' : 'lib/backbone-min',
         'jqueryMobile.config' : 'lib/jquerymobile.config',
         'jqueryMobile' : 'lib/jquery.mobile-1.4.0-rc.1.min',
         'promise' : 'lib/promise-done-6.1.0.min',
@@ -69,7 +60,17 @@ require.config({
         'labels' : 'modules/labels',
         'eventHelper': 'modules/EventHelper',
         'tpl' : 'modules/templateLoader',
+        'localStorageManager': 'modules/localStorage/localStorageManager',
+        'Twitter_widget_ESWC2015': 'lib/Twitter_widget_ESWC2015.min',
+        'Vote_module_ESWC2015': 'modules/Vote_module_ESWC2015',
+//Router
         'asyncLoader' : 'router/AsyncLoader',
+        'AppRouter': 'router/AppRouter',
+//View
+        'AbstractView': 'view/AbstractView',
+        'ViewAdapter': 'view/ViewAdapter',
+        'ViewAdapterText': 'view/ViewAdapterText',
+//DAO
         'localDao': 'modules/LocalDAO',
         'localData' : '../data/data_ESWC2015',
 //Data sources
@@ -78,7 +79,8 @@ require.config({
         'DDGoCommandStore': 'model/datasources/DDGoCommandStore',
         'GoogleCommandStore': 'model/datasources/GoogleCommandStore',
         'LocalCommandStore': 'model/datasources/localCommandStore',
-        'VotingSystemCommandStore': 'model/datasources/VotingSystemCommandStore'
+        'VotingSystemCommandStore': 'model/datasources/VotingSystemCommandStore',
+        'TwitterWidgetCommandStore': 'model/datasources/TwitterWidgetCommandStore'
 /* Unused for the moment (LM)
          'twttr' :'lib/widget',
          'socialite': 'lib/socialite.min',

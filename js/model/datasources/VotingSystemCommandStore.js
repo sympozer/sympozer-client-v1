@@ -6,7 +6,7 @@
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'appConfig', 'labels', 'view/ViewAdapter', 'view/ViewAdapterText', 'modules/Vote_module_ESWC2015'],
+define(['jquery', 'underscore', 'appConfig', 'labels', 'ViewAdapter', 'ViewAdapterText', 'Vote_module_ESWC2015'],
 function ($, _, appConfig, labels, ViewAdapter, ViewAdapterText, votingSystem) {
     return {
         getPublication: {

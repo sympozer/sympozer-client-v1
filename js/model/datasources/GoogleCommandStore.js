@@ -10,7 +10,7 @@ ions on. After calling a command, the results are parsed with it own callback fu
 *   Version: 1.2
 *   Tags:  JSON, AJAX
 **/
-define(['jquery', 'underscore', 'encoder', 'view/ViewAdapter', 'view/ViewAdapterText', 'localStorage/localStorageManager', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels){
+define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'localStorageManager', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels){
 	 var GoogleCommandStore = {
 
 		/** Command used to get and display the most probable homepage of a given author**/

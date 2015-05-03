@@ -8,7 +8,7 @@
 *	 Version: 1.2		   
 *   Tags:  TEMPLATE
 **/
-define(['jquery', 'underscore', 'tpl','labels', 'localStorage/localStorageManager'], function($, _, tpl, labels, localStorageManager){
+define(['jquery', 'underscore', 'tpl','labels', 'localStorageManager'], function($, _, tpl, labels, localStorageManager){
 	var AbstractView = Backbone.View.extend({
 
 		/** Compilation of the templates **/

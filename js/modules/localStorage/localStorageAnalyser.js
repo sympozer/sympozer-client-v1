@@ -6,7 +6,7 @@
 *   Version: 1.2
 *   Tags:  JSON, Local Storage
 **/
-define(['jquery', 'underscore', 'localStorage/localStorageManager'], function($, _, StorageManager){
+define(['jquery', 'underscore', 'localStorageManager'], function($, _, StorageManager){
 	return {
 		getMostViewKeyword : function(){
 			var keywordStore = StorageManager.get("keyword");

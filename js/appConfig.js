@@ -81,6 +81,12 @@ define([], function() {
                     //local configuration
                     "local": true,
                     "commands" : "VotingSystemCommandStore"
+                },
+                "TwitterWidgetDatasource" : {
+                    "uri" : "local:/twitter",
+                    //local configuration
+                    "local": true,
+                    "commands" : "TwitterWidgetCommandStore"
                 }
             },
             //Declaration of all the routes to be used by the router
@@ -100,6 +106,10 @@ define([], function() {
                         {
                             "datasource" : "localDatasource",
                             "name" : "getEventIcs"
+                        },
+                        {
+                            "datasource" : "TwitterWidgetDatasource",
+                            "name" : "getConferenceTimeline"
                         }
                     ]
                 },

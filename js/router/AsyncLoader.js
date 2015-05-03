@@ -7,7 +7,7 @@
  *   Tags:  JSON, SPARQL, AJAX
  **/
 
-define(['jquery', 'promise', 'appConfig', 'CommandStores', 'localDao', 'localStorage/localStorageManager'], function($, Promise, config, CommandStores, dao, StorageManager){
+define(['jquery', 'promise', 'appConfig', 'CommandStores', 'localDao', 'localStorageManager'], function($, Promise, config, CommandStores, dao, StorageManager){
     var conference = {};
     var asyncL;
     return {
@@ -142,10 +142,9 @@ define(['jquery', 'promise', 'appConfig', 'CommandStores', 'localDao', 'localSto
                                 resolve(data);
                             });
                         } else {
-                            reject({
-                                "message": query.data.key+ " not found in " + currentDatasource.uri,
-                                "parameters": parameters
-                            });
+                            //This is a hack: avoiding processing queries when not needed.
+                            //console.log("Warning:" + query.command + " not found in " + currentDatasource.uri + ' Continuing anyway...');
+                            resolve(null);
                         }
                     } else {
                         reject({

@@ -1,4 +1,4 @@
-define(['router/AppRouter','tpl'], function( appRouter, templateLoader ) {
+define(['AppRouter','tpl'], function( appRouter, templateLoader ) {
 
     //Loading templates from /templates directory
 	templateLoader.loadTemplates(['header', 'footer', 'navBar', 'home','personSearch', 'publicationSearch', 'organizationSearch','eventSearch', 'schedule','settingsPanel','bonusPanel'],

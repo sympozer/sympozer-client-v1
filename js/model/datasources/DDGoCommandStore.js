@@ -9,7 +9,7 @@
  *   Version: 1.2
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder','view/ViewAdapter', 'view/ViewAdapterText', 'localStorage/localStorageManager', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels){
+define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'localStorageManager', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels){
     var DDGoCommandStore = {
 
         getResultOrganization : {

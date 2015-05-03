@@ -6,7 +6,7 @@
  *                It is directly connected to the ViewAdapterText on which it will trigger events in right order.
  *   Version: 1.2
  **/
-define(['jquery', 'jqueryMobile', 'encoder', 'view/ViewAdapterText', 'view/AbstractView', 'localStorage/localStorageManager'], function($, jqueryMobile, encoder, ViewAdapterText, AbstractView, StorageManager){
+define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 'localStorageManager'], function($, jqueryMobile, encoder, ViewAdapterText, AbstractView, StorageManager){
 
     //Specific class management, depending on the element type (poster, demo...)
     var oldClassName = null,

@@ -12,7 +12,7 @@
  *	Version: 1.2
  *   Tags:  BACKBONE, AJAX, ROUTING
  **/
-define(['backbone', 'jquery', 'jqueryMobile', 'appConfig', 'CommandStores', 'asyncLoader', 'encoder', 'view/ViewAdapter'], function(Backbone, $, jqueryMobile, config, CommandStores, AsyncLoader, Encoder, ViewAdapter){
+define(['backbone', 'jquery', 'jqueryMobile', 'appConfig', 'CommandStores', 'asyncLoader', 'encoder', 'ViewAdapter'], function(Backbone, $, jqueryMobile, config, CommandStores, AsyncLoader, Encoder, ViewAdapter){
 
     return Backbone.Router.extend({
 
@@ -42,16 +42,16 @@ define(['backbone', 'jquery', 'jqueryMobile', 'appConfig', 'CommandStores', 'asy
                 self.route(routeItem.hash, function(name, uri) {
 
                     //Default route
-                    if(name === undefined && uri === undefined){
+                    if(!name && !uri){
                         uri = config.conference.baseUri;
                         name = routeItem.title ? routeItem.title : config.conference.name;
                     } else {
                         //Not sure this is useful
-                        if (uri === undefined) {
+                        if (!uri) {
                             uri = Encoder.encode(name);
                         }
                         //But sure about that one
-                        if (name !== undefined) {
+                        if (!name) {
                             name = Encoder.decode(name);
                         }
                     }
