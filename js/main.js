@@ -49,7 +49,7 @@ require.config({
         'backbone' : 'lib/backbone-min',
         'jqueryMobile.config' : 'lib/jquerymobile.config',
         'jqueryMobile' : 'lib/jquery.mobile-1.4.0-rc.1.min',
-        'promise' : 'lib/promise-done-6.1.0.min',
+        'promise' : 'lib/promise-6.1.0.min',
         'encoder': 'lib/encoder',
         'blob': 'lib/blob',
         'fileSaver' : 'lib/FileSaver',
