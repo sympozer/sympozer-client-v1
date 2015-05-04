@@ -7,7 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/jquery.mobile-1.4.0-rc.1.min.css">
   <link rel="stylesheet" href="css/appStyle.css">
-  <link rel="stylesheet" href="css/font-awesome-4.0.3.min.css">
+  <!--link rel="stylesheet" href="css/font-awesome-4.3.0.min.css"-->
+    <link rel="stylesheet" href="css/font-awesome-4.3.0/css/font-awesome.min.css">
 
 <!--Loading require js dependencies manager-->
   <script data-main="js/main.js" src="js/lib/require.js" type="text/javascript"></script>
@@ -24,11 +25,12 @@
 <!--All templates used by the client (loaded by lib/templateLoader.js-->
 <script type="text/template" id="bonusPanel">
   <div data-role="panel" id="bonusPanel" class="ui-responsive-panel" data-position="left" data-display="overlay">
-    <div id="socialBox">
+      <h1><%= labels.socialBox.title %></h1>
+      <div id="socialBox">
+      <a id="twitterLink" data-role="button" data-inline="true" target="_blank" href="https://twitter.com/intent/tweet?text=Livecon.com&url=http%3A%2F%2Flive-con.com&via=live-con.com"><span><i class="fa fa-twitter"></i></span></a><br/>
+      <a id="googleLink"  data-role="button" data-inline="true" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Flive-con.com.com"><span><i class="fa fa-google-plus"></i></span></a><br/>
+      <a id="linkedinLink"  data-role="button" data-inline="true" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flive-con.com.com&title=live-con.com&summary=live-con.com"><span><i class="fa fa-linkedin"></i></span></a><br/>
       <a  id="facebookLink" data-role="button" data-inline="true" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=live-con.com"><span><i class="fa fa-facebook"></i></span></a>
-      <a id="twitterLink" data-role="button" data-inline="true" target="_blank" href="https://twitter.com/intent/tweet?text=Livecon.com&url=http%3A%2F%2Flive-con.com&via=live-con.com"><span><i class="fa fa-twitter"></i></span></a>
-      <a id="googleLink"  data-role="button" data-inline="true" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Flive-con.com.com"><span><i class="fa fa-google-plus"></i></span></a>
-      <a id="linkedinLink"  data-role="button" data-inline="true" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flive-con.com.com&title=live-con.com&summary=live-con.com"><span><i class="fa fa-linkedin"></i></span></a>
     </div>
   </div>
 </script>
@@ -47,9 +49,9 @@
   <footer id="footer" data-role="footer" data-position="fixed" >
     <div data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" >
       <ul class="ui-grid">
-        <li class="ui-block-a"><a href="#bonusPanel" id="#btnShowPanel"><span><i class="fa fa-plus-square-o"></i></span></a></li>
-        <li class="ui-block-b"><a href="#"><span><i class="fa fa-home"></i></span></a></li>
-        <li class="ui-block-c"><a href="#settingsPanel"><span><i class="fa fa-cog"></i></span></a></li>
+        <li class="ui-block-a"><a href="#bonusPanel" id="#btnShowPanel"><span><i class="fa fa-users"></i> <%= labels.footer.social %></span></a></li>
+        <li class="ui-block-b"><a href="#about"><span><i class="fa fa-info-circle"></i> <%= labels.footer.about %></span></a></li>
+        <li class="ui-block-c"><a href="#settingsPanel"><span><i class="fa fa-cog"></i> <%= labels.footer.settings %></span></a></li>
       </ul>
     </div>
   </footer>
@@ -81,7 +83,7 @@
       <li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li>
       <li><a href="#search/person"><i class="fa fa-male"></i>     <%= labels.navBar.persons %></a></li>
       <% if(_.contains(modules, "publications")) { %> <li><a href="#search/publication"><i class="fa fa-book"></i>    <%= labels.navBar.publications %></a></li> <% } %>
-      <% if(_.contains(modules, "organizations")) { %><li><a href="#search/organization"><i class="fa fa-users"></i>    <%= labels.navBar.organizations %></a></li>   <% } %>
+      <% if(_.contains(modules, "organizations")) { %><li><a href="#search/organization"><i class="fa fa-university"></i>    <%= labels.navBar.organizations %></a></li>   <% } %>
     </ul>
   </nav>
 </script>
@@ -121,7 +123,7 @@
 </script>
 <script type="text/template" id="settingsPanel">
   <div data-role="panel" id="settingsPanel" class="ui-responsive-panel" data-position="right" data-display="overlay">
-    <h1><%= labels.settingsPanel.storage %></h1>
+    <h1><%= labels.settingsPanel.title %></h1>
     <form>
       <label for="flip-storage">Storage</label>
       <select name="flip-storage" id="flip-storage" data-role="slider">
@@ -130,5 +132,19 @@
       </select>
     </form>
   </div>
+</script>
+<script type="text/template" id="about">
+    <article>
+        <section class="content">
+            <h2>The ESWC2015 app has been created by</h2>
+            <a href="#person/Andrea%20Giovanni%20Nuzzolese/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Fandrea-giovanni-nuzzolese" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Andrea Giovanni Nuzzolese</a>
+            <a href="#person/Anna%20Lisa%20Gentile/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Fanna-lisa-gentile" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Anna Lisa Gentile</a>
+            <a href="#person/Fuqi%20Song/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Ffuqi-song" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Fuqi Song</a>
+            <a href="#person/Lionel%20Medini/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Flionel-medini" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Lionel Médini</a>
+            <a href="#person/Luca%20Costabello/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Fluca-costabello" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Luca Costabello</a>
+            <h2>From an original idea by </h2>
+            <p><a href="http://sympozer.com"><img src="img/Sympozer_logo.png" alt="Sympozer logo"/></a>.</p>
+        </section>
+    </article>
 </script>
 </body></html>

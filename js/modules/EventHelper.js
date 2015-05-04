@@ -72,8 +72,49 @@ define(['moment', 'labels', 'appConfig'], function (moment, labels, config) {
             }
             return internalArray;
         },
+        /**
+         * Constructs a hierarchy of objects:
+         * - a map of objects classified by starting dates
+         * - maps of arrays classified by ending dates
+         * - arrays of events
+         * @params
+         * eventArray array of sorted events
+         */
+        constructEventHierarchy: function (eventArray) {
+            var eventHierarchy = {};
+            for(var i in eventArray) {
+                var event = eventArray[i];
+                if(!event.categories || !event.categories[0]) {
+                    event.categories = ["none"];
+                }
 
-/****** ICS export function *****/
+                //retrieve current Start Slot
+                if (!eventHierarchy[event.startsAt]) {
+                    eventHierarchy[event.startsAt] = {};
+                }
+                var currentStartSlot = eventHierarchy[event.startsAt];
+
+                //retrieve current End Slot
+                if (!currentStartSlot[event.endsAt]) {
+                    currentStartSlot[event.endsAt] = {
+                        bigEvents: {},
+                        events: []
+                    };
+                }
+                var currentEndSlot = currentStartSlot[event.endsAt];
+
+                //retrieve current eventType slot
+                if (!currentEndSlot.bigEvents[event.categories[0]]) {
+                    currentEndSlot.bigEvents[event.categories[0]] = [];
+                }
+
+                //then push to the correct start/end slot
+                currentEndSlot.bigEvents[event.categories[0]].push(event);
+            }
+            return eventHierarchy;
+        },
+
+        /****** ICS export function *****/
 
         /**
          * Constructs a realistic ICS description of the event, that can be imported in a calendar

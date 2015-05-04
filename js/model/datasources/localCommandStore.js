@@ -802,37 +802,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
              */
             ModelCallBack: function (dataJSON) {
                 var eventList = eventHelper.doubleSortEventsInArray(dataJSON.events);
-                var JSONfile = {};
-                for(var i in eventList) {
-                    var event = eventList[i];
-                    if(!event.categories || !event.categories[0]) {
-                        event.categories = ["none"];
-                    }
-
-                    //retrieve current Start Slot
-                    if (!JSONfile[event.startsAt]) {
-                        JSONfile[event.startsAt] = {};
-                    }
-                    var currentStartSlot = JSONfile[event.startsAt];
-
-                    //retrieve current End Slot
-                    if (!currentStartSlot[event.endsAt]) {
-                        currentStartSlot[event.endsAt] = {
-                            bigEvents: {},
-                            events: []
-                        };
-                    }
-                    var currentEndSlot = currentStartSlot[event.endsAt];
-
-                    //retrieve current eventType slot
-                    if (!currentEndSlot.bigEvents[event.categories[0]]) {
-                        currentEndSlot.bigEvents[event.categories[0]] = [];
-                    }
-
-                    //then push to the correct start/end slot
-                    currentEndSlot.bigEvents[event.categories[0]].push(event);
-                }
-                return JSONfile;
+                return eventHelper.constructEventHierarchy(eventList);
             },
 
             ViewCallBack: function (parameters) {
@@ -1111,7 +1081,9 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
             }
         },
 
-        /** Command used Schedule of the conf **/
+        /**
+         * Get the conference schedule
+         **/
         getConferenceSchedule: {
             //Retrieves the first level events (direct children of the conference event)
             //TODO see if it is not better to retrieve session events (since they are "sub-track events", scheduled on one particular day od half-day)
@@ -1128,37 +1100,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
              * - arrays of events
              */
             ModelCallBack: function (dataJSON) {
-                var JSONfile = {};
-                for(var i in dataJSON) {
-                    var event = dataJSON[i];
-                    if(!event.categories || !event.categories[0]) {
-                        event.categories = ["none"];
-                    }
-
-                    //retrieve current Start Slot
-                    if (!JSONfile[event.startsAt]) {
-                        JSONfile[event.startsAt] = {};
-                    }
-                    var currentStartSlot = JSONfile[event.startsAt];
-
-                    //retrieve current End Slot
-                    if (!currentStartSlot[event.endsAt]) {
-                        currentStartSlot[event.endsAt] = {
-                            bigEvents: {},
-                            events: []
-                        };
-                    }
-                    var currentEndSlot = currentStartSlot[event.endsAt];
-
-                    //retrieve current eventType slot
-                    if (!currentEndSlot.bigEvents[event.categories[0]]) {
-                        currentEndSlot.bigEvents[event.categories[0]] = [];
-                    }
-
-                    //then push to the correct start/end slot
-                    currentEndSlot.bigEvents[event.categories[0]].push(event);
-                }
-                return JSONfile;
+                return eventHelper.constructEventHierarchy(dataJSON);
             },
 
             ViewCallBack: function (parameters) {

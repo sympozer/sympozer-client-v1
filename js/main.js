@@ -98,6 +98,7 @@ require(['appConfig', 'tpl', 'moment'], function(appConfig, tpl, moment){
     var modules = [];
 
     //Add publications and organizations support
+    modules.push("persons");
     modules.push("publications");
     modules.push("organizations");
 

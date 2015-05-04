@@ -8,8 +8,8 @@
 *	 Version: 1.2		   
 *   Tags:  TEMPLATE
 **/
-define(['jquery', 'underscore', 'tpl','labels', 'localStorageManager'], function($, _, tpl, labels, localStorageManager){
-	var AbstractView = Backbone.View.extend({
+define(['jquery', 'underscore', 'tpl','labels'], function($, _, tpl, labels){
+	return Backbone.View.extend({
 
 		/** Compilation of the templates **/
 		initialize: function (options){
@@ -44,5 +44,4 @@ define(['jquery', 'underscore', 'tpl','labels', 'localStorageManager'], function
 			$(this.el).append(this.bonusPanelTpl({conference : this.model,  labels : labels[this.model.lang]}));
 		}
 	});
-	return AbstractView;
 });

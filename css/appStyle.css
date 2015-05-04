@@ -226,10 +226,11 @@ a .swtich{
 }
 
 #bonusPanel {
-  width: 200px;
+  width: unset;
   border: 1px solid #000;
   border-right: none;
   background: rgba(0,0,0,.5);
   margin: -1px 0;
   color:  rgb(250, 252, 253);
+  text-align: center;
 }

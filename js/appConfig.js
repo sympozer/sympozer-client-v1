@@ -370,7 +370,6 @@ define([], function() {
                         }
                     ]
                 },
-                //This one seems useless...
                 "Category" : {
                     "hash" : "category/:name/*uri",
                     "view" : "category",
@@ -433,6 +432,12 @@ define([], function() {
                             "name" : "getRecommendedPublications"
                         }
                     ]
+                },
+                "About" : {
+                    "hash" : "about",
+                    "view" : "about",
+                    "title": "About",
+                    "commands" : []
                 }
             }
         };

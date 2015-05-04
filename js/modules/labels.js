@@ -10,6 +10,11 @@ define([],function() {
                 "affiliations" : 'Organizations',
                 "made" : 'Publications'
             },
+            'footer': {
+                'social': 'Socialize',
+                'about': 'About',
+                'settings': 'Settings'
+            },
             'publication' : {
                 'allPublication' : 'Publications',
                 'abstract' : 'Abstract',
@@ -110,9 +115,13 @@ define([],function() {
                 'searchByCategory' :'by category'
             },
             'settingsPanel' : {
+                'title': 'Settings',
                 'storage' : 'Storage',
                 'on' : 'On',
                 'off' : 'Off'
+            },
+            'socialBox': {
+                'title': 'Socialize'
             },
             'pageTitles' : {
                 'welcomeStart' : 'Welcome to the',
@@ -157,6 +166,11 @@ define([],function() {
                 'persons' : 'Participants',
                 "affiliations" : 'Organisations',
                 "made" : 'Publications'
+            },
+            'footer': {
+                'social': 'Social',
+                'about': '&Agrave; propos',
+                'settings': 'Paramètres'
             },
             'publication' : {
                 'abstract' : 'Résumé',
@@ -258,9 +272,13 @@ define([],function() {
                 'searchByCategory' :'par catégorie'
             },
             'settingsPanel' : {
+                'title': 'Paramètres',
                 'storage' : 'Storage',
                 'on' : 'Activer',
                 'off' : 'Désactiver'
+            },
+            'socialBox': {
+                'title': 'Partager'
             },
             'pageTitles' : {
                 'welcomeStart' : 'Bienvenue sur l\'appli',
