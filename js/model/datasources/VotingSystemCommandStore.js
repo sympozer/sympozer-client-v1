@@ -35,6 +35,9 @@ function ($, _, appConfig, labels, ViewAdapter, ViewAdapterText, votingSystem) {
                 if (_.size(parameters.JSONdata.presentedIn) > 0) {
                     //Get main category
                     var track = appConfig.app.styleMatching[parameters.JSONdata.presentedIn.mainCategory];
+                    //Get paper number instead of URI
+                    var number = parameters.JSONdata.id.split("/")[parameters.JSONdata.id.split("/").length -1];
+                    console.log(number);
 
                     if(votingSystem.isVotingTrack(track)){
                         parameters.contentEl.append($('<br><span><img src="img/vote.gif" style="width:30px;height:30px"/> <h2 style="display:inline;">Vote for best ' + track + '</h2></span>'));
@@ -42,91 +45,10 @@ function ($, _, appConfig, labels, ViewAdapter, ViewAdapterText, votingSystem) {
                         parameters.contentEl.append($('<input id="personalCode" type="text" size="10" value="code"/>'));
                         parameters.contentEl.append($('<p id="msg" style="color:red"></p>'));
                         parameters.contentEl.append($('<script>var vote= ' + votingSystem.vote + ';</script>'));
-                        parameters.contentEl.append($('<button id="voteButton" data-inline="true" class="button" onclick="vote('+"'"+track+"','"+parameters.JSONdata.id+"'"+'); return false;">Vote!</button>'));
+                        parameters.contentEl.append($('<button id="voteButton" data-inline="true" class="button" onclick="vote('+"'"+track+"','"+number+"'"+'); return false;">Vote!</button>'));
                     }
                 }
             }
         }
-/*,
-
-        *//**
-         * Nested queries (no model or view callback)
-         *//*
-        getPersonLink: {
-            getQuery: function (parameters) {
-                return {
-                    "command": "getPersonLink",
-                    "data": {
-                        "key": parameters.uri
-                    }
-                };
-            }
-        },
-
-        getOrganizationLink: {
-            getQuery: function (parameters) {
-                return {
-                    "command": "getOrganizationLink",
-                    "data": {
-                        "key": parameters.uri
-                    }
-                };
-            }
-        },
-
-        getPublicationLink: {
-            getQuery: function (parameters) {
-                return {
-                    "command": "getPublicationLink",
-                    "data": {
-                        "key": parameters.uri
-                    }
-                };
-            }
-        },
-
-        getRoleLink: {
-            getQuery: function (parameters) {
-                return {
-                    "command": "getRoleLink",
-                    "data": {
-                        "key": parameters.uri
-                    }
-                };
-            }
-        },
-
-        getCategoryLink: {
-            getQuery: function (parameters) {
-                return {
-                    "command": "getCategoryLink",
-                    "data": {
-                        "key": parameters.uri
-                    }
-                };
-            }
-        },
-
-        getEventLink: {
-            getQuery: function (parameters) {
-                return {
-                    "command": "getEventLink",
-                    "data": {
-                        "key": parameters.uri
-                    }
-                };
-            }
-        },
-
-        getLocationLink: {
-            getQuery: function (parameters) {
-                return {
-                    "command": "getLocationLink",
-                    "data": {
-                        "key": parameters.uri
-                    }
-                };
-            }
-        }
-*/    };
+    };
 });

@@ -97,11 +97,14 @@ define([],function() {
                 'workshopEvent' : "Workshop",
                 'keynoteEvent' : "Keynote",
                 'tutorialEvent' : "Tutorial",
-                'posterEvent' : "Poster session",
+                'posterEvent' : "Poster",
                 'phdSymposiumEvent' : "PhD symposium",
                 'challengeEvent' : "Challenge",
                 'presentationEvent' : "Presentation",
-                'breakEvent' : "Break"
+                'breakEvent' : "Break",
+                'demoEvent' : "Demo",
+                'inUseEvent' : "In use",
+                'researchEvent' : "Research"
             },
             'search' : {
                 'searchByName' :'by name',
@@ -112,7 +115,7 @@ define([],function() {
                 'searchByTopic' :'by topic',
                 'searchByPerson' :'by person',
                 'searchByLocation' :'by location',
-                'searchByCategory' :'by category'
+                'searchByCategory' :'by track'
             },
             'settingsPanel' : {
                 'title': 'Settings',
@@ -132,12 +135,12 @@ define([],function() {
                 'publication' : 'Publication',
                 'organization' : 'Organization',
                 'recommendation' : 'Recommendation',
-                'category' : 'Category',
+                'category' : 'Track',
                 'person' : 'Person',
                 'topic' : 'Topic',
                 'allRole' : 'Roles',
                 'allTopic' : 'Topics',
-                'allCategory' : 'Categories',
+                'allCategory' : 'Tracks',
                 'allEvent' : 'Events',
                 'allOrganization' : 'Organizations',
                 'allCountry' : 'Countries',
@@ -145,7 +148,7 @@ define([],function() {
                 'allAuthor' : 'Authors',
                 'allLocation' : 'Locations',
                 'allPublication' : 'Publications',
-                'searchByCategory' : 'Search by category',
+                'searchByCategory' : 'Search by track',
                 'externalPublication' : 'External publication',
                 'searchPerson' : 'Search a person',
                 'searchTopic' : 'search a topic',
@@ -245,7 +248,7 @@ define([],function() {
             },
             'category' : {
                 'sessionEvent' : "Session",
-                'conferenceEvent' : "Conference",
+                'conferenceEvent' : "Conférence",
                 'trackEvent' : "Track",
                 'talkEvent' : "Talk",
                 'panelEvent' : "Panel",
@@ -253,12 +256,15 @@ define([],function() {
                 'socialEvent' : "Social event",
                 'workshopEvent' : "Workshop",
                 'keynoteEvent' : "Keynote",
-                'tutorialEvent' : "Tutorial",
-                'posterEvent' : "Poster session",
+                'tutorialEvent' : "Tutoriel",
+                'posterEvent' : "Posters",
                 'phdSymposiumEvent' : "PhD symposium",
                 'challengeEvent' : "Challenge",
-                'presentationEvent' : "Presentation",
-                'breakEvent' : "Break"
+                'presentationEvent' : "Présentation",
+                'breakEvent' : "Break",
+                'demoEvent' : "Démo",
+                'inUseEvent' : "In use",
+                'researchEvent' : "Recherche"
             },
             'search' : {
                 'searchByName' :'par nom',

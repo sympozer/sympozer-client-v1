@@ -218,7 +218,7 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
             var constructCategoryHierarchy = function(eventId) {
                 for(var i in eventMap[eventId].categories) {
                     var tempCat = eventMap[eventId].categories[i];
-                    if(tempCat !== config.app.presentationEventCategory)
+                    if(tempCat !== config.app.presentationEventCategory && tempCat !== config.app.sessionEventCategory)
                         return tempCat;
                 }
                 if(eventMap[eventId].parent) {

@@ -171,7 +171,8 @@ define(['jquery', 'promise', 'appConfig', 'CommandStores', 'localDao', 'localSto
                             url: currentDatasource.uri + currentCommand.serviceUri,
                             type: currentCommand.method,
                             cache: false,
-                            dataType: currentCommand.dataType,
+                            crossDomain: true,
+                                dataType: currentCommand.dataType,
                             data: query,
                             success: function(data) {
                                 asyncL.processNestedQueries({

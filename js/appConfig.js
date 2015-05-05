@@ -17,9 +17,10 @@ define([], function() {
                 "appLogo" : "Sympozer_logo.png",
 //                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
                 "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event",
+                "sessionEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/session-event",
                 styleMatching: {
                     "http://data.semanticweb.org/conference/eswc/2015/category/poster-event": "poster",
-                    "http://data.semanticweb.org/conference/eswc/2015/category/session-event": "research",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/track-event": "research",
                     "http://data.semanticweb.org/conference/eswc/2015/category/demo-event": "demo",
                     "http://data.semanticweb.org/conference/eswc/2015/category/workshop-event": "workshop",
                     "http://data.semanticweb.org/conference/eswc/2015/category/tutorial-event": "tutorial",

@@ -399,12 +399,10 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
 
             ViewCallBack: function (parameters) {
                 if (parameters.JSONdata != null) {
-                    if (_.size(parameters.JSONdata) > 0) {
-                        for (var i in parameters.JSONdata) {
-                            var category = parameters.JSONdata[i];
-                            if (category.id != "http://data.semanticweb.org/ns/swc/ontology#ConferenceEvent") {
-                                ViewAdapterText.appendButton(parameters.contentEl, '#event-by-category/' + Encoder.encode(category.name) + '/' + Encoder.encode(category.id), labels[parameters.conference.lang].category[category.name], {tiny: false});
-                            }
+                    for (var i in parameters.JSONdata) {
+                        var category = parameters.JSONdata[i];
+                        if (category && category.id != "http://data.semanticweb.org/ns/swc/ontology#ConferenceEvent") {
+                            ViewAdapterText.appendButton(parameters.contentEl, '#event-by-category/' + Encoder.encode(category.name) + '/' + Encoder.encode(category.id), labels[parameters.conference.lang].category[category.name], {tiny: false});
                         }
                     }
                 }
