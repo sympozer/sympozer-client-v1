@@ -411,6 +411,30 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
             }
         },
 
+        getAllCategoriesForPublications: {
+            getQuery: function (parameters) {
+                return {
+                    "command": "getAllCategoriesForPublications",
+                    "data": null
+                };
+            },
+
+            ModelCallBack: function (dataJSON) {
+                return dataJSON ? dataJSON : null;
+            },
+
+            ViewCallBack: function (parameters) {
+                if (_.size(parameters.JSONdata) > 0) {
+                    for (var i in parameters.JSONdata) {
+                        var category = parameters.JSONdata[i];
+                        if (category && category.id != "http://data.semanticweb.org/ns/swc/ontology#ConferenceEvent") {
+                            ViewAdapterText.appendButton(parameters.contentEl, '#publications-by-category/' + Encoder.encode(category.name) + '/' + Encoder.encode(category.id), labels[parameters.conference.lang].category[category.name], {tiny: false});
+                        }
+                    }
+                }
+            }
+        },
+
         /**
          * Retrieve list elements
          */
@@ -732,22 +756,6 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                                 ViewAdapterText.appendButton(parameters.contentEl, '#topic/' + Encoder.encode(keyword.keywordLabel.value) + '/' + Encoder.encode(keyword.keywordUri.value), keyword.keywordLabel.value, {tiny: true});
                             }
                         }
-
-/*
-                        //voting system
-                        var tokens = parameters.JSONdata.id.split('/');
-                        var id = tokens[tokens.length - 1];
-                        var track = tokens[tokens.length - 2];
-                        if(track == 'demo' || track =='poster'){
-                        //if(track == 'research' || track == 'in-use'){
-                            parameters.contentEl.append($('<br><span><h2 style="display:inline;">Vote for best ' + track + ' track</h2><img src="img/vote.gif" style="width:30px;height:30px"/></span>'));
-                            parameters.contentEl.append($('<p>Attention! You can use the same code to vote for your favorite poster AND your favorite demo! But you can vote only once in each category. Enter your personal code and press "Vote!" button.</p>'));
-                            parameters.contentEl.append($('<input id="personalCode" type="text" size="10" value="code"/>'));
-                            parameters.contentEl.append($('<p id="msg" style="color:red"></p>'));
-                            parameters.contentEl.append($('<script>var vote= ' + vote.vote + ';</script>'));
-                            parameters.contentEl.append($('<button id="voteButton" data-inline="true" class="button" onclick="vote('+"'"+track+"','"+id+"'"+'); return false;">Vote!</button>'));
-                        }
-*/
                     }
                 }
                 return eventCategory;
@@ -774,12 +782,44 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
             },
 
             ViewCallBack: function (parameters) {
-                if (_.size(parameters.JSONdata) > 0) {
+                if (parameters.JSONdata) {
                     $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].category[parameters.JSONdata.name] + " events");
                     for (var i in parameters.JSONdata.events) {
                         var event = parameters.JSONdata.events[i];
                         ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(event.name) + '/' + Encoder.encode(event.id), event.name, {tiny: false});
                     }
+                    return appConfig.app.styleMatching[parameters.JSONdata.id];
+                }
+            }
+        },
+
+        getCategoryForPublications: {
+            getQuery: function (parameters) {
+                return {
+                    "command": "getCategoryForPublications",
+                    "data": {
+                        "key": parameters.uri,
+                        "nestedQueries": [{
+                            datasource: "localDatasource",
+                            command: "getPublicationLink",
+                            targetProperty: "publications"
+                        }]
+                    }
+                };
+            },
+
+            ModelCallBack: function (dataJSON) {
+                return dataJSON?dataJSON:null;
+            },
+
+            ViewCallBack: function (parameters) {
+                if (parameters.JSONdata) {
+                    $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].category[parameters.JSONdata.name] + " publications");
+                    for (var i in parameters.JSONdata.publications) {
+                        var publication = parameters.JSONdata.publications[i];
+                        ViewAdapterText.appendButton(parameters.contentEl, '#publication/' + Encoder.encode(publication.title) + '/' + Encoder.encode(publication.id), publication.title, {tiny: false});
+                    }
+                    return appConfig.app.styleMatching[parameters.JSONdata.id];
                 }
             }
         },

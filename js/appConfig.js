@@ -370,6 +370,17 @@ define([], function() {
                         }
                     ]
                 },
+                "CategoriesForPublications" : {
+                    "hash" : "categories-for-publications",
+                    "view" : "categories",
+                    "title": "allCategory",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getAllCategoriesForPublications"
+                        }
+                    ]
+                },
                 "Category" : {
                     "hash" : "category/:name/*uri",
                     "view" : "category",
@@ -378,6 +389,17 @@ define([], function() {
                         {
                             "datasource" : "localDatasource",
                             "name" : "getCategory"
+                        }
+                    ]
+                },
+                "Publications-by-category" : {
+                    "hash" : "publications-by-category/:name/*uri",
+                    "view" : "category",
+                    "title": "category",
+                    "commands" : [
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getCategoryForPublications"
                         }
                     ]
                 },

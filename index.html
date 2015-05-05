@@ -1,137 +1,138 @@
 <!DOCTYPE html>
 <html><head>
-  <title>ESWC 2015 app</title>
-  
-  <link rel="shortcut icon" type="image/x-icon" href="http://liris.cnrs.fr/dataconf/images/Logo_DataConf_ico.png">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/jquery.mobile-1.4.0-rc.1.min.css">
-  <link rel="stylesheet" href="css/appStyle.css">
-  <!--link rel="stylesheet" href="css/font-awesome-4.3.0.min.css"-->
+    <title>ESWC 2015 app</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://liris.cnrs.fr/dataconf/images/Logo_DataConf_ico.png">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.0-rc.1.min.css">
+    <link rel="stylesheet" href="css/appStyle.css">
+    <!--link rel="stylesheet" href="css/font-awesome-4.3.0.min.css"-->
     <link rel="stylesheet" href="css/font-awesome-4.3.0/css/font-awesome.min.css">
 
-<!--Loading require js dependencies manager-->
-  <script data-main="js/main.js" src="js/lib/require.js" type="text/javascript"></script>
+    <!--Loading require js dependencies manager-->
+    <script data-main="js/main.js" src="js/lib/require.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-    // Launch the app
-    require(['main']);
-  </script>
+        // Launch the app
+        require(['main']);
+    </script>
 </head><body style="background-color: rgb(116, 114, 103);">
 <div style="height: 500px; width: 100%; display: table-cell; vertical-align: middle; text-align: center; background-color: rgb(243, 246, 246);">
-<img src="data/images/miniLogo_eswc15_red_0.png" style="display: inline;" height="50" width="auto;"> <img src="img/loader.gif" style="display: inline; margin-left: auto; margin-right: auto;" height="32" width="32">
+    <img src="data/images/miniLogo_eswc15_red_0.png" style="display: inline;" height="50" width="auto;"> <img src="img/loader.gif" style="display: inline; margin-left: auto; margin-right: auto;" height="32" width="32">
 </div>
 
 <!--All templates used by the client (loaded by lib/templateLoader.js-->
 <script type="text/template" id="bonusPanel">
-  <div data-role="panel" id="bonusPanel" class="ui-responsive-panel" data-position="left" data-display="overlay">
-      <h1><%= labels.socialBox.title %></h1>
-      <div id="socialBox">
-      <a id="twitterLink" data-role="button" data-inline="true" target="_blank" href="https://twitter.com/intent/tweet?text=Livecon.com&url=http%3A%2F%2Flive-con.com&via=live-con.com"><span><i class="fa fa-twitter"></i></span></a><br/>
-      <a id="googleLink"  data-role="button" data-inline="true" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Flive-con.com.com"><span><i class="fa fa-google-plus"></i></span></a><br/>
-      <a id="linkedinLink"  data-role="button" data-inline="true" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flive-con.com.com&title=live-con.com&summary=live-con.com"><span><i class="fa fa-linkedin"></i></span></a><br/>
-      <a  id="facebookLink" data-role="button" data-inline="true" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=live-con.com"><span><i class="fa fa-facebook"></i></span></a>
+    <div data-role="panel" id="bonusPanel" class="ui-responsive-panel" data-position="left" data-display="overlay">
+        <h1><%= labels.socialBox.title %></h1>
+        <div id="socialBox">
+            <a id="twitterLink" data-role="button" data-inline="true" target="_blank" href="https://twitter.com/intent/tweet?text=Livecon.com&url=http%3A%2F%2Flive-con.com&via=live-con.com"><span><i class="fa fa-twitter"></i></span></a><br/>
+            <a id="googleLink"  data-role="button" data-inline="true" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Flive-con.com.com"><span><i class="fa fa-google-plus"></i></span></a><br/>
+            <a id="linkedinLink"  data-role="button" data-inline="true" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flive-con.com.com&title=live-con.com&summary=live-con.com"><span><i class="fa fa-linkedin"></i></span></a><br/>
+            <a  id="facebookLink" data-role="button" data-inline="true" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=live-con.com"><span><i class="fa fa-facebook"></i></span></a>
+        </div>
     </div>
-  </div>
 </script>
 <script type="text/template" id="eventSearch">
-  <article id="eventSearch">
-    <section class="content">
-      <a href="#events" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
-      <!--a href="#persons"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByPerson %></a-->
-      <a href="#categories"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByCategory %></a>
-      <!--a href="#topics"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTopic %></a-->
-      <a href="#locations"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByLocation %></a>
-    </section>
-  </article>
+    <article id="eventSearch">
+        <section class="content">
+            <a href="#events" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
+            <!--a href="#persons"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByPerson %></a-->
+            <a href="#categories"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByCategory %></a>
+            <!--a href="#topics"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTopic %></a-->
+            <a href="#locations"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByLocation %></a>
+        </section>
+    </article>
 </script>
 <script type="text/template" id="footer">
-  <footer id="footer" data-role="footer" data-position="fixed" >
-    <div data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" >
-      <ul class="ui-grid">
-        <li class="ui-block-a"><a href="#bonusPanel" id="#btnShowPanel"><span><i class="fa fa-users"></i> <%= labels.footer.social %></span></a></li>
-        <li class="ui-block-b"><a href="#about"><span><i class="fa fa-info-circle"></i> <%= labels.footer.about %></span></a></li>
-        <li class="ui-block-c"><a href="#settingsPanel"><span><i class="fa fa-cog"></i> <%= labels.footer.settings %></span></a></li>
-      </ul>
-    </div>
-  </footer>
+    <footer id="footer" data-role="footer" data-position="fixed" >
+        <div data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" >
+            <ul class="ui-grid">
+                <li class="ui-block-a"><a href="#bonusPanel" id="#btnShowPanel"><span><i class="fa fa-users"></i> <%= labels.footer.social %></span></a></li>
+                <li class="ui-block-b"><a href="#about"><span><i class="fa fa-info-circle"></i> <%= labels.footer.about %></span></a></li>
+                <li class="ui-block-c"><a href="#settingsPanel"><span><i class="fa fa-cog"></i> <%= labels.footer.settings %></span></a></li>
+            </ul>
+        </div>
+    </footer>
 </script>
 <script type="text/template" id="header">
-  <header data-role="header" data-position="inline"  id="header">
-    <div class="ui-grid-b ui-responsive">
-      <div class="ui-block-a">
-        <div class="logoContainer">
-          <a href="#" ><img src ="<%= conference.logoUri %>" alt="logoConference"/></a>
+    <header data-role="header" data-position="inline"  id="header">
+        <div class="ui-grid-b ui-responsive">
+            <div class="ui-block-a">
+                <div class="logoContainer">
+                    <a href="#" ><img src ="<%= conference.logoUri %>" alt="logoConference"/></a>
+                </div>
+            </div>
+            <div class="ui-block-b"  id="uselessNav"></div>
+            <div class="ui-block-c">
+                <h1 id="header-title"><%= title %></h1>
+            </div>
         </div>
-      </div>
-      <div class="ui-block-b"  id="uselessNav"></div>
-      <div class="ui-block-c">
-        <h1 id="header-title"><%= title %></h1>
-      </div>
-    </div>
-  </header>
+    </header>
 </script>
 <script type="text/template" id="home">
-  <article id="home">
-    <section class="content">
-    </section>
-  </article>
+    <article id="home">
+        <section class="content">
+        </section>
+    </article>
 </script>
 <script type="text/template" id="navBar">
-  <nav data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" id="navBar">
-    <ul>
-      <li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li>
-      <li><a href="#search/person"><i class="fa fa-male"></i>     <%= labels.navBar.persons %></a></li>
-      <% if(_.contains(modules, "publications")) { %> <li><a href="#search/publication"><i class="fa fa-book"></i>    <%= labels.navBar.publications %></a></li> <% } %>
-      <% if(_.contains(modules, "organizations")) { %><li><a href="#search/organization"><i class="fa fa-university"></i>    <%= labels.navBar.organizations %></a></li>   <% } %>
-    </ul>
-  </nav>
+    <nav data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" id="navBar">
+        <ul>
+            <li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li>
+            <li><a href="#search/person"><i class="fa fa-male"></i>     <%= labels.navBar.persons %></a></li>
+            <% if(_.contains(modules, "publications")) { %> <li><a href="#search/publication"><i class="fa fa-book"></i>    <%= labels.navBar.publications %></a></li> <% } %>
+            <% if(_.contains(modules, "organizations")) { %><li><a href="#search/organization"><i class="fa fa-university"></i>    <%= labels.navBar.organizations %></a></li>   <% } %>
+        </ul>
+    </nav>
 </script>
 <script type="text/template" id="organizationSearch">
-  <article id="personSearch">
-    <section class="content">
-      <a href="#organizations" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
-      <a href="#persons"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByPerson %></a>
-    </section>
-  </article>
+    <article id="personSearch">
+        <section class="content">
+            <a href="#organizations" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
+            <a href="#persons"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByPerson %></a>
+        </section>
+    </article>
 </script>
 <script type="text/template" id="personSearch">
-  <article id="personSearch">
-    <section class="content">
-      <a href="#persons" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
-      <a href="#roles"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByRole %></a>
-      <% if(_.contains(modules, "publications")) { %><a href="#organizations"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByOrganization %></a> <% } %>
-    </section>
-  </article>
+    <article id="personSearch">
+        <section class="content">
+            <a href="#persons" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
+            <a href="#roles"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByRole %></a>
+            <% if(_.contains(modules, "publications")) { %><a href="#organizations"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByOrganization %></a> <% } %>
+        </section>
+    </article>
 </script>
 <script type="text/template" id="publicationSearch">
-  <article id="publicationSearch">
-    <section class="content">
-      <a href="#publications" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTitle %></a>
-      <a href="#authors"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByAuthor %></a>
-      <!--a href="#topics"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTopic %></a-->
-    </section>
-  </article>
+    <article id="publicationSearch">
+        <section class="content">
+            <a href="#publications" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTitle %></a>
+            <a href="#authors"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByAuthor %></a>
+            <a href="#categories-for-publications"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByCategory %></a>
+            <!--a href="#topics"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTopic %></a-->
+        </section>
+    </article>
 </script>
 <script type="text/template" id="schedule">
-  <article>
-    <section class="content">
-      <a href="#search/event" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.searchEvent %></a>
-      <a href="#whatsnext/"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.whatsnext %></a>
-    </section>
-  </article>
+    <article>
+        <section class="content">
+            <a href="#search/event" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.searchEvent %></a>
+            <a href="#whatsnext/"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.whatsnext %></a>
+        </section>
+    </article>
 </script>
 <script type="text/template" id="settingsPanel">
-  <div data-role="panel" id="settingsPanel" class="ui-responsive-panel" data-position="right" data-display="overlay">
-    <h1><%= labels.settingsPanel.title %></h1>
-    <form>
-      <label for="flip-storage">Storage</label>
-      <select name="flip-storage" id="flip-storage" data-role="slider">
-        <option value="on"><%= labels.settingsPanel.on %></option>
-        <option value="off"><%= labels.settingsPanel.off %></option>
-      </select>
-    </form>
-  </div>
+    <div data-role="panel" id="settingsPanel" class="ui-responsive-panel" data-position="right" data-display="overlay">
+        <h1><%= labels.settingsPanel.title %></h1>
+        <form>
+            <label for="flip-storage">Storage</label>
+            <select name="flip-storage" id="flip-storage" data-role="slider">
+                <option value="on"><%= labels.settingsPanel.on %></option>
+                <option value="off"><%= labels.settingsPanel.off %></option>
+            </select>
+        </form>
+    </div>
 </script>
 <script type="text/template" id="about">
     <article>

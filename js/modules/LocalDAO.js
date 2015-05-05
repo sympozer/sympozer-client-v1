@@ -24,6 +24,7 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
 
     //Categories
     var categoryMap = {};
+    var categoryForPublicationsMap = {};
     var categoryLinkMap = {};
 
     //Events
@@ -110,6 +111,25 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
                 }
             }
 
+            //Categories (1/2)
+            //Must be initialized before events and publications
+            //Construct and sort a map of all categories
+            var categoryData = localData.categories.sort(function (a, b) {
+                if (a.name > b.name)
+                    return 1;
+                if (a.name < b.name)
+                    return -1;
+                return 0;
+            });
+            console.log("Retrieving all categories in DAO...");
+            for(var m in categoryData) {
+                var tempCategory = categoryData[m];
+                categoryMap[tempCategory.id] = tempCategory;
+                categoryMap[tempCategory.id].events = [];
+                categoryForPublicationsMap[tempCategory.id] = tempCategory;
+                categoryForPublicationsMap[tempCategory.id].publications = [];
+            }
+
             //Publications
             var publicationData = localData.publications.sort(function (a, b) {
                 if (a.title > b.title)
@@ -150,23 +170,6 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
                 eventLinkMapByLocation[tempLocation.id].events = [];
             }
 
-            //Categories (1/2)
-            //Must be initialized before events
-            //Construct and sort a map of all categories
-            var categoryData = localData.categories.sort(function (a, b) {
-                if (a.name > b.name)
-                    return 1;
-                if (a.name < b.name)
-                    return -1;
-                return 0;
-            });
-            console.log("Retrieving all categories in DAO...");
-            for(var m in categoryData) {
-                var tempCategory = categoryData[m];
-                categoryMap[tempCategory.id] = tempCategory;
-                categoryMap[tempCategory.id].events = [];
-            }
-
             //Events
             var eventData = localData.events.sort(function (a, b) {
                 if (a.name > b.name)
@@ -199,7 +202,7 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
 
                 //Add the event to the categories it refers to.
                 for(var n in tempEvent.categories) {
-                     var tempCategoryMap = categoryMap[tempEvent.categories[n]];
+                    var tempCategoryMap = categoryMap[tempEvent.categories[n]];
                     tempCategoryMap.events.push(tempEvent.id);
                 }
 
@@ -210,6 +213,28 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
             }
             //Sort events according to start and end dates
             confScheduleList = eventHelper.doubleSortEventsInArray(tempEventList);
+
+            //Construct the event category hierarchies
+            var constructCategoryHierarchy = function(eventId) {
+                for(var i in eventMap[eventId].categories) {
+                    var tempCat = eventMap[eventId].categories[i];
+                    if(tempCat !== config.app.presentationEventCategory)
+                        return tempCat;
+                }
+                if(eventMap[eventId].parent) {
+                    return constructCategoryHierarchy(eventMap[eventId].parent);
+                }
+                return null;
+            };
+            for(var q in eventLinkMap) {
+                eventMap[q].mainCategory = eventLinkMap[q].mainCategory = constructCategoryHierarchy(q);
+
+                //Construct categoryForPublication map
+                for(var t in eventMap[q].papers) {
+                    var tempCategoryForPublicationsMap = categoryForPublicationsMap[eventMap[q].mainCategory];
+                    tempCategoryForPublicationsMap.publications.push(eventMap[q].papers[t]);
+                }
+            }
 
             //Categories (2/2)
             //Remove unused categories
@@ -226,21 +251,11 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
                     }
                 }
             }
-
-            //Construct the event category hierarchies
-            var constructCategoryHierarchy = function(eventId) {
-                for(var i in eventMap[eventId].categories) {
-                    var tempCat = eventMap[eventId].categories[i];
-                    if(tempCat !== config.app.presentationEventCategory)
-                        return tempCat;
+            for(var t in categoryForPublicationsMap) {
+                var tempCategory = categoryForPublicationsMap[t];
+                if(tempCategory.publications.length == 0) {
+                    categoryForPublicationsMap[t] = undefined;
                 }
-                if(eventMap[eventId].parent) {
-                    return constructCategoryHierarchy(eventMap[eventId].parent);
-                }
-                return null;
-            };
-            for(var q in eventLinkMap) {
-                eventMap[q].mainCategory = eventLinkMap[q].mainCategory = constructCategoryHierarchy(q);
             }
 
             //TODO: remove this.
@@ -295,10 +310,14 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
                     return eventLinkMapByLocation[query.key];
                 case "getCategory":
                     return categoryMap[query.key];
+                case "getCategoryForPublications":
+                    return categoryForPublicationsMap[query.key];
                 case "getCategoryLink":
                     return categoryLinkMap[query.key];
                 case "getAllCategories":
                     return categoryLinkMap;
+                case "getAllCategoriesForPublications":
+                    return categoryForPublicationsMap;
                 case "getConferenceSchedule":
                     return confScheduleList;
                 //Only need the event URIs, as the ICS will be calculated in the model callback
