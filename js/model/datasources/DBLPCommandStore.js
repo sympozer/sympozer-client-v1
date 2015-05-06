@@ -11,32 +11,29 @@
 **/
 define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'localStorageManager','labels', 'jsesc'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels, jsesc){
 	var DBLPCommandStore = {
-	 
 		getAuthorPublications : {
 			dataType : "XML",
 			method : "GET",
 			serviceUri : "",
 			getQuery : function(parameters){ 
-					
+
 				var prefix =  '  PREFIX akt:  <http://www.aktors.org/ontology/portal#>   ';  
-				
+
 				var nameToUpper = '';
 				$.each(parameters.name.toLowerCase().split(' '), function(i,currentWord){
 					nameToUpper+= this.charAt(0).toUpperCase() + this.slice(1) + ' ';
 				})
-				var validName = nameToUpper.substring(0, nameToUpper.length-1) || null;
+				var validName = jsesc(nameToUpper.substring(0, nameToUpper.length-1)) || null;
 
 				var query =   ' SELECT DISTINCT ?publiUri ?publiTitle WHERE { '+
-								'OPTIONAL{	?publiUri akt:has-author <'+ jsesc(parameters.uri) +'>   '+
-								'	?publiUri  akt:has-title ?publiTitle. } '+
 								' {	?publiUri akt:has-author ?o       '+
-								'	?o akt:full-name "'+ jsesc(validName)+'". '+
+								'	?o akt:full-name "'+ validName+'". '+
 								'	?publiUri  akt:has-title ?publiTitle.  }'+
 								'} ';
 				var  ajaxData = { query : prefix + query };
 				return ajaxData;
 			},
-		
+
 			ModelCallBack : function(dataXML,conferenceUri,datasourceUri, currentUri){ 
 				var JSONfile = {};
 				$(dataXML).find("sparql > results > result").each(function(i){ 
@@ -48,7 +45,7 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'loc
 				//StorageManager.pushCommandToStorage(currentUri,"getAuthorPublications",JSONfile);
 				return JSONfile;
 			},
-			
+
 			ViewCallBack : function(parameters){
 				if(parameters.JSONdata != null){
 					if(_.size(parameters.JSONdata) > 0 ){
@@ -64,7 +61,7 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'loc
 				} 
 			}
 		},
-		
+
 		getExternPublicationAuthors : {
 			dataType : "XML",
 			method : "GET",
@@ -104,8 +101,7 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'loc
 				}
 			}
 		},
-	                                
-	                                
+
 		getExternPublicationInfo : {
 			dataType : "XML",
 			method : "GET",
@@ -139,7 +135,6 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'loc
 					JSONToken.publiLink   = $(this).find("[name = publiLink]").text();
 					JSONfile[i] = JSONToken;
 				});
-//				StorageManager.pushCommandToStorage(currentUri,"getExternPublicationInfo",JSONfile);
 				return JSONfile;
 			},
 			
@@ -180,7 +175,3 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'loc
 	};   
 	return DBLPCommandStore;                                                           
 });
-
-
-    
- 
