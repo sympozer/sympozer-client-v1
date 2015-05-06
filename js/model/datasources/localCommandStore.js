@@ -9,7 +9,7 @@
  *   Version: 1.1
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'moment', 'fileSaver', 'Twitter_widget_ESWC2015', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, twitter, appConfig, labels, eventHelper) {
+define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'moment', 'fileSaver', 'appConfig', 'labels', 'eventHelper'], function ($, _, Encoder, ViewAdapter, ViewAdapterText, moment, FileSaver, appConfig, labels, eventHelper) {
     return {
 
         /**
@@ -1040,12 +1040,14 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                         parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.homepage + '</a>'));
                     }
 
+/*
                     if (eventInfo.twitterWidgetToken) {
                         parameters.contentEl.append($('<h3>' + labels[parameters.conference.lang].specialButtons.twitterLink + '</h3>'));
 //                        ViewAdapterText.appendTwitterTimeline(parameters.contentEl, eventInfo.twitterWidgetToken, {});
                         parameters.contentEl.append('<a class="twitter-timeline" href="https://twitter.com/hashtag/' + Encoder.encode(eventInfo.twitterWidgetToken) + '" data-widget-id="581139399905316864" id="twitter-wjs" target="_twitter_timeline">#eswc2015 Tweets</a>');
                         !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
                     }
+*/
 
                     if (eventInfo.startsAt) {
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.startAtLe + ' : <span class="inline">' + moment(eventInfo.startsAt).format('LLLL') + '</span></h2>'));
