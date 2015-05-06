@@ -55,6 +55,7 @@ require.config({
         'fileSaver' : 'lib/FileSaver',
         'jStorage' : 'lib/jstorage.min',
         'moment' : 'lib/moment.min',
+        'jsesc' : 'lib/jsesc',
 //App specific modules
         'appConfig' : 'appConfig',
         'labels' : 'modules/labels',

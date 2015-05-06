@@ -9,7 +9,7 @@
 *   Version: 1.2
 *   Tags:  JSON, SPARQL, AJAX
 **/
-define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'localStorageManager','labels' ], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels){
+define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'localStorageManager','labels', 'jsesc'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels, jsesc){
 	var DBLPCommandStore = {
 	 
 		getAuthorPublications : {
@@ -27,10 +27,10 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'loc
 				var validName = nameToUpper.substring(0, nameToUpper.length-1) || null;
 
 				var query =   ' SELECT DISTINCT ?publiUri ?publiTitle WHERE { '+
-								'OPTIONAL{	?publiUri akt:has-author <'+parameters.uri+'>   '+
+								'OPTIONAL{	?publiUri akt:has-author <'+ jsesc(parameters.uri) +'>   '+
 								'	?publiUri  akt:has-title ?publiTitle. } '+
 								' {	?publiUri akt:has-author ?o       '+
-								'	?o akt:full-name "'+validName+'". '+
+								'	?o akt:full-name "'+ jsesc(validName)+'". '+
 								'	?publiUri  akt:has-title ?publiTitle.  }'+
 								'} ';
 				var  ajaxData = { query : prefix + query };
