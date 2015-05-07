@@ -113,11 +113,11 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
             //Handle update dataset button
             var updateDatasetBtn = this.currentPage.find("#updateAll");
             updateDatasetBtn.on( "click", function() {
-                $.getJSON(appConfig.conference.updateUri, null, function(newDataset) {
+                $.getJSON(appConfig.conference.updateUri, function(newDataset) {
                     StorageManager.set("dataset", newDataset);
-                    $("#updateResults").html(newDataset.length + "elements fetched.");
+                    $("#updateResults").html((newDataset.categories.length + newDataset.events.length + newDataset.locations.length + newDataset.organizations.length + newDataset.persons.length + newDataset.publications.length) + " elements fetched.");
                     localDao.initialize();
-                })
+                });
             });
         },
 

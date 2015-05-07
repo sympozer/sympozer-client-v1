@@ -32,7 +32,7 @@ define(['jquery'], function($){
                 crossDomain: true,
                 statusCode: {
                     200: function (response) {
-                        var msg = 'Vote successfully, thanks for your participation!';
+                        var msg = 'Vote successful, thanks for your participation!';
                         $('#personalCode').hide();
                         $('#voteButton').hide();
                         $('#msg').html(msg);
