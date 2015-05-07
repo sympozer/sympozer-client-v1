@@ -39,6 +39,7 @@ define([], function() {
                 "logoUri": "data/images/miniLogo_eswc15_red_0.png",
                 "website": "http://2015.eswc-conferences.org/",
                 "baseUri": "http://data.semanticweb.org/conference/eswc/2015",
+                "updateUri": "http://oak.dcs.shef.ac.uk/eswc2015/data/data_ESWC2015.js",
                 "lang" : "EN",
                 "momentLang" : "EN_us",
                 "storage": "on",
@@ -104,10 +105,10 @@ define([], function() {
                             "datasource" : "localDatasource",
                             "name" : "getConferenceEvent"
                         },
-                        {
-                            "datasource" : "localDatasource",
-                            "name" : "getEventIcs"
-                        },
+//                        {
+//                            "datasource" : "localDatasource",
+//                            "name" : "getEventIcs"
+//                        },
                         {
                             "datasource" : "TwitterWidgetDatasource",
                             "name" : "getConferenceTimeline"
@@ -192,11 +193,12 @@ define([], function() {
                         {
                             "datasource" : "localDatasource",
                             "name" : "getEvent"
-                        },
-                        {
-                            "datasource" : "localDatasource",
-                            "name" : "getEventIcs"
                         }
+//                        ,
+//                        {
+//                            "datasource" : "localDatasource",
+//                            "name" : "getEventIcs"
+//                        }
                     ]
                 },
                 "Event-by-category" : {

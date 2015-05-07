@@ -8,27 +8,36 @@
 *   Version: 1.2
 *   Tags:  JSON, Local Storage
 **/
-define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
+define(['jquery', 'underscore', 'jStorage', 'localData'], function($, _, jStorage, localData){
 
 	var StorageManager = {
 		initialize : function(parameters){
+            //If no storage available, use in-memory storage for session
 			if(!$.jStorage.storageAvailable()){
 				this.commandStore = [];
 		    }
-			if(!StorageManager.get("keyword")){
-				StorageManager.set("keyword",{});
-			}
 
-			var config = StorageManager.get("configurations");
+            //Load all dataset into storage
+            if(!StorageManager.get("dataset")){
+                StorageManager.set("dataset", localData);
+            }
+
+            //Init configuration
+			var config = StorageManager.get("configuration");
 			if(!config){
-				StorageManager.set("configurations", parameters);
-			}else{
-				if(StorageManager.get("configurations").conference != parameters.conference){
+				StorageManager.set("configuration", parameters);
+			} else {
+				if(StorageManager.get("configuration").conference != parameters.conference){
 					$.jStorage.flush();
 					this.initialize(parameters);
 				}
 			}
 			this.maxSize = 500;
+
+            //Init keywords
+            if(!StorageManager.get("keywords")){
+                StorageManager.set("keywords",{});
+            }
 
             // Utility functions for serializing and parsing XML documents
             // Cross-browser XML serializer
@@ -42,7 +51,7 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
                 else{
                     return (new XMLSerializer()).serializeToString(xmlDoc);
                 }
-            }
+            };
 
             // XML parser from string that does not reply with a jQuery object
             // used in pullCommandFromStorage to reverse the raw innerHTML pushed when data is an XML document
@@ -62,8 +71,8 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
         },
 
 		pushCommandToStorage : function (uri, commandName, JSONdata){
-            var config = StorageManager.get("configurations");
-            if(config.storage === "off")
+            var config = StorageManager.get("configuration");
+            if(config.preferences.storage === "off")
                 return;
 
 			var dataContainer = StorageManager.get(uri);
@@ -94,8 +103,8 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
 
         pullCommandFromStorage : function (uri, commandName){
             var dataContainer = StorageManager.get(uri);
-            var config = StorageManager.get("configurations");
-            if(config.storage == "on" && dataContainer != null && dataContainer[commandName] != null){
+            var config = StorageManager.get("configuration");
+            if(config.preferences.storage == "on" && dataContainer != null && dataContainer[commandName] != null){
                 dataContainer.cpt +=1;
                 //De-stringify stored objects
                 var retrievedObject = dataContainer[commandName];
@@ -111,8 +120,8 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
 
         pullCommandsFromStorage : function (uri){
             var dataContainer = StorageManager.get(uri);
-            var config = StorageManager.get("configurations");
-            if(dataContainer != null && config.storage == "on"){
+            var config = StorageManager.get("configuration");
+            if(dataContainer != null && config.preferences.storage == "on"){
                 dataContainer.cpt +=1;
                 var restoredContainer = {};
                 for (var key in dataContainer) {
@@ -127,7 +136,7 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
         },
 
 		pushKeywordToStorage : function (keyword){
-			var dataContainer = StorageManager.get("keyword");
+			var dataContainer = StorageManager.get("keywords");
 			
 			if(dataContainer != null){
 				if(!dataContainer.hasOwnProperty(keyword)){
@@ -138,12 +147,12 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
 				}else{
 					dataContainer[keyword].cpt += 1;
 				}
-				StorageManager.set("keyword",dataContainer);
+				StorageManager.set("keywords",dataContainer);
 			}
 		},
 
 		pullKeywordFromStorage : function (){
-			var dataContainer = StorageManager.get("keyword");
+			var dataContainer = StorageManager.get("keywords");
 			if(dataContainer != null){
 				return keyword;
 			}else{
@@ -181,17 +190,27 @@ define(['jquery', 'underscore', 'jStorage'], function($, _, jStorage){
 			}
 		},
 
+        /**
+         * Callback of the toggle storage button in settings panel
+         * @param mode value to set
+         */
 		switchMode : function(mode){
-			var config = StorageManager.get("configurations");
+			var config = StorageManager.get("configuration");
             if(mode === "off") {
+                //Save the dataset
+                var dataset = StorageManager.get("dataset");
+                //Flush all LocalStorage
                 $.jStorage.flush();
+                //Restore the data
+                StorageManager.set("dataset", dataset);
             }
-            config.storage = mode;
-			this.set("configurations", config);
+            config.preferences.storage = mode;
+            StorageManager.set("configuration", config);
+            console.log( $.jStorage.get("configuration"));
 		},
 
         getMode : function(){
-			return StorageManager.get("configurations").storage;
+			return StorageManager.get("configuration").preferences.storage;
 		}
     };
 	return StorageManager;

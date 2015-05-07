@@ -126,12 +126,19 @@
     <div data-role="panel" id="settingsPanel" class="ui-responsive-panel" data-position="right" data-display="overlay">
         <h1><%= labels.settingsPanel.title %></h1>
         <form>
-            <label for="flip-storage">Storage</label>
+            <label for="flip-storage">Navigation storage</label>
             <select name="flip-storage" id="flip-storage" data-role="slider">
                 <option value="on"><%= labels.settingsPanel.on %></option>
                 <option value="off"><%= labels.settingsPanel.off %></option>
             </select>
         </form>
+        <div id="updateData">
+            Update data online
+            <br/>
+            <a id="updateAll" data-role="button" data-inline="true">Click to update</a>
+            <br/>
+            <span id="updateResults"></span>
+        </div>
     </div>
 </script>
 <script type="text/template" id="about">

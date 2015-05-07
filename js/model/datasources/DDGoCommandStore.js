@@ -9,20 +9,18 @@
  *   Version: 1.2
  *   Tags:  JSON, SPARQL, AJAX
  **/
-define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'localStorageManager', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels){
-    var DDGoCommandStore = {
-
+define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, labels){
+    return {
         getResultOrganization : {
             dataType : "JSONP",
             method : "GET",
             serviceUri : "",
             getQuery : function(parameters){
                 var authorName = parameters.name.split("_").join(" ");
-                var  ajaxData = { q : authorName, format : "json",pretty : 1, no_redirect : 1  , output : "json"};
-                return ajaxData ;
+                return { q : authorName, format : "json",pretty : 1, no_redirect : 1  , output : "json"};
             },
-            ModelCallBack : function (dataJSON,conferenceUri,datasourceUri, currentUri){
 
+            ModelCallBack : function (dataJSON){
                 var JSONfile = {};
                 var JSONToken = {};
                 JSONToken.Heading        = dataJSON.Heading;
@@ -33,8 +31,6 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'loc
                     JSONToken.FirstURL   = dataJSON.Results[0].FirstURL;
                 }
                 JSONfile[0] = JSONToken;
-
-                //	StorageManager.pushCommandToStorage(currentUri,"getResultOrganization",JSONfile);
                 return JSONfile;
             },
 
@@ -68,8 +64,4 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'loc
             }
         }
     };
-    return DDGoCommandStore;
 });
-
-
-   

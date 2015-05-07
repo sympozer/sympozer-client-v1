@@ -44,8 +44,6 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                     JSONToken.name = this.topicLabel ? this.topicLabel.value : null;
                     JSONfile[i] = JSONToken;
                 });
-                //console.log(JSONfile);
-                //StorageManager.pushCommandToStorage(currentUri, "getAllTopics", JSONfile);
                 return JSONfile;
             },
 

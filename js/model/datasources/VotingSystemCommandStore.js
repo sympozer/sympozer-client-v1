@@ -37,7 +37,6 @@ function ($, _, appConfig, labels, ViewAdapter, ViewAdapterText, votingSystem) {
                     var track = appConfig.app.styleMatching[parameters.JSONdata.presentedIn.mainCategory];
                     //Get paper number instead of URI
                     var number = parameters.JSONdata.id.split("/")[parameters.JSONdata.id.split("/").length -1];
-                    console.log(number);
 
                     if(votingSystem.isVotingTrack(track)){
                         parameters.contentEl.append($('<br><span><img src="img/vote.gif" style="width:30px;height:30px"/> <h2 style="display:inline;">Vote for best ' + track + '</h2></span>'));

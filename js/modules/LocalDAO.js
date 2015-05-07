@@ -1,7 +1,7 @@
 /**
  * Created by Lionel on 29/01/2015.
  */
-define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig'], function(localData, $, _, encoder, eventHelper, config) {
+define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localStorageManager'], function($, _, encoder, eventHelper, config, localStorageManager) {
     /**
      * Creating internal DAO objects
      */
@@ -43,6 +43,9 @@ define(['localData', 'jquery', 'underscore', 'encoder', 'eventHelper', 'appConfi
          * Populating it with information from the dataset
          **/
         initialize: function() {
+            //Initialize the data from LocalStorage
+            var localData = localStorageManager.get("dataset");
+
             //Persons
             var personData = localData.persons.sort(function (a, b) {
                 if (a.name > b.name)

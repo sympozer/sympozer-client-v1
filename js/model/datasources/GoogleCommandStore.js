@@ -10,10 +10,10 @@ ions on. After calling a command, the results are parsed with it own callback fu
 *   Version: 1.2
 *   Tags:  JSON, AJAX
 **/
-define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'localStorageManager', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, StorageManager, labels){
-	 var GoogleCommandStore = {
+define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, labels){
+	 return {
 
-		/** Command used to get and display the most probable homepage of a given author**/
+		/** Command used to get and display the most probable homepage of a given person **/
 		getAuthorPersonalPage : {
 			dataType : "JSONP",
 			method : "GET",
@@ -21,16 +21,14 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'lo
 
 			getQuery : function(parameters){
 				var searchValue = parameters.name;
-				var  ajaxData = { q : searchValue, v : "1.0" };
-				return ajaxData ; 
+				return { q : searchValue, v : "1.0" };
 			},
 
-			ModelCallBack : function (dataJSON, conferenceUri, datasourceUri, currentUri){
+			ModelCallBack : function (dataJSON){
 				var JSONfile   = {};
 				var JSONToken  = {};
 				JSONToken.authorHomepage  = dataJSON.responseData.results[0].url;
 				JSONfile[0] = JSONToken;
-				//StorageManager.pushCommandToStorage(currentUri,"getAuthorPersonalPage",JSONfile);
 				return JSONfile;
 			},
 
@@ -47,6 +45,5 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'lo
 			}
 		}
 	};
-	return GoogleCommandStore;
 });
    

@@ -6,7 +6,7 @@
  *                It is directly connected to the ViewAdapterText on which it will trigger events in right order.
  *   Version: 1.2
  **/
-define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 'localStorageManager'], function($, jqueryMobile, encoder, ViewAdapterText, AbstractView, StorageManager){
+define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 'localStorageManager', 'appConfig', 'localDao'], function($, jqueryMobile, encoder, ViewAdapterText, AbstractView, StorageManager, appConfig, localDao){
 
     //Specific class management, depending on the element type (poster, demo...)
     var oldClassName = null,
@@ -108,6 +108,16 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
             switchStorageModeBtn.val(StorageManager.getMode()).slider('refresh');
             switchStorageModeBtn.on( "slidestop", function() {
                 StorageManager.switchMode(this.value);
+            });
+
+            //Handle update dataset button
+            var updateDatasetBtn = this.currentPage.find("#updateAll");
+            updateDatasetBtn.on( "click", function() {
+                $.getJSON(appConfig.conference.updateUri, null, function(newDataset) {
+                    StorageManager.set("dataset", newDataset);
+                    $("#updateResults").html(newDataset.length + "elements fetched.");
+                    localDao.initialize();
+                })
             });
         },
 

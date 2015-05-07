@@ -15,11 +15,11 @@ define(['jquery', 'promise', 'appConfig', 'CommandStores', 'localDao', 'localSto
             asyncL = this;
             conference = config.conference;
             //Initialize depending objects
-            dao.initialize();
             StorageManager.initialize({
                 conference: config.conference.baseUri,
                 preferences : config.preferences
             });
+            dao.initialize();
         },
 
         /**
