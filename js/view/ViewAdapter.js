@@ -112,14 +112,7 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
             //Handle update dataset button
             var updateDatasetBtn = this.currentPage.find("#updateAll");
             updateDatasetBtn.on( "click", function() {
-/*
-                $.getJSON(appConfig.conference.updateUri, function(newDataset) {
-                    StorageManager.set("dataset", newDataset);
-                    $("#updateResults").html((newDataset.categories.length + newDataset.events.length + newDataset.locations.length + newDataset.organizations.length + newDataset.persons.length + newDataset.publications.length) + " elements fetched.");
-                    localDao.initialize();
-                });
-*/
-                $.when($.get("http://wit.istc.cnr.it/eswc2015/data/version")).then(function(newVersion) {
+                $.when($.get(appConfig.conference.versionUri)).then(function(newVersion) {
                     var oldVersion = StorageManager.get("version");
                     if(!newVersion) {
                         $("#updateResults").html("Impossible to reach the update server. Try again later.");
