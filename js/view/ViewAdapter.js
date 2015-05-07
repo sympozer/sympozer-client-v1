@@ -102,7 +102,6 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
             var linkedinLink = this.currentPage.find("#linkedinLink");
             linkedinLink.attr("href","http://www.linkedin.com/shareArticle?mini=true&url="+currentUrl);
 
-
             //Handle switch of storage mode on/off
             var switchStorageModeBtn = this.currentPage.find("#flip-storage");
             switchStorageModeBtn.val(StorageManager.getMode()).slider('refresh');
@@ -131,4 +130,3 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
         }
     };
 });
-
