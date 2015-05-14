@@ -5,9 +5,9 @@
  *   Description: Utility functions to sort events and export them as ICS
  **/
 //TODO: UNDERSTAND WHY HERE I CANNOT USE 'configuration' (MODULE NAME) AND MUST USE 'appConfig' (FILE NAME), AS DONE IN OTHER MODULES!!!!!
-define(['moment', 'labels', 'appConfig'], function (moment, labels, config) {
+define(['jquery', 'moment', 'labels', 'encoder', 'appConfig'], function ($, moment, labels, Encoder, config) {
     return {
-/****** Utility functions to sort the event list *****/
+        /****** Utility functions to sort the event list *****/
 
         /*
          * Moment.js utility that indicates how to sort events
@@ -72,6 +72,7 @@ define(['moment', 'labels', 'appConfig'], function (moment, labels, config) {
             }
             return internalArray;
         },
+
         /**
          * Constructs a hierarchy of objects:
          * - a map of objects classified by starting dates
@@ -166,6 +167,72 @@ define(['moment', 'labels', 'appConfig'], function (moment, labels, config) {
                 "LOCATION:" + locationText + "\n" +
                 "END:VEVENT\n" +
                 "END:VCALENDAR";
+        },
+
+        renderAsSchedule: function(eventArray, arrayName, language) {
+            var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
+            var currentDay, currentUl;
+            for (var startAt in eventArray) {
+
+                //if the day has changed
+                if (!currentDay || currentDay != moment(startAt).format('MMMM Do YYYY')) {
+                    var currentCollabsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + moment(startAt).format('LL') + '</h2></div>');
+                    currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
+                    //content.append(currentUl);
+                    content.append(currentCollabsible);
+                    currentCollabsible.append(currentUl);
+                }
+                currentDay = moment(startAt).format('MMMM Do YYYY');
+
+                var startTime = moment(startAt).format('h:mm a');
+
+                currentUl.append("<li data-role='list-divider' >" + labels[language].event.startAt + " " + startTime + "</li>");
+
+                for (var endAt in eventArray[startAt]) {
+
+                    var lasts = moment(startAt).from(moment(endAt), true);
+
+                    var bigEvents = eventArray[startAt][endAt].bigEvents;
+                    for (var eventType in bigEvents) {
+
+                        for (var i = 0; i < bigEvents[eventType].length; i++) {
+                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
+
+                            var newLabel = $('<h3>' + bigEvents[eventType][i].name + '</h3>');
+                            newEventlink.append(newLabel);
+
+                            /*
+                             TODO: can only be fixed if nested queries can be sent on arrays (yet only map objects), since it requires categories to be expanded
+                             for(var catIndex in bigEvents[eventType][i].categories) {
+                             //TODO use category name instead of splitting the URI
+                             var labelCategory = labels[language].category[bigEvents[eventType][i].categories[catIndex].split("#")[1]] || "";
+                             var newCategory = $('<p>' + labelCategory + '</p>');
+                             newEventlink.append(newCategory);
+                             }
+                             */
+
+                            var newLast = $('<p>' + labels[language].event.last + ' : <strong>' + lasts + '</strong></p>');
+                            newEventlink.append(newLast);
+
+                            var LocationHtml = '';
+                            if (arrayName && arrayName != "") {
+                                LocationHtml = '<p>' + arrayName + '</p>';
+                            } else {
+                                if (bigEvents[eventType][i].location) {
+
+                                    LocationHtml += '<p><a href="#schedule/' + Encoder.encode(bigEvents[eventType][i].location) + '" data-role="button" data-icon="search" data-inline="true">' + bigEvents[eventType][i].location + '</a></p>';
+                                }
+                            }
+                            newEventlink.append(LocationHtml);
+
+                            var newLi = $('<li data-inset="true" ></li>');
+                            newLi.append(newEventlink);
+                            currentUl.append(newLi);
+                        }
+                    }
+                }
+            }
+            return content;
         }
     };
 });

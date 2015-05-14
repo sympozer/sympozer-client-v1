@@ -842,75 +842,12 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
             },
 
             ViewCallBack: function (parameters) {
+                if (parameters.name != "null" && parameters.name != "")
+                    $("[data-role = page]").find("#header-title").html(parameters.name);
 
                 if (parameters.JSONdata != null) {
-                    $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].navBar.schedule);
-
                     if (_.size(parameters.JSONdata) > 0) {
-                        if (parameters.name != "null" && parameters.name != "")$("[data-role = page]").find("#header-title").html(parameters.name);
-                        var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
-                        var currentDay, currentUl;
-                        for (var startAt in parameters.JSONdata) {
-
-                            //if the day has changed
-                            if (!currentDay || currentDay != moment(startAt).format('MMMM Do YYYY')) {
-                                var currentCollabsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + moment(startAt).format('LL') + '</h2></div>');
-                                currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
-                                //content.append(currentUl);
-                                content.append(currentCollabsible);
-                                currentCollabsible.append(currentUl);
-                            }
-                            currentDay = moment(startAt).format('MMMM Do YYYY');
-
-                            var startTime = moment(startAt).format('h:mm a');
-
-                            currentUl.append("<li data-role='list-divider' >" + labels[parameters.conference.lang].event.startAt + " " + startTime + "</li>");
-
-                            for (var endAt in parameters.JSONdata[startAt]) {
-
-                                var lasts = moment(startAt).from(moment(endAt), true);
-
-                                var bigEvents = parameters.JSONdata[startAt][endAt].bigEvents;
-                                if (_.size(bigEvents) > 0) {
-                                    for (var eventType in bigEvents) {
-
-                                        for (var i = 0; i < bigEvents[eventType].length; i++) {
-                                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
-
-                                            var newLabel = $('<h3>' + bigEvents[eventType][i].name + '</h3>');
-                                            newEventlink.append(newLabel);
-
-                                            /*
-                                             TODO: can only be fixed if nested queries can be sent on arrays (yet only map objects), since it requires categories to be expanded
-                                             for(var catIndex in bigEvents[eventType][i].categories) {
-                                             //TODO use category name instead of splitting the URI
-                                             var labelCategory = labels[parameters.conference.lang].category[bigEvents[eventType][i].categories[catIndex].split("#")[1]] || "";
-                                             var newCategory = $('<p>' + labelCategory + '</p>');
-                                             newEventlink.append(newCategory);
-                                             }
-                                             */
-                                            var newLast = $('<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>');
-                                            newEventlink.append(newLast);
-
-                                            var LocationHtml = '';
-                                            if (parameters.name && parameters.name != "null" && parameters.name != "") {
-                                                LocationHtml = '<p>' + parameters.name + '</p>';
-                                            } else {
-                                                if (bigEvents[eventType][i].location) {
-
-                                                    LocationHtml += '<p><a href="#schedule/' + Encoder.encode(bigEvents[eventType][i].location) + '" data-role="button" data-icon="search" data-inline="true">' + bigEvents[eventType][i].location + '</a></p>';
-                                                }
-                                            }
-                                            newEventlink.append(LocationHtml);
-
-                                            var newLi = $('<li data-inset="true" ></li>');
-                                            newLi.append(newEventlink);
-                                            currentUl.append(newLi);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        var content = eventHelper.renderAsSchedule(parameters.JSONdata, parameters.name, parameters.conference.lang);
                         parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].pageTitles.schedule + '</h2>');
                         parameters.contentEl.append(content);
                     }
@@ -952,7 +889,6 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 if (_.size(eventInfo) > 0) {
                     if (eventInfo.name) {
                         $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].pageTitles.welcomeStart + ' ' + eventInfo.name + ' ' + labels[parameters.conference.lang].pageTitles.welcomeEnd);
-//                        $("[data-role = page]").find("#header-title").html(eventInfo.name);
                     }
 
                     if (eventInfo.description) {
@@ -1014,6 +950,11 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
 
             ModelCallBack: function (dataJSON) {
                 dataJSON.locations = dataJSON.locations?dataJSON.locations:null;
+                //Order the events so that they can be rendered as schedule
+                if(dataJSON.children) {
+                    var childrenList = eventHelper.doubleSortEventsInArray(dataJSON.children);
+                    dataJSON.children = eventHelper.constructEventHierarchy(childrenList);
+                }
                 return dataJSON;
             },
 
@@ -1099,11 +1040,15 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                     }
 
                     if (_.size(eventInfo.children) > 0) {
+                        var children = eventHelper.renderAsSchedule(eventInfo.children, eventInfo.mainCategory, parameters.conference.lang);
                         parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].event.subEvent + '</h2>');
+                        parameters.contentEl.append(children);
+/*
                         for (var i = 0; i < eventInfo.children.length; i++) {
                             var subEvent = eventInfo.children[i];
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(subEvent.name) + "/" + Encoder.encode(subEvent.id), subEvent.name, {tiny: 'true'});
                         }
+*/
                     }
 
                     if (_.size(eventInfo.resources) > 0) {
@@ -1142,75 +1087,12 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
             },
 
             ViewCallBack: function (parameters) {
+                $("[data-role = page]").find("#header-title").html(appConfig.conference.name + " " + labels[parameters.conference.lang].navBar.schedule);
+
 
                 if (parameters.JSONdata != null) {
-                    $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].navBar.schedule);
-
                     if (_.size(parameters.JSONdata) > 0) {
-                        if (parameters.name != "null" && parameters.name != "")$("[data-role = page]").find("#header-title").html(parameters.name);
-                        var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
-                        var currentDay, currentUl;
-                        for (var startAt in parameters.JSONdata) {
-
-                            //if the day has changed
-                            if (!currentDay || currentDay != moment(startAt).format('MMMM Do YYYY')) {
-                                var currentCollabsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + moment(startAt).format('LL') + '</h2></div>');
-                                currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
-                                //content.append(currentUl);
-                                content.append(currentCollabsible);
-                                currentCollabsible.append(currentUl);
-                            }
-                            currentDay = moment(startAt).format('MMMM Do YYYY');
-
-                            var startTime = moment(startAt).format('h:mm a');
-
-                            currentUl.append("<li data-role='list-divider' >" + labels[parameters.conference.lang].event.startAt + " " + startTime + "</li>");
-
-                            for (var endAt in parameters.JSONdata[startAt]) {
-
-                                var lasts = moment(startAt).from(moment(endAt), true);
-
-                                var bigEvents = parameters.JSONdata[startAt][endAt].bigEvents;
-                                if (_.size(bigEvents) > 0) {
-                                    for (var eventType in bigEvents) {
-
-                                        for (var i = 0; i < bigEvents[eventType].length; i++) {
-                                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
-
-                                            var newLabel = $('<h3>' + bigEvents[eventType][i].name + '</h3>');
-                                            newEventlink.append(newLabel);
-
-/*
-                                            TODO: can only be fixed if nested queries can be sent on arrays (yet only map objects), since it requires categories to be expanded
-                                            for(var catIndex in bigEvents[eventType][i].categories) {
-                                                //TODO use category name instead of splitting the URI
-                                                var labelCategory = labels[parameters.conference.lang].category[bigEvents[eventType][i].categories[catIndex].split("#")[1]] || "";
-                                                var newCategory = $('<p>' + labelCategory + '</p>');
-                                                newEventlink.append(newCategory);
-                                            }
-*/
-                                            var newLast = $('<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>');
-                                            newEventlink.append(newLast);
-
-                                            var LocationHtml = '';
-                                            if (parameters.name && parameters.name != "null" && parameters.name != "") {
-                                                LocationHtml = '<p>' + parameters.name + '</p>';
-                                            } else {
-                                                if (bigEvents[eventType][i].location) {
-
-                                                    LocationHtml += '<p><a href="#schedule/' + Encoder.encode(bigEvents[eventType][i].location) + '" data-role="button" data-icon="search" data-inline="true">' + bigEvents[eventType][i].location + '</a></p>';
-                                                }
-                                            }
-                                            newEventlink.append(LocationHtml);
-
-                                            var newLi = $('<li data-inset="true" ></li>');
-                                            newLi.append(newEventlink);
-                                            currentUl.append(newLi);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        var content = eventHelper.renderAsSchedule(parameters.JSONdata, parameters.name, parameters.conference.lang);
                         parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].pageTitles.schedule + '</h2>');
                         parameters.contentEl.append(content);
                     }

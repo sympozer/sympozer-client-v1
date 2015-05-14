@@ -53,8 +53,6 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
             $(page.el).bind('pagehide', function(event, data) {
                 $(event.currentTarget).remove();
             });
-
-
             return $(page.el);
         },
 
