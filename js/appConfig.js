@@ -26,7 +26,8 @@ define([], function() {
                     "http://data.semanticweb.org/conference/eswc/2015/category/tutorial-event": "tutorial",
                     "http://data.semanticweb.org/conference/eswc/2015/category/in-use-event": "inUse",
                     "http://data.semanticweb.org/conference/eswc/2015/category/keynote-event": "keynote"
-                }
+                },
+                "imageFolder": "data/images/" //Needs a trailing slash
             },
             //User preferences
             "preferences": {

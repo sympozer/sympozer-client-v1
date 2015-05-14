@@ -38,6 +38,21 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
     //Locations
     var locationLinkMap = {};
 
+    /**
+     * Convenient function that returns an URI for an image property given in the dataset
+     * @param uri URI from the dataset
+     * @returns {*} a local URI in the app image folder or an absolute URI
+     */
+    var getPictureUri = function(uri) {
+        //Assume the image, if present, is located either at an HTTP* URI or in the image folder stated in the config file
+        if(uri && typeof uri === 'string') {
+            if(!uri.startsWith("http")) {
+                return config.app.imageFolder + uri;
+            }
+            return uri;
+        }
+        return null;
+    }
     return {
         /**
          * Populating it with information from the dataset
@@ -57,9 +72,7 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
             console.log("Retrieving all persons in DAO...");
             for(var i in personData) {
                 var tempPerson = personData[i];
-                //Quick & dirty!
-                //Assume the image, if present is stored in the www/data/images folder
-                tempPerson.depiction = tempPerson.depiction ? "data/images/" + tempPerson.depiction : null;
+                tempPerson.depiction = getPictureUri(tempPerson.depiction);
 
                 var tempPersonLink = {
                     id: tempPerson.id,
@@ -110,7 +123,7 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
                 organizationLinkMap[tempOrga.id] = {
                     id: tempOrga.id,
                     name: tempOrga.name,
-                    depiction: tempOrga.depiction
+                    depiction: getPictureUri(tempOrga.depiction)
                 }
             }
 
@@ -144,15 +157,13 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
             console.log("Retrieving all publications in DAO...");
             for(var k in publicationData) {
                 var tempPubli = publicationData[k];
-                //THIS IS A HACK!
-                //Assume the image, if present is stored in the www/data/images folder
-                tempPubli.thumbnail = tempPubli.thumbnail ? "data/images/" + tempPubli.thumbnail : null;
+                tempPubli.thumbnail = getPictureUri(tempPubli.thumbnail);
                 publicationMap[tempPubli.id] = tempPubli;
                 publicationLinkMap[tempPubli.id] = {
                     id: tempPubli.id,
                     title: tempPubli.title,
                     //In the ESWC2015 dataset, publication images are identified as "thumbnail"
-                    thumbnail: tempPubli.thumbnail ? tempPubli.thumbnail : null
+                    thumbnail: getPictureUri(tempPubli.thumbnail)
                 }
             }
 
@@ -189,7 +200,7 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
                     id: tempEvent.id,
                     name: tempEvent.name,
                     //Yet, no property named "thumbnail" exists, but why not...
-                    thumbnail: tempEvent.thumbnail ? tempEvent.thumbnail : null,
+                    thumbnail: getPictureUri(tempEvent.thumbnail),
                     startsAt: tempEvent.startsAt,
                     endsAt: tempEvent.endsAt,
                     location: _.size(tempEvent.locations)>0?locationLinkMap[tempEvent.locations[0]].name:null
@@ -254,10 +265,10 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
                     }
                 }
             }
-            for(var t in categoryForPublicationsMap) {
-                var tempCategory = categoryForPublicationsMap[t];
+            for(var u in categoryForPublicationsMap) {
+                var tempCategory = categoryForPublicationsMap[u];
                 if(tempCategory.publications.length == 0) {
-                    categoryForPublicationsMap[t] = undefined;
+                    categoryForPublicationsMap[u] = undefined;
                 }
             }
 
