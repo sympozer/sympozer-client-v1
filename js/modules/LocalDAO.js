@@ -253,7 +253,7 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
             //Categories (2/2)
             //Remove unused categories
             for(var p in categoryMap) {
-                var tempCategory = categoryMap[p];
+                tempCategory = categoryMap[p];
                 if(tempCategory.events.length == 0) {
                     categoryMap[p] = undefined;
                 } else {
@@ -266,7 +266,7 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
                 }
             }
             for(var u in categoryForPublicationsMap) {
-                var tempCategory = categoryForPublicationsMap[u];
+                tempCategory = categoryForPublicationsMap[u];
                 if(tempCategory.publications.length == 0) {
                     categoryForPublicationsMap[u] = undefined;
                 }

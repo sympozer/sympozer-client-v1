@@ -950,8 +950,9 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
 
             ModelCallBack: function (dataJSON) {
                 dataJSON.locations = dataJSON.locations?dataJSON.locations:null;
-                //Order the events so that they can be rendered as schedule
-                if(dataJSON.children) {
+                //Order the sub-events: replace the array by a hierarchy so that they can be rendered as schedule
+                //Do that only once (the first time this event is read from the dataset)
+                if(dataJSON.children && Array.isArray(dataJSON.children)) {
                     var childrenList = eventHelper.doubleSortEventsInArray(dataJSON.children);
                     dataJSON.children = eventHelper.constructEventHierarchy(childrenList);
                 }
@@ -1102,6 +1103,73 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
 
         /**
          * Retrieves the next events in the schedule and sorts them by location
+         * UNUSED for ESWC 2015
+         **/
+        getWhatsNextByLocation: {
+            getQuery: function () {
+                return {
+                    "command": "getWhatsNext",
+                    "data": null
+                }
+            },
+
+            ModelCallBack: function (dataJSON, conferenceUri) {
+                var JSONfile = [];
+                var seenLocation = [];
+                var now = new Date();
+
+                for(var i in dataJSON) {
+                    var event = dataJSON[i];
+                    if (event.id !== conferenceUri && event.startsAt && event.endsAt && moment(now).isBefore(event.startsAt)) {
+                        //retrieve first event by location
+                        var currentLocation = event.location;
+                        if (_.indexOf(seenLocation, currentLocation) == -1) {
+                            seenLocation.push(currentLocation);
+                            JSONfile.push({
+                                location: currentLocation,
+                                event: event
+                            });
+                        }
+                    }
+                }
+
+                return JSONfile.sort(function (a, b) {
+                    if (a.location > b.location)
+                        return 1;
+                    if (a.location < b.location)
+                        return -1;
+                    return 0;
+                });
+            },
+
+            ViewCallBack: function (parameters) {
+                $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].pageTitles.whatsnext);
+
+                if (_.size(parameters.JSONdata) > 0) {
+                    var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
+                    var currentUl;
+                    $.each(parameters.JSONdata, function (i, eventContainer) {
+                        var lasts = moment(eventContainer.event.startsAt).from(moment(eventContainer.event.endsAt), true);
+                        var formattedStart = moment(eventContainer.event.startsAt).format('h:mm a')
+                        var currentCollapsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + eventContainer.location + '</h2></div>');
+                        currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
+                        content.append(currentCollapsible);
+                        currentCollapsible.append(currentUl);
+
+                        currentUl.append('<li data-inset="true"  ><a href="#event/' + Encoder.encode(eventContainer.event.name) + '/' + Encoder.encode(eventContainer.event.id) + '">\
+							                <h3>' + eventContainer.event.name + '</h3>\
+							                <p>' + labels[parameters.conference.lang].event.startAt + ' : <strong>' + formattedStart + '</p>\
+											<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>\
+							                </a></li>');
+                    });
+
+                    parameters.contentEl.append(content);
+                }
+            }
+        },
+
+        /**
+         * Retrieves the next events in the schedule and sorts them by start date
          **/
         getWhatsNext: {
             getQuery: function () {
@@ -1112,60 +1180,40 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
             },
 
             ModelCallBack: function (dataJSON, conferenceUri) {
-                if (dataJSON.length != 0) {
-                    var JSONfile = [];
-                    var seenLocation = [];
-                    for(var i in dataJSON) {
-                        var event = dataJSON[i];
-                        if (event.id !== conferenceUri && event.location && event.startsAt) {
-                            var now = new Date();
-                            if (moment(now).isBefore(event.startsAt)) {
-                                //retrieve first event by location
-                                var currentLocation = event.location;
-                                if (_.indexOf(seenLocation, currentLocation) == -1) {
-                                    seenLocation.push(currentLocation);
-                                    JSONfile.push({
-                                        location: currentLocation,
-                                        event: event
-                                    });
-                                }
-                            }
-                        }
-                    }
-                    return JSONfile.sort(function (a, b) {
-                        if (a.location > b.location)
-                            return 1;
-                        if (a.location < b.location)
-                            return -1;
-                        return 0;
-                    });
-                }
-                return null;
+                var nextEvents = eventHelper.getNextEvents(dataJSON, conferenceUri);
+                return eventHelper.constructEventHierarchy(nextEvents);
             },
 
             ViewCallBack: function (parameters) {
-                if (parameters.JSONdata != null) {
-                    if (_.size(parameters.JSONdata) > 0) {
-                        $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].pageTitles.whatsnext);
+                $("[data-role = page]").find("#header-title").html(labels[parameters.conference.lang].pageTitles.whatsnext);
 
-                        var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
-                        var currentUl;
-                        $.each(parameters.JSONdata, function (i, eventContainer) {
-                            var lasts = moment(eventContainer.event.startsAt).from(moment(eventContainer.event.endsAt), true);
-                            var formattedStart = moment(eventContainer.event.startsAt).format('h:mm a')
-                            var currentCollapsible = $('<div data-role="collapsible" data-theme="d" ><h2>' + eventContainer.location + '</h2></div>');
-                            currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
-                            content.append(currentCollapsible);
-                            currentCollapsible.append(currentUl);
+                if (_.size(parameters.JSONdata) > 0) {
+                    for (var startAt in parameters.JSONdata) {
+                        var currentUl = $('<ul data-role="listview" data-inset="true"></ul>');
+                        currentUl.append("<li data-role='list-divider' >" + labels[parameters.conference.lang].event.startAt + " " + moment(startAt).fromNow() + "</li>");
 
-                            currentUl.append('<li data-inset="true"  ><a href="#event/' + Encoder.encode(eventContainer.event.name) + '/' + Encoder.encode(eventContainer.event.id) + '">\
-							                <h3>' + eventContainer.event.name + '</h3>\
-							                <p>' + labels[parameters.conference.lang].event.startAt + ' : <strong>' + formattedStart + '</p>\
-											<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>\
-							                </a></li>');
-                        })
+                        for (var endAt in parameters.JSONdata[startAt]) {
 
-                        parameters.contentEl.append(content);
+                            var lasts = moment(startAt).from(moment(endAt), true);
+
+                            var bigEvents = parameters.JSONdata[startAt][endAt].bigEvents;
+                            for (var eventType in bigEvents) {
+
+                                for (var i = 0; i < bigEvents[eventType].length; i++) {
+                                    var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
+
+                                    newEventlink.append('<h3>' + bigEvents[eventType][i].name + '</h3>');
+                                    newEventlink.append('<p>' + labels[parameters.conference.lang].event.startAt + ' : <strong>' + moment(bigEvents[eventType][i].startsAt).format('hh:mm a') + '</strong></p>');
+                                    newEventlink.append('<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>');
+                                    newEventlink.append('<p>' + bigEvents[eventType][i].location + '</p>');
+
+                                    var newLi = $('<li data-inset="true" ></li>');
+                                    newLi.append(newEventlink);
+                                    currentUl.append(newLi);
+                                }
+                            }
+                        }
+                        parameters.contentEl.append(currentUl);
                     }
                 }
             }

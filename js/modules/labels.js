@@ -74,7 +74,7 @@ define([],function() {
                 'topic': 'Topics',
                 'from' : 'from',
                 'to' : 'to',
-                'last' : 'Last'
+                'last' : 'Lasts'
             },
             'topic' : {
                 'relatedPublications' : 'Related publications',

@@ -115,6 +115,36 @@ define(['jquery', 'moment', 'labels', 'encoder', 'appConfig'], function ($, mome
             return eventHierarchy;
         },
 
+        /****** What's next event selector function *****/
+
+        /**
+         * Filters, in an array of events, the events in interval from the first event after the current date and with a duration specified in the config file (app..whatsNextDelay)
+         * @param eventArray Array of events to filter
+         * @param conferenceUri URI of the main conference event (to remove it from the result)
+         * @returns {Array} Filtered array of events,
+         */
+        getNextEvents: function (eventArray, conferenceUri) {
+            var earliest = null;
+            var now = new Date();
+
+            //First, run through the array to find the first event
+            for(var i in eventArray) {
+                if(eventArray[i].id !== conferenceUri && moment(now).isBefore(eventArray[i].startsAt) && (!earliest || moment(eventArray[i].startsAt).isBefore(earliest))) {
+                    earliest = eventArray[i].startsAt;
+                }
+            }
+
+            //Second, filter out past events and events out of the duration slot defined in the config file
+            var result = [];
+            for(i in eventArray) {
+                var event = eventArray[i];
+                if(moment(now).isBefore(event.startsAt) && !moment(earliest).add(config.app.whatsNextDelay).isBefore(event.startsAt)) {
+                    result.push(event);
+                }
+            }
+            return result;
+        },
+
         /****** ICS export function *****/
 
         /**
@@ -169,6 +199,15 @@ define(['jquery', 'moment', 'labels', 'encoder', 'appConfig'], function ($, mome
                 "END:VCALENDAR";
         },
 
+        /****** VIEW ********************/
+
+        /**
+         * Generates a schedule view for several commands (conference schedule, sub-events...)
+         * @param eventArray Ordered array of events obtained with doubleSortEventsInArray
+         * @param arrayName Common text that will be displayed on each event view (or null)
+         * @param language Available language in the labels file
+         * @returns {*|jQuery|HTMLElement} that can be added to the view element using jQuery's html() or append() functions
+         */
         renderAsSchedule: function(eventArray, arrayName, language) {
             var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
             var currentDay, currentUl;
@@ -220,7 +259,7 @@ define(['jquery', 'moment', 'labels', 'encoder', 'appConfig'], function ($, mome
                             } else {
                                 if (bigEvents[eventType][i].location) {
 
-                                    LocationHtml += '<p><a href="#schedule/' + Encoder.encode(bigEvents[eventType][i].location) + '" data-role="button" data-icon="search" data-inline="true">' + bigEvents[eventType][i].location + '</a></p>';
+                                    LocationHtml += '<p>' + bigEvents[eventType][i].location + '</p>';
                                 }
                             }
                             newEventlink.append(LocationHtml);

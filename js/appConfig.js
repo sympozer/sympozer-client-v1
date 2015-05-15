@@ -18,7 +18,7 @@ define([], function() {
 //                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
                 "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event",
                 "sessionEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/session-event",
-                styleMatching: {
+                "styleMatching": {
                     "http://data.semanticweb.org/conference/eswc/2015/category/poster-event": "poster",
                     "http://data.semanticweb.org/conference/eswc/2015/category/track-event": "research",
                     "http://data.semanticweb.org/conference/eswc/2015/category/demo-event": "demo",
@@ -27,7 +27,8 @@ define([], function() {
                     "http://data.semanticweb.org/conference/eswc/2015/category/in-use-event": "inUse",
                     "http://data.semanticweb.org/conference/eswc/2015/category/keynote-event": "keynote"
                 },
-                "imageFolder": "data/images/" //Needs a trailing slash
+                "imageFolder": "data/images/", //Needs a trailing slash
+                "whatsNextDelay": {"hours":2} //MomentJS notation
             },
             //User preferences
             "preferences": {
