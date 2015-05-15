@@ -38,22 +38,32 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
     //Locations
     var locationLinkMap = {};
 
+    return {
     /**
      * Convenient function that returns an URI for an image property given in the dataset
      * @param uri URI from the dataset
      * @returns {*} a local URI in the app image folder or an absolute URI
      */
-    var getPictureUri = function(uri) {
-        //Assume the image, if present, is located either at an HTTP* URI or in the image folder stated in the config file
-        if(uri && typeof uri === 'string') {
-            if(!uri.startsWith("http")) {
-                return config.app.imageFolder + uri;
+        getPictureUri: function(uri) {
+            //Assume the image, if present, is located either at an HTTP* URI or in the image folder stated in the config file
+            if(uri && typeof uri === 'string') {
+                //TODO put that somewhere else
+                //Emulate string startsWith functions for browsers that don't have it.
+                //Code found at: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
+                if (!String.prototype.startsWith) {
+                    String.prototype.startsWith = function (searchString, position) {
+                        position = position || 0;
+                        return this.lastIndexOf(searchString, position) === position;
+                    };
+                }
+                if(!uri.startsWith("http")) {
+                    return config.app.imageFolder + uri;
+                }
+                return uri;
             }
-            return uri;
-        }
-        return null;
-    }
-    return {
+            return null;
+        },
+
         /**
          * Populating it with information from the dataset
          **/
@@ -72,7 +82,7 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
             console.log("Retrieving all persons in DAO...");
             for(var i in personData) {
                 var tempPerson = personData[i];
-                tempPerson.depiction = getPictureUri(tempPerson.depiction);
+                tempPerson.depiction = this.getPictureUri(tempPerson.depiction);
 
                 var tempPersonLink = {
                     id: tempPerson.id,
@@ -123,7 +133,7 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
                 organizationLinkMap[tempOrga.id] = {
                     id: tempOrga.id,
                     name: tempOrga.name,
-                    depiction: getPictureUri(tempOrga.depiction)
+                    depiction: this.getPictureUri(tempOrga.depiction)
                 }
             }
 
@@ -157,13 +167,13 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
             console.log("Retrieving all publications in DAO...");
             for(var k in publicationData) {
                 var tempPubli = publicationData[k];
-                tempPubli.thumbnail = getPictureUri(tempPubli.thumbnail);
+                tempPubli.thumbnail = this.getPictureUri(tempPubli.thumbnail);
                 publicationMap[tempPubli.id] = tempPubli;
                 publicationLinkMap[tempPubli.id] = {
                     id: tempPubli.id,
                     title: tempPubli.title,
                     //In the ESWC2015 dataset, publication images are identified as "thumbnail"
-                    thumbnail: getPictureUri(tempPubli.thumbnail)
+                    thumbnail: this.getPictureUri(tempPubli.thumbnail)
                 }
             }
 
@@ -200,7 +210,7 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
                     id: tempEvent.id,
                     name: tempEvent.name,
                     //Yet, no property named "thumbnail" exists, but why not...
-                    thumbnail: getPictureUri(tempEvent.thumbnail),
+                    thumbnail: this.getPictureUri(tempEvent.thumbnail),
                     startsAt: tempEvent.startsAt,
                     endsAt: tempEvent.endsAt,
                     location: _.size(tempEvent.locations)>0?locationLinkMap[tempEvent.locations[0]].name:null
