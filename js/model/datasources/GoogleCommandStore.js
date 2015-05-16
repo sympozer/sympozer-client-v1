@@ -20,7 +20,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'la
 			serviceUri : "",
 
 			getQuery : function(parameters){
-				var searchValue = parameters.name;
+				var searchValue = Encoder.encode(parameters.name);
 				return { q : searchValue, v : "1.0" };
 			},
 
@@ -39,7 +39,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'la
 					if(_.size(authorHomepage) > 0 ){
                         var homepageUrl  = authorHomepage[0].authorHomepage;
                         parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.website+'</h2>');
-                        parameters.contentEl.append('<a href="'+homepageUrl+'" >'+homepageUrl+'</a>');
+                        parameters.contentEl.append('<a href="'+homepageUrl+'">'+homepageUrl+'</a>');
 					}
 				}
 			}

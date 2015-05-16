@@ -564,10 +564,9 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].person.description + '</h2>'));
                             parameters.contentEl.append($('<p>' + parameters.JSONdata.description + '</p>'));
                         }
-                        if (parameters.JSONdata.websites) {
-                            parameters.contentEl.append($('<h2 id="person_homepage">' + labels[parameters.conference.lang].person.homepage + '</h2>'));
-
-                            parameters.contentEl.append($('<a href=' + parameters.JSONdata.websites + '>' + parameters.JSONdata.websites + '</a>'));
+                        if (_.size(parameters.JSONdata.websites) > 0 && parameters.JSONdata.websites[0] !== "") {
+                            parameters.contentEl.append('<h2 id="person_homepage">' + labels[parameters.conference.lang].person.homepage + '</h2>');
+                            parameters.contentEl.append('<p><a href="' + parameters.JSONdata.websites + '">' + parameters.JSONdata.websites + '</a></p>');
                         }
 
                         if (_.size(parameters.JSONdata.affiliation) > 0) {

@@ -15,20 +15,22 @@ define(['backbone', 'jquery', 'promise'], function(Backbone, $, Promise){
         /** Template loader function
          * It takes an array of name and retrieves the according template found in the <body> by id (workaround to load templates fully client-side)
          * names : Array of the template's name to load
-         * callback : function called when the loading is done, in our case, starting the router
          **/
-        loadTemplates:function (names, callback) {
+        loadTemplates:function (names) {
             var that = this;
-            return new Promise(function(resolve) {
-
-                //Get templates from <body> by id
-                for (var i = 0; i < names.length; i++) {
-                    var name = names[i];
-                    that.templates[name] = $("#" + name).html();
-                    console.log("Loading template: " + name)
+            return new Promise(function(resolve, reject) {
+                try {
+                    //Get templates from <body> by id
+                    for (var i = 0; i < names.length; i++) {
+                        var name = names[i];
+                        that.templates[name] = $("#" + name).html();
+                        console.log("Loading template: " + name)
+                    }
+                    resolve();
+                } catch (ex) {
+                    reject(ex);
                 }
-                resolve();
-            }).then(callback);
+            });
         },
 
         /** Template getter function
