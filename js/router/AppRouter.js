@@ -97,7 +97,7 @@ define(['backbone', 'jquery', 'jqueryMobile', 'appConfig', 'CommandStores', 'asy
                         });
                     });
                     //When all commands are done
-//                    ViewAdapter.generateJQMobileElement();
+                    ViewAdapter.generateJQMobileElement();
                 });
             });
         }
