@@ -25,25 +25,16 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'la
 			},
 
 			ModelCallBack : function (dataJSON){
-				var JSONfile   = {};
-				var JSONToken  = {};
-				JSONToken.authorHomepage  = dataJSON.responseData.results[0].url;
-				JSONfile[0] = JSONToken;
-				return JSONfile;
+				return (_.size(dataJSON.responseData.results)>0)?dataJSON.responseData.results[0].url:null;
 			},
 
 			ViewCallBack : function(parameters){
                 //Check if the homepage was not specified in the local datasource (have no means to do it before sending the AJAX query).
 				if(!$("#person_homepage").html() && parameters.JSONdata != null){
-					var authorHomepage = parameters.JSONdata;
-					if(_.size(authorHomepage) > 0 ){
-                        var homepageUrl  = authorHomepage[0].authorHomepage;
-                        parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.website+'</h2>');
-                        parameters.contentEl.append('<a href="'+homepageUrl+'">'+homepageUrl+'</a>');
-					}
+                    parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.website+'</h2>');
+                    parameters.contentEl.append('<a href="'+parameters.JSONdata+'">'+parameters.JSONdata+'</a>');
 				}
 			}
 		}
 	};
 });
-   

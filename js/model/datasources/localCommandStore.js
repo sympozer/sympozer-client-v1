@@ -734,7 +734,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                             }
                         }
                         var eventCategory = null;
-                        if (_.size(parameters.JSONdata.presentedIn.startsAt) > 0) {
+                        if (parameters.JSONdata.presentedIn && _.size(parameters.JSONdata.presentedIn.startsAt) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.presentedIn + '</h2>'));
                             var presentationEventDesc = moment(parameters.JSONdata.presentedIn.startsAt).format('LLLL') + ' ' + labels[parameters.conference.lang].publication.locationPrefix + ' ' + parameters.JSONdata.presentedIn.location;
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(parameters.JSONdata.presentedIn.name) + '/' + Encoder.encode(parameters.JSONdata.presentedIn.id), presentationEventDesc, {tiny: true});
