@@ -82,7 +82,7 @@
 <script type="text/template" id="navBar">
     <nav data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" id="navBar">
         <ul>
-            <!--li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li-->
+            <li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li>
             <li><a href="#search/person"><i class="fa fa-male"></i>     <%= labels.navBar.persons %></a></li>
             <% if(_.contains(modules, "publications")) { %> <li><a href="#search/publication"><i class="fa fa-book"></i>    <%= labels.navBar.publications %></a></li> <% } %>
             <% if(_.contains(modules, "organizations")) { %><li><a href="#search/organization"><i class="fa fa-university"></i>    <%= labels.navBar.organizations %></a></li>   <% } %>
