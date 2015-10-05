@@ -9,6 +9,10 @@
  *				-> All the routes that the app will use. Each route is configured to display a specific view, if a template exist for this view name (see /templates)
  it is rendered, otherwise a generic view is used. The commands we want to send are specified in a "command" array to explicit which command has to be sent when the route is catched
 
+ *   TODO:
+ *   - place all category hierarchy constructing data in this file and document the process
+ *   - add a "modules" object that contains the configuration of the different modules (vote)
+ 
  *   Tags:  JSON, ENDPOINT, SPARQL
  **/
 define([], function() {
@@ -41,8 +45,8 @@ define([], function() {
                 "logoUri": "data/images/logo_ISWC2015.png",
                 "website": "http://iswc2015.semanticweb.org/",
                 "baseUri": "http://data.semanticweb.org/conference/iswc/2015",
-                "updateUri": "http://wit.istc.cnr.it/eswc2015/data",
-                "versionUri": "http://wit.istc.cnr.it/eswc2015/data/version",
+                "updateUri": "http://wit.istc.cnr.it/iswc2015/data",
+                "versionUri": "http://wit.istc.cnr.it/iswc2015/data/version",
                 "lang" : "EN",
                 "momentLang" : "EN_us",
                 "storage": "on",
@@ -56,8 +60,8 @@ define([], function() {
             },
 
             //Defnition of the datasources
-            // uri : It correspond to the uri to be used to access the service
-            // crossDomainMode : "CORS" or "JSONP" explicits the cross domain technique to be used on the service
+            // uri : uri to access the service
+            // crossDomainMode : ("CORS" or "JSONP") cross-domain technique to use on the service
             // commands : Name of the json var that implements all the commands that can be used on the service
             "datasources" : {
                 "DblpDatasource" : {
