@@ -2,18 +2,6 @@
 #intelliJ files
 *.iml
 .idea
-/data/data_ESWC2015.js
 /unused/*
-/data/events.js
 authors
-papers
-papers
-authors
-/data/data_test_ESWC2015.js
-/data/events.js
-/data/events_ESWC_2015.json
-/data/categories.js
-/data/data_ESWC2014.js
-/data/data_ESWC2015.js
-/data/data_real_ESWC2015.js
-/data/data_ESWC2015_old.js
+data

@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html><head>
-    <title>ESWC 2015 app</title>
+<html>
+<head>
+    <title>ISWC 2015 app</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="img/eswc_favicon_0.gif">
-    <link rel="shortcut icon" type="image/png" href="http://2015.eswc-conferences.org/sites/default/files/miniLogo_eswc15_red_0.png">
-    <!--link rel="shortcut icon" type="image/png" href="data/images/miniLogo_eswc15_red_0.png"-->
+    <link rel="shortcut icon" type="image/x-icon" href="data/images/favicon.ico">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/jquery.mobile-1.4.0-rc.1.min.css">
@@ -19,9 +18,10 @@
         // Launch the app
         require(['main']);
     </script>
-</head><body style="background-color: rgb(116, 114, 103);">
+</head>
+<body style="background-color: rgb(116, 114, 103);">
 <div style="height: 500px; width: 100%; display: table-cell; vertical-align: middle; text-align: center; background-color: rgb(243, 246, 246);">
-    <img src="data/images/miniLogo_eswc15_red_0.png" style="display: inline;" height="50" width="auto;"> <img src="img/loader.gif" style="display: inline; margin-left: auto; margin-right: auto;" height="32" width="32">
+    <img src="data/images/logo_ISWC2015.png" style="display: inline;" height="50" width="auto;"> <img src="img/loader.gif" style="display: inline; margin-left: auto; margin-right: auto;" height="32" width="32">
 </div>
 
 <!--All templates used by the client (loaded by lib/templateLoader.js-->
@@ -82,7 +82,7 @@
 <script type="text/template" id="navBar">
     <nav data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" id="navBar">
         <ul>
-            <li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li>
+            <!--li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li-->
             <li><a href="#search/person"><i class="fa fa-male"></i>     <%= labels.navBar.persons %></a></li>
             <% if(_.contains(modules, "publications")) { %> <li><a href="#search/publication"><i class="fa fa-book"></i>    <%= labels.navBar.publications %></a></li> <% } %>
             <% if(_.contains(modules, "organizations")) { %><li><a href="#search/organization"><i class="fa fa-university"></i>    <%= labels.navBar.organizations %></a></li>   <% } %>
@@ -146,7 +146,7 @@
 <script type="text/template" id="about">
     <article>
         <section class="content">
-            <h2>About the ESWC2015 app</h2>
+            <h2>About the ISWC2015 app</h2>
             <p>This app is available on the Web and on the App & Play stores.</p>
             <p>You can use it offline to browse the conference dataset. You will need an Internet connection to view data from online sources (Twitter, DBLP) or accessed through search engines (Google, DuckDuckgo), as well as to vote for your preferred poster and demo.</p>
             <p>Periodically (but not too often), you can update the conference dataset in the settings panel.</p>
@@ -161,4 +161,5 @@
         </section>
     </article>
 </script>
-</body></html>
+</body>
+</html>
