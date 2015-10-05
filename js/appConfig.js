@@ -15,17 +15,17 @@ define([], function() {
         return {
             "app" : {
                 "appLogo" : "Sympozer_logo.png",
-//                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
-                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event",
-                "sessionEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/session-event",
+//                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/conference-event",
+                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/presentation-event",
+                "sessionEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/session-event",
                 "styleMatching": {
-                    "http://data.semanticweb.org/conference/eswc/2015/category/poster-event": "poster",
-                    "http://data.semanticweb.org/conference/eswc/2015/category/track-event": "research",
-                    "http://data.semanticweb.org/conference/eswc/2015/category/demo-event": "demo",
-                    "http://data.semanticweb.org/conference/eswc/2015/category/workshop-event": "workshop",
-                    "http://data.semanticweb.org/conference/eswc/2015/category/tutorial-event": "tutorial",
-                    "http://data.semanticweb.org/conference/eswc/2015/category/in-use-event": "inUse",
-                    "http://data.semanticweb.org/conference/eswc/2015/category/keynote-event": "keynote"
+                    "http://data.semanticweb.org/conference/category/poster-event": "poster",
+                    "http://data.semanticweb.org/conference/category/track-event": "research",
+                    "http://data.semanticweb.org/conference/category/demo-event": "demo",
+                    "http://data.semanticweb.org/conference/category/workshop-event": "workshop",
+                    "http://data.semanticweb.org/conference/category/tutorial-event": "tutorial",
+                    "http://data.semanticweb.org/conference/category/in-use-event": "inUse",
+                    "http://data.semanticweb.org/conference/category/keynote-event": "keynote"
                 },
                 "imageFolder": "data/images/", //Needs a trailing slash
                 "whatsNextDelay": {"hours":2} //MomentJS notation
