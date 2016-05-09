@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ISWC 2015 app</title>
+    <title>Sympozer client</title>
 
     <link rel="shortcut icon" type="image/x-icon" href="data/images/favicon.ico">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -15,28 +15,30 @@
     <script data-main="js/main.js" src="js/lib/require.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // Launch the app
-        require(['main']);
+		window.onload = function() {
+			// Launch the app
+			require(['main']);
+		}
     </script>
 </head>
 <body style="background-color: rgb(116, 114, 103);">
 <div style="height: 500px; width: 100%; display: table-cell; vertical-align: middle; text-align: center; background-color: rgb(243, 246, 246);">
-    <img src="data/images/logo_ISWC2015.png" style="display: inline;" height="50" width="auto;"> <img src="img/loader.gif" style="display: inline; margin-left: auto; margin-right: auto;" height="32" width="32">
+    <img id="logo-loading-panel" style="display: inline;" height="50" width="auto;"> <img src="img/loader.gif" style="display: inline; margin-left: auto; margin-right: auto;" height="32" width="32">
 </div>
 
 <!--All templates used by the client (loaded by lib/templateLoader.js-->
-<script type="text/template" id="bonusPanel">
+<script type="text/template" id="bonusPanelTpl">
     <div data-role="panel" id="bonusPanel" class="ui-responsive-panel" data-position="left" data-display="overlay">
         <h1><%= labels.socialBox.title %></h1>
         <div id="socialBox">
-            <a id="twitterLink" data-role="button" data-inline="true" target="_blank" href="https://twitter.com/intent/tweet?text=Livecon.com&url=http%3A%2F%2Flive-con.com&via=live-con.com"><span><i class="fa fa-twitter"></i></span></a><br/>
-            <a id="googleLink"  data-role="button" data-inline="true" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2Flive-con.com.com"><span><i class="fa fa-google-plus"></i></span></a><br/>
-            <a id="linkedinLink"  data-role="button" data-inline="true" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flive-con.com.com&title=live-con.com&summary=live-con.com"><span><i class="fa fa-linkedin"></i></span></a><br/>
-            <a  id="facebookLink" data-role="button" data-inline="true" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=live-con.com"><span><i class="fa fa-facebook"></i></span></a>
+            <a id="twitterLink" data-role="button" data-inline="true" target="_blank" href="https://twitter.com/intent/tweet?text=Sympozer.com&url=http%3A%2F%2FSympozer.com&via=Sympozer.com"><span><i class="fa fa-twitter"></i></span></a><br/>
+            <a id="googleLink"  data-role="button" data-inline="true" target="_blank" href="https://plus.google.com/share?url=http%3A%2F%2FSympozer.com"><span><i class="fa fa-google-plus"></i></span></a><br/>
+            <a id="linkedinLink"  data-role="button" data-inline="true" target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2FSympozer.com.com&title=Sympozer.com&summary=Sympozer.com"><span><i class="fa fa-linkedin"></i></span></a><br/>
+            <a  id="facebookLink" data-role="button" data-inline="true" target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=Sympozer.com"><span><i class="fa fa-facebook"></i></span></a>
         </div>
     </div>
 </script>
-<script type="text/template" id="eventSearch">
+<script type="text/template" id="eventSearchTpl">
     <article id="eventSearch">
         <section class="content">
             <a href="#events" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
@@ -47,7 +49,7 @@
         </section>
     </article>
 </script>
-<script type="text/template" id="footer">
+<script type="text/template" id="footerTpl">
     <footer id="footer" data-role="footer" data-position="fixed" >
         <div data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" >
             <ul class="ui-grid">
@@ -58,7 +60,7 @@
         </div>
     </footer>
 </script>
-<script type="text/template" id="header">
+<script type="text/template" id="headerTpl">
     <header data-role="header" data-position="inline"  id="header">
         <div class="ui-grid-b ui-responsive">
             <div class="ui-block-a">
@@ -73,13 +75,13 @@
         </div>
     </header>
 </script>
-<script type="text/template" id="home">
+<script type="text/template" id="homeTpl">
     <article id="home">
         <section class="content">
         </section>
     </article>
 </script>
-<script type="text/template" id="navBar">
+<script type="text/template" id="navBarTpl">
     <nav data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" id="navBar">
         <ul>
             <li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li>
@@ -89,15 +91,15 @@
         </ul>
     </nav>
 </script>
-<script type="text/template" id="organizationSearch">
-    <article id="personSearch">
+<script type="text/template" id="organizationSearchTpl">
+    <article id="organizationSearch">
         <section class="content">
             <a href="#organizations" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
             <a href="#persons"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByPerson %></a>
         </section>
     </article>
 </script>
-<script type="text/template" id="personSearch">
+<script type="text/template" id="personSearchTpl">
     <article id="personSearch">
         <section class="content">
             <a href="#persons" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
@@ -106,7 +108,7 @@
         </section>
     </article>
 </script>
-<script type="text/template" id="publicationSearch">
+<script type="text/template" id="publicationSearchTpl">
     <article id="publicationSearch">
         <section class="content">
             <a href="#publications" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTitle %></a>
@@ -116,15 +118,15 @@
         </section>
     </article>
 </script>
-<script type="text/template" id="schedule">
-    <article>
+<script type="text/template" id="scheduleTpl">
+    <article id="schedule">
         <section class="content">
             <a href="#search/event" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.searchEvent %></a>
             <a href="#whatsnext/"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.whatsnext %></a>
         </section>
     </article>
 </script>
-<script type="text/template" id="settingsPanel">
+<script type="text/template" id="settingsPanelTpl">
     <div data-role="panel" id="settingsPanel" class="ui-responsive-panel" data-position="right" data-display="overlay">
         <h1><%= labels.settingsPanel.title %></h1>
         <form>
@@ -143,10 +145,10 @@
         </div>
     </div>
 </script>
-<script type="text/template" id="about">
-    <article>
+<script type="text/template" id="aboutTpl">
+    <article id="about">
         <section class="content">
-            <h2>About the ISWC2015 app</h2>
+            <h2>About the <%= conference.acronym %> app</h2>
             <p>This app is available on the Web and on the App & Play stores.</p>
             <p>You can use it offline to browse the conference dataset. You will need an Internet connection to view data from online sources (Twitter, DBLP) or accessed through search engines (Google, DuckDuckgo), as well as to vote for your preferred poster and demo.</p>
             <p>Periodically (but not too often), you can update the conference dataset in the settings panel.</p>
@@ -158,6 +160,9 @@
             <a href="#person/Luca%20Costabello/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Fluca-costabello" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Luca Costabello</a>
             <h2>From an original idea by </h2>
             <p><a href="http://sympozer.com"><img src="img/Sympozer_logo.png" alt="Sympozer logo"/></a>.</p>
+            <h2>Licence</h2>
+            <p>The <%= conference.acronym %> app is licensed under a <a href="http://creativecommons.org/licenses/by-nc/3.0/">Creative Commons Attribution-NonCommercial 3.0 Unported License</a>.</p>
+            <a href="http://creativecommons.org/licenses/by-nc/3.0/"><img src="http://i.creativecommons.org/l/by-nc/3.0/88x31.png" alt="CC license"/></a>
         </section>
     </article>
 </script>

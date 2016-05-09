@@ -12,7 +12,7 @@
  *	Version: 1.2
  *   Tags:  BACKBONE, AJAX, ROUTING
  **/
-define(['backbone', 'jquery', 'jqueryMobile', 'appConfig', 'CommandStores', 'asyncLoader', 'encoder', 'ViewAdapter'], function(Backbone, $, jqueryMobile, config, CommandStores, AsyncLoader, Encoder, ViewAdapter){
+define(['backbone', 'appConfig', 'CommandProcessor', 'ViewAdapter'], function(Backbone, config, commandProcessor, ViewAdapter){
 
     return Backbone.Router.extend({
 
@@ -20,86 +20,64 @@ define(['backbone', 'jquery', 'jqueryMobile', 'appConfig', 'CommandStores', 'asy
          *	It reads the configuration file and prepares all the routes and their actions it will use on runtime
          */
         initialize: function (options){
-            var self = this;
+            var router = this;
 
-            $.each(config.datasources,function(i,datasourceItem){
-                console.log("******* DATASOURCE ********");
-                console.log(datasourceItem);
-            });
+            //Call super method
+            Backbone.Router.prototype.initialize.call(options);
+            //Initialize CommandProcessor
+            commandProcessor.initialize();
 
-            //Initialize AsyncLoader
-            AsyncLoader.initialize();
-
-            //Preparing all the routes and their actions
-            $.each(config.routes, function(i, routeItem){
+            //Preparing all routes and their actions
+            for(var routeKey in config.routes){
+                var routeItem = config.routes[routeKey];
 
                 //console.log("******* ROUTE ********");
-                //console.log(routeItem);
+                //console.log(routeKey + " -> " + routeItem);
 
-                jqueryMobile.loading( 'show' );
+                //Closing values of routeKey as runRoute calls a promise
+                (function (routeKey, routeItem) {
+                    //Defining the callback to use when catching each given route
+                    //Note: parameters name and uri are those that are likely to happen in the route parameters
+                    router.route(routeItem.hash, routeItem.title, function(name, uri) {
 
-                //Preparing the function to use when catching the current route
-                self.route(routeItem.hash, function(name, uri) {
+                        //Route arguments
+                        console.log("Name: " + name);
+                        console.log("URI: " + uri);
 
-                    //Default route
-                    if(!name && !uri){
-                        uri = config.conference.baseUri;
-                        name = routeItem.title ? routeItem.title : config.conference.name;
-                    } else {
-                        //Not sure this is useful
-                        if (!uri) {
-                            uri = Encoder.encode(name);
-                        }
-                        //But sure about that one
-                        if (!name) {
-                            name = Encoder.decode(name);
-                        }
-                    }
-
-                    //Common variable that can be set by any of the command items
-                    var viewTypeClassName = null;
-
-                    var hashtag = Encoder.getHashtag(config.conference.acronym, name);
-
-                    //Appending button and keeping track of new route
-                    var currentPage = ViewAdapter.update(routeItem, hashtag, config.conference, config.datasources, uri, name);
-
-                    //Prepare calls according to the commands declared in the config file
-                    $.each(routeItem.commands, function(i, commandItem){
-                        //Retrieve datasource in config file
-                        var currentDatasource = config.datasources[commandItem.datasource];
-                        //Retrieve command in command store according to config file declaration
-                        var currentCommand = CommandStores[currentDatasource.commands][commandItem.name];
-
-                        console.log("Call : " + commandItem.name);
-                        //asynchronous call
-                        AsyncLoader.executeCommand({
-                            datasource: commandItem.datasource,
-                            command: commandItem.name,
-                            currentUri: uri,
-                            name: name
-                        }).then(function(results) {
-                            return currentCommand.ModelCallBack(results, config.conference, currentDatasource.uri, uri, name);
-                        }).then(function(data) {
-                            jqueryMobile.loading('hide');
-                            viewTypeClassName = currentCommand.ViewCallBack({
-                                JSONdata : data,
-                                contentEl : currentPage.find("#" + commandItem.name),
-                                name : name,
-                                conference : config.conference
-                            }) || viewTypeClassName;
-                            ViewAdapter.generateJQMobileElement(viewTypeClassName);
 /*
-                        }).catch(function(ex) {
-                            console.log(ex);
-                            jqueryMobile.loading('hide');
+                        //For "main" routes (home, getAll*...)
+                        if(!uri){
+                            uri = config.conference.baseUri;
+                        }
+                        //For routes that don't have a name parameter
+                        if (!name) {
+                            name = routeItem.title;
+                        }
 */
-                        });
+                        //Depends on the category and serves for styling the current view
+                        commandProcessor.viewTypeClassName = null;
+
+                        //Prepare the context of the command processing functions
+                        var context = {
+                            routeName: routeKey,
+                            command: routeItem,
+                            queryString: name?name:routeItem.title, //with alternate value for routes that don't have a name parameter
+                            currentUri: uri?uri:config.conference.baseUri //with alternate value for "main" routes (home, getAll*...)
+                        };
+
+                        //Call the commandProcessor to do the job for a given route
+                        commandProcessor.processCommands(context) //, results)
+                            .then(function(data) {
+                                console.log("End of process for command " + routeKey + " -> " + JSON.stringify(data));
+                            })
+                            .catch(function(error) {
+                                console.log("Error: " + error);
+                            })
+                        ;
+
                     });
-                    //When all commands are done
-                    ViewAdapter.generateJQMobileElement();
-                });
-            });
+                })(routeKey, routeItem);
+            }
         }
     });
 });

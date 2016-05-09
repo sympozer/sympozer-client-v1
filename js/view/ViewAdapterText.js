@@ -10,14 +10,16 @@
 define(['jquery'], function($){
 	return {
 		generateContainer : function(page,commandName){
-			//Creating the content box of the current command
-			var contentEl = $('<div id="'+commandName+'"></div>');
-			page.find(".content").append(contentEl);
+            if(!page.find("#commandName").html()) {
+                //Creating the content box of the current command
+                var contentEl = $('<div id="' + commandName + '"></div>');
+                page.find(".content").append(contentEl);
+            }
 	    },
 		/** function appendList :
 		*  append filter list to current view using '$("[data-role = page]").find(".content")' selector (backbone)
 		* @param dataList : result obj
-		* @param baseHref : string url pattern for dynamic link generation (i.e. "#publication/")
+		* @param href : string url pattern for dynamic link generation (i.e. "#publication/")
 		* @param hrefCllbck : parsing function to get href
 		* @param labelProperty : string pattern to match with sparql result 'binding[name="'+bindingName+'"]'
 		* @param optional option : object {
@@ -31,18 +33,20 @@ define(['jquery'], function($){
 		*/ 
 		appendList : function(dataList,href,labelProperty,appendToDiv,option){
 			
-			if(!option)var option = {};
-			if(!href) var href={};
+			if(!option)
+                option = {};
+			if(!href)
+                href = {};
 			//limit of results to enable the filter mode
-			var isfilter = _.size(dataList) > 10 ? true : false; 
+			var isFilter = _.size(dataList) > 10;
 			if(option.autodividers == "force"){
-				isfilter = true;
+				isFilter = true;
 			}
-			var currentRank=0,counter=1;
+//			var currentRank=0,counter=1;
 
 			var ulContainer = $('<ul data-role="listview"'+ 
 							 (option.autodividers ? 'data-autodividers="true"':'')+
-							  (isfilter?'data-filter="true" ':'')+
+							  (isFilter?'data-filter="true" ':'')+
 							  'data-shadow="false"'+
 							  'data-filter-placeholder="filter ..." class="ui-listview"> ');
 			var remainder = "";
@@ -53,9 +57,9 @@ define(['jquery'], function($){
 				
 				//show
 				if(currentLabel != remainder){ 
-					var a = $('<a href='+currentHref+' '+(isfilter?' ':'data-corners="true" data-role="button" class="button" data-iconpos="right" data-icon="arrow-r" data-mini="true" data-shadow="false"')+'>'+currentLabel+'</a>');
+					var a = $('<a href='+currentHref+' '+(isFilter?' ':'data-corners="true" data-role="button" class="button" data-iconpos="right" data-icon="arrow-r" data-mini="true" data-shadow="false"')+'>'+currentLabel+'</a>');
 					var li = $('<li></li>');
-					if(isfilter){
+					if(isFilter){
 						ulContainer.append(li.append(a));
 					}else{
 						appendToDiv.append(a);
@@ -75,10 +79,10 @@ define(['jquery'], function($){
 				remainder = currentLabel;
 				
 		   });//end each
-		   if(isfilter)ulContainer.appendTo(appendToDiv);
+		   if(isFilter)ulContainer.appendTo(appendToDiv);
 		},
 		
-		appendListCollapsible : function(dataList,href,labelProperty,appendToDiv,option){
+		appendListCollapsible : function(dataList,href,labelProperty,appendToDiv){
 			var list =$('<ul data-role="listview"  data-autodividers="true" data-filter="true" data-shadow="false" data-filter-placeholder="filter ..." > </div>');
 			var form = $('<form class="ui-listview-filter" role"search">');
 			form.appendTo(appendToDiv);
@@ -92,14 +96,16 @@ define(['jquery'], function($){
 
 		appendListImage : function(dataList,href,labelProperty, imageProperty, appendToDiv,option){
 			
-			if(!option)var option = {};
-			if(!href) var href={};
+			if(!option)
+                option = {};
+			if(!href)
+                href={};
 			//limit of results to enable the filter mode
-			var isfilter = _.size(dataList) > 10 ? true : false; 
+			var isfilter = _.size(dataList) > 10;
 			if(option.autodividers == "force"){
 				isfilter = true;
 			}
-			var currentRank=0,counter=1;
+//			var currentRank=0,counter=1;
 
 			var ulContainer = $('<ul  id="SearchByAuthorUl" data-role="listview"'+ 
 							 (option.autodividers ? 'data-autodividers="true"':'')+
@@ -155,8 +161,10 @@ define(['jquery'], function($){
 
 		// option { option.theme a|b|c , option.tiny : bool, option.align : right,option.prepend }
 		appendButton: function(el,href,label,option){
-			if(!href)return;
-			if(!option)var option={}
+			if(!href)
+                return;
+			if(!option)
+                option={};
 			var newButton = 
 				$(  '<a href="'+href+'" class="button" data-role="button" ' +
 					(option.tiny  ? 'data-inline="true"'              : 'data-icon="arrow-r" data-iconpos="right"') +

@@ -1,5 +1,6 @@
-/*! https://mths.be/jsesc v0.5.0 by @mathias */
-/* Adaptation Lionel Médini to always return UTF8 escapes since only these ones are accepted by DBLP. */
+/*! https://mths.be/jsesc v0.5.0 by @mathias
+ * A JavaScript library for escaping JavaScript strings while generating the shortest possible valid ASCII-only output.
+ * Adaptation Lionel Médini to always return UTF8 escapes since only these ones are accepted by DBLP. */
 
 ;(function(root) {
 

@@ -36,7 +36,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return ajaxData;
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 var JSONfile = {};
                 $.each(dataJSON.results.bindings, function (i) {
                     var JSONToken = {};
@@ -79,7 +79,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 };
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri, datasourceUri, currentUri) {
+            ModelCallBack: function (dataJSON) {
                 return dataJSON?dataJSON:null;
             },
 
@@ -347,8 +347,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     command: "getPersonsByRole",
                     data: {
-                        key: parameters.name,
-                        nestedQueries: null
+                        key: parameters.name
                     }
                 }
             },
@@ -513,23 +512,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     "command": "getPerson",
                     "data": {
-                        "key": parameters.uri,
-                        "nestedQueries": [{
-                            //Retrieve organizations
-                            datasource: "localDatasource",
-                            command: "getOrganizationLink",
-                            targetProperty: "affiliation"
-                        }, {
-                            //Retrieve publications
-                            datasource: "localDatasource",
-                            command: "getPublicationLink",
-                            targetProperty: "made"
-                        }, {
-                            //Retrieve roles
-                            datasource: "localDatasource",
-                            command: "getRoleLink",
-                            targetProperty: "holdsRole"
-                        }]
+                        "key": parameters.uri
                     }
                 };
             },
@@ -619,12 +602,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     "command": "getOrganization",
                     "data": {
-                        "key": parameters.uri,
-                        "nestedQueries": [{
-                            datasource: "localDatasource",
-                            command: "getPersonLink",
-                            targetProperty: "members"
-                        }]
+                        "key": parameters.uri
                     }
                 }
             },
@@ -669,21 +647,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     "command": "getPublication",
                     "data": {
-                        "key": parameters.uri,
-                        "nestedQueries": [
-                            {
-                                //Retrieve authors
-                                datasource: "localDatasource",
-                                command: "getPersonLink",
-                                targetProperty: "authors"
-                            },
-                            {
-                                //Retrieve presentation event
-                                datasource: "localDatasource",
-                                command: "getEventLink",
-                                targetProperty: "presentedIn"
-                            }
-                        ]
+                        "key": parameters.uri
                     }
                 };
             },
@@ -762,12 +726,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     "command": "getCategory",
                     "data": {
-                        "key": parameters.uri,
-                        "nestedQueries": [{
-                            datasource: "localDatasource",
-                            command: "getEventLink",
-                            targetProperty: "events"
-                        }]
+                        "key": parameters.uri
                     }
                 };
             },
@@ -793,12 +752,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     "command": "getCategoryForPublications",
                     "data": {
-                        "key": parameters.uri,
-                        "nestedQueries": [{
-                            datasource: "localDatasource",
-                            command: "getPublicationLink",
-                            targetProperty: "publications"
-                        }]
+                        "key": parameters.uri
                     }
                 };
             },
@@ -862,19 +816,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     "command": "getConferenceEvent",
                     "data": {
-                        "key": parameters.uri,
-                        "nestedQueries": [
-                            {
-                                datasource: "localDatasource",
-                                command: "getLocationLink",
-                                targetProperty: "locations"
-                            },
-                            {
-                                datasource: "localDatasource",
-                                command: "getEventLink",
-                                targetProperty: "children"
-                            }
-                        ]
+                        "key": parameters.uri
                     }
                 };
             },
@@ -917,32 +859,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     "command": "getEvent",
                     "data": {
-                        "key": parameters.uri,
-                        "nestedQueries": [{
-                            datasource: "localDatasource",
-                            command: "getRoleLink",
-                            targetProperty: "roles"
-                        }, {
-                            datasource: "localDatasource",
-                            command: "getEventLink",
-                            targetProperty: "children"
-                        }, {
-                            datasource: "localDatasource",
-                            command: "getEventLink",
-                            targetProperty: "parent"
-                        }, {
-                            datasource: "localDatasource",
-                            command: "getPublicationLink",
-                            targetProperty: "papers"
-                        }, {
-                            datasource: "localDatasource",
-                            command: "getCategoryLink",
-                            targetProperty: "categories"
-                        }, {
-                            datasource: "localDatasource",
-                            command: "getLocationLink",
-                            targetProperty: "locations"
-                        }]
+                        "key": parameters.uri
                     }
                 };
             },
@@ -1112,14 +1029,14 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri) {
+            ModelCallBack: function (dataJSON) {
                 var JSONfile = [];
                 var seenLocation = [];
                 var now = new Date();
 
                 for(var i in dataJSON) {
                     var event = dataJSON[i];
-                    if (event.id !== conferenceUri && event.startsAt && event.endsAt && moment(now).isBefore(event.startsAt)) {
+                    if (event.id !== appConfig.conference.baseUri && event.startsAt && event.endsAt && moment(now).isBefore(event.startsAt)) {
                         //retrieve first event by location
                         var currentLocation = event.location;
                         if (_.indexOf(seenLocation, currentLocation) == -1) {
@@ -1178,8 +1095,8 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 }
             },
 
-            ModelCallBack: function (dataJSON, conferenceUri) {
-                var nextEvents = eventHelper.getNextEvents(dataJSON, conferenceUri);
+            ModelCallBack: function (dataJSON) {
+                var nextEvents = eventHelper.getNextEvents(dataJSON);
                 return eventHelper.constructEventHierarchy(nextEvents);
             },
 
@@ -1224,16 +1141,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                 return {
                     "command": "getEvent",
                     "data": {
-                        "key": parameters.uri,
-                        "nestedQueries": [{
-                            datasource: "localDatasource",
-                            command: "getCategoryLink",
-                            targetProperty: "categories"
-                        }, {
-                            datasource: "localDatasource",
-                            command: "getLocationLink",
-                            targetProperty: "location"
-                        }]
+                        "key": parameters.uri
                     }
                 };
             },

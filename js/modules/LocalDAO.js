@@ -227,7 +227,10 @@ define(['jquery', 'underscore', 'encoder', 'eventHelper', 'appConfig', 'localSto
                 //Add the event to the categories it refers to.
                 for(var n in tempEvent.categories) {
                     var tempCategoryMap = categoryMap[tempEvent.categories[n]];
-                    tempCategoryMap.events.push(tempEvent.id);
+                    tempCategoryMap.events.push({
+                        id: tempEvent.id,
+                        name: tempEvent.name
+                    });
                 }
 
                 //Get main events (direct children of the conference)

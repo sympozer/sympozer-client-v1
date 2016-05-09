@@ -13,28 +13,54 @@ ions on. After calling a command, the results are parsed with it own callback fu
 define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'labels'], function($, _, Encoder, ViewAdapter, ViewAdapterText, labels){
 	 return {
 
-		/** Command used to get and display the most probable homepage of a given person **/
-		getAuthorPersonalPage : {
-			dataType : "JSONP",
-			method : "GET",
-			serviceUri : "",
+         /** Command used to get and display the most probable homepage of a given person **/
+         getAuthorPersonalPage : {
+             dataType : "JSONP",
+             method : "GET",
+             serviceUri : "",
 
-			getQuery : function(parameters){
-				var searchValue = Encoder.encode(parameters.name);
-				return { q : searchValue, v : "1.0" };
-			},
+             getQuery : function(parameters){
+                 var searchValue = Encoder.encode(parameters.name);
+                 return { q : searchValue, v : "1.0" };
+             },
 
-			ModelCallBack : function (dataJSON){
-				return (_.size(dataJSON.responseData.results)>0)?dataJSON.responseData.results[0].url:null;
-			},
+             ModelCallBack : function (dataJSON){
+                 return (_.size(dataJSON.responseData.results)>0)?dataJSON.responseData.results[0].url:null;
+             },
 
-			ViewCallBack : function(parameters){
-                //Check if the homepage was not specified in the local datasource (have no means to do it before sending the AJAX query).
-				if(!$("#person_homepage").html() && parameters.JSONdata != null){
-                    parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.website+'</h2>');
-                    parameters.contentEl.append('<a href="'+parameters.JSONdata+'">'+parameters.JSONdata+'</a>');
-				}
-			}
-		}
+             ViewCallBack : function(parameters){
+                 //Check if the homepage was not specified in the local datasource (have no means to do it before sending the AJAX query).
+                 if(!$("#person_homepage").html() && parameters.JSONdata != null){
+                     parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.website+'</h2>');
+                     parameters.contentEl.append('<a href="'+parameters.JSONdata+'">'+parameters.JSONdata+'</a>');
+                 }
+             }
+         },
+         /**
+          * Command used to get and display the most probable homepage of a given organization
+          * Used if everything else (responses from other datasources) has failed
+          **/
+         getOrganizationPage : {
+             dataType : "JSONP",
+             method : "GET",
+             serviceUri : "",
+
+             getQuery : function(parameters){
+                 var searchValue = Encoder.encode(parameters.name);
+                 return { q : searchValue, v : "1.0" };
+             },
+
+             ModelCallBack : function (dataJSON){
+                 return (_.size(dataJSON.responseData.results)>0)?dataJSON.responseData.results[0].url:null;
+             },
+
+             ViewCallBack : function(parameters){
+                 //Check if the homepage was not specified in the local datasource (have no means to do it before sending the AJAX query).
+                 if(!$("#organization_url").html() && parameters.JSONdata != null){
+                     parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].person.website+'</h2>');
+                     parameters.contentEl.append('<a href="'+parameters.JSONdata+'">'+parameters.JSONdata+'</a>');
+                 }
+             }
+         }
 	};
 });

@@ -44,20 +44,28 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'lab
                         var AbstractText  = organizationInfo[0].AbstractText;
                         var FirstURL  = organizationInfo[0].FirstURL;
 
-
-                        if(Heading != ""){
-                            parameters.contentEl.append('<img src="'+Image+'">');
+                        //For each field, check if it was not found by Google KG
+                        if(!$("#organization_name").html() && Heading){
+                            parameters.contentEl.append('<p id="organization_name">'+Heading+'</p>');
                         }
-                        if(Image != ""){
-                            parameters.contentEl.append('<p>'+Heading+'</p>');
+                        if(!$("#organization_image").attr("src") && Image){
+                            parameters.contentEl.append('<img id="organization_image" src="'+Image+'"/>');
                         }
-                        if(AbstractText != ""){
-                            parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].organization.abstract+'</h2>');
-                            parameters.contentEl.append('<p>'+AbstractText+'</p>');
+                        if(!$("#organization_description").html() && AbstractText){
+                            parameters.contentEl.append(
+                                '<div id="organization_description">'+
+                                '<h2>'+labels[parameters.conference.lang].organization.abstract+'</h2>'+
+                                '<p>'+AbstractText+'</p>'+
+                                '</div>'
+                            );
                         }
-                        if(FirstURL !== undefined){
-                            parameters.contentEl.append('<h2>'+labels[parameters.conference.lang].organization.homepage+'</h2>');
-                            parameters.contentEl.append('<a href="'+FirstURL+'">'+FirstURL+'</a>');
+                        if(!$("#organization_url").html() && FirstURL){
+                            parameters.contentEl.append(
+                                '<div id="organization_url">'+
+                                '<h2>'+labels[parameters.conference.lang].organization.homepage+'</h2>'+
+                                '<a href="'+FirstURL+'">'+FirstURL+'</a>'+
+                                '</div>'
+                            );
                         }
                     }
                 }

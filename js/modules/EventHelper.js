@@ -119,17 +119,17 @@ define(['jquery', 'moment', 'labels', 'encoder', 'appConfig'], function ($, mome
 
         /**
          * Filters, in an array of events, the events in interval from the first event after the current date and with a duration specified in the config file (app..whatsNextDelay)
+         * Note: the URI of the main conference event is removed from the result.
          * @param eventArray Array of events to filter
-         * @param conferenceUri URI of the main conference event (to remove it from the result)
          * @returns {Array} Filtered array of events,
          */
-        getNextEvents: function (eventArray, conferenceUri) {
+        getNextEvents: function (eventArray) {
             var earliest = null;
             var now = new Date();
 
             //First, run through the array to find the first event
             for(var i in eventArray) {
-                if(eventArray[i].id !== conferenceUri && moment(now).isBefore(eventArray[i].startsAt) && (!earliest || moment(eventArray[i].startsAt).isBefore(earliest))) {
+                if(eventArray[i].id !== config.conference.baseUri && moment(now).isBefore(eventArray[i].startsAt) && (!earliest || moment(eventArray[i].startsAt).isBefore(earliest))) {
                     earliest = eventArray[i].startsAt;
                 }
             }

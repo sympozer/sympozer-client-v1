@@ -18,6 +18,10 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'lab
 			getQuery : function(parameters){
 
 				var prefix =  '  PREFIX akt:  <http://www.aktors.org/ontology/portal#> ';
+/* Syntax to use with http://dblp.l3s.de/d2r/sparql (does not support cross-domain requests yet)
+                var prefix =  '  PREFIX dc: <http://purl.org/dc/elements/1.1/> '+
+                    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> ';
+*/
 
 				var nameToUpper = '';
 				$.each(parameters.name.toLowerCase().split(' '), function(){
@@ -26,10 +30,18 @@ define(['jquery', 'underscore', 'encoder','ViewAdapter', 'ViewAdapterText', 'lab
 				var validName = jsesc(nameToUpper.substring(0, nameToUpper.length-1)) || null;
 
 				var query =   ' SELECT DISTINCT ?publiUri ?publiTitle WHERE { '+
-								' {	?publiUri akt:has-author ?o       '+
-								'	?o akt:full-name "'+ validName+'". '+
-								'	?publiUri  akt:has-title ?publiTitle.  }'+
+								'?publiUri akt:has-author ?o. '+
+								'?o akt:full-name "'+ validName+'". '+
+								'?publiUri  akt:has-title ?publiTitle. '+
 								'} ';
+/*
+                var query =   ' SELECT DISTINCT ?publiUri ?publiTitle WHERE { '+
+                    '?publiUri dc:creator ?o. '+
+                    '?o rdfs:label "'+ validName+'". '+
+                    '?publiUri  dc:title ?publiTitle.'+
+                    '} ';
+*/
+
                 return { query : prefix + query };
 			},
 

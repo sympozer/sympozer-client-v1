@@ -51,8 +51,8 @@ require.config({
         'jqueryMobile' : 'lib/jquery.mobile-1.4.0-rc.1.min',
         'promise' : 'lib/promise-6.1.0.min',
         'encoder': 'lib/encoder',
-        'blob': 'lib/blob',
-        'fileSaver' : 'lib/FileSaver',
+        'blob': 'lib/blob.min',
+        'fileSaver' : 'lib/FileSaver.min',
         'jStorage' : 'lib/jstorage.min',
         'moment' : 'lib/moment.min',
         'jsesc' : 'lib/jsesc',
@@ -65,7 +65,7 @@ require.config({
         'Twitter_widget_ESWC2015': 'lib/Twitter_widget_ESWC2015.min',
         'Vote_module_ESWC2015': 'modules/Vote_module_ESWC2015',
 //Router
-        'asyncLoader' : 'router/AsyncLoader',
+        "CommandProcessor" : 'router/CommandProcessor',
         'AppRouter': 'router/AppRouter',
 //View
         'AbstractView': 'view/AbstractView',
@@ -73,12 +73,13 @@ require.config({
         'ViewAdapterText': 'view/ViewAdapterText',
 //DAO
         'localDao': 'modules/LocalDAO',
-        'localData' : '../data/data_ISWC2015',
+        'localData' : '../data/data_ESWC2015',
 //Data sources
         'CommandStores': 'model/CommandStores',
         'DBLPCommandStore': 'model/datasources/DBLPCommandStore',
         'DDGoCommandStore': 'model/datasources/DDGoCommandStore',
         'GoogleCommandStore': 'model/datasources/GoogleCommandStore',
+        'GoogleKGCommandStore': 'model/datasources/GoogleKGCommandStore',
         'LocalCommandStore': 'model/datasources/localCommandStore',
         'VotingSystemCommandStore': 'model/datasources/VotingSystemCommandStore',
         'TwitterWidgetCommandStore': 'model/datasources/TwitterWidgetCommandStore'
@@ -93,7 +94,11 @@ require.config({
 });
 
 //Configurations
-require(['appConfig', 'tpl', 'moment'], function(appConfig, tpl, moment){
+require(['jquery', 'moment', 'appConfig', 'tpl'], function($, moment, appConfig, tpl){
+
+    //Change page title
+    $("title").html(appConfig.conference.acronym + " app");
+    $("#logo-loading-panel").attr("src", appConfig.conference.logoUri);
 
     //Modules configuration
     var modules = [];

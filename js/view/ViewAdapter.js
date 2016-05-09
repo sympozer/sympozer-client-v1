@@ -13,103 +13,22 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
         currentClassName = null;
 
     return {
-        update : function(routeItem, hashtag, conference, datasources, uri, name) {
-            this.template = routeItem.view;
-            this.conference = conference;
-            this.datasources = datasources;
-            this.hashtag = hashtag;
-            this.commands = routeItem.commands;
-            this.uri = uri;
-            this.name = name;
-            this.currentPage = this.changePage(
-                new AbstractView(
-                    {
-                        templateName : this.template,
-                        title : this.name,
-                        model : this.conference
-                    }
-                )
-            );
-            this.initPage();
-            return this.currentPage ;
-        },
-
         /**
-         * Changing page handling, call the rendering of the page and execute transition
-         * **/
-        changePage : function (page, transitionEffect) {
-
-            $(page.el).attr('data-role', 'page');
-            $(page.el).attr('class', 'page');
-
-            page.render();
-            $('body').append($(page.el));
-            var transition = $.mobile.defaultPageTransition;
-            if(transitionEffect !== undefined){
-                transition = transitionEffect;
-            }
-            jqueryMobile.changePage($(page.el), {changeHash:false, transition: transition});
-
-            $(page.el).bind('pagehide', function(event, data) {
-                $(event.currentTarget).remove();
-            });
-            return $(page.el);
-        },
-
-        initPage : function (){
-            _.each(this.commands,function(commandItem){
-                ViewAdapterText.generateContainer(this.currentPage,commandItem.name);
-            },this);
-
-            this.addControlButton();
-        },
-
-        /**
-         * Changes current page CSS class to render according to business rules
+         * Initialize controls in the Settings panel
+         * Must only be done once at initialization
          */
-        setSpecificStyle: function() {
-            if(oldClassName) {
-                this.currentPage.removeClass(oldClassName);
-                $("header div").removeClass(oldClassName);
-                $("#navBar *").removeClass(oldClassName + "Inverse");
-                $("#footer *").removeClass(oldClassName + "Inverse");
-            }
-            if(currentClassName) {
-                this.currentPage.addClass(currentClassName);
-                $("header div").addClass(currentClassName);
-                $("#navBar *").addClass(currentClassName + "Inverse");
-                $("#footer *").addClass(currentClassName + "Inverse");
-            }
-        },
-
-        addControlButton : function (){
-            var currentUrl = encoder.encode(document.URL);
-            var currentHashTag = encoder.encode(this.hashtag);
-
-            var facebookLink = this.currentPage.find("#facebookLink");
-            facebookLink.attr("href","http://www.facebook.com/sharer/sharer.php?u="+currentUrl);
-
-
-            var twitterLink = this.currentPage.find("#twitterLink");
-            twitterLink.attr("href","https://twitter.com/intent/tweet?text="+currentHashTag+"&url="+currentUrl);
-
-
-            var googleLink = this.currentPage.find("#googleLink");
-            googleLink.attr("href","https://plus.google.com/share?url="+currentUrl);
-
-            var linkedinLink = this.currentPage.find("#linkedinLink");
-            linkedinLink.attr("href","http://www.linkedin.com/shareArticle?mini=true&url="+currentUrl);
-
+        initSettings: function() {
             //Handle switch of storage mode on/off
-            var switchStorageModeBtn = this.currentPage.find("#flip-storage");
-            switchStorageModeBtn.val(StorageManager.getMode()).slider('refresh');
-            switchStorageModeBtn.on( "slidestop", function() {
-                StorageManager.switchMode(this.value);
-            });
+            $("#flip-storage")
+                .val(StorageManager.getMode())
+                .on( "slidestop", function() {
+                    StorageManager.switchMode(this.value);
+                })
+                .slider('refresh');
 
             //Handle update dataset button
-            var updateDatasetBtn = this.currentPage.find("#updateAll");
-            updateDatasetBtn.on( "click", function() {
+            //TODO put this callback that handles model data somewhere else
+            $("#updateAll").on( "click", function() {
                 $.when($.get(appConfig.conference.versionUri)).then(function(newVersion) {
                     var oldVersion = StorageManager.get("version");
                     if(!newVersion) {
@@ -128,13 +47,100 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
             });
         },
 
+        update : function(routeName, hashtag, name) {
+            //Show Loading image (at the center of the screen)
+            jqueryMobile.loading('show');
+
+            this.hashtag = hashtag;
+            this.commands = appConfig.routes[routeName].commands;
+            this.currentPage = this.changePage(
+                new AbstractView(
+                    {
+                        templateName : appConfig.routes[routeName].view,
+                        title : name,
+                        model : appConfig.conference
+                    }
+                )
+            );
+            this.initViewCallbackContainers();
+            return this.currentPage ;
+        },
+
+        initViewCallbackContainers : function (){
+            _.each(this.commands,function(commandItem){
+                ViewAdapterText.generateContainer(this.currentPage,commandItem.name);
+            },this);
+
+            this.customizeSocialButtons();
+        },
+
+        /**
+         * Changing page handling, call the rendering of the page and execute transition
+         * **/
+        changePage : function (page, transitionEffect) {
+
+            $(page.el).attr('data-role', 'page');
+            $(page.el).attr('class', 'page');
+
+            page.render();
+            $('body').append($(page.el));
+            var transition = $.mobile.defaultPageTransition;
+            if(transitionEffect !== undefined){
+                transition = transitionEffect;
+            }
+            jqueryMobile.changePage($(page.el), {changeHash:false, transition: transition});
+
+            $(page.el).bind('pagehide', function(event) {
+                $(event.currentTarget).remove();
+            });
+            return $(page.el);
+        },
+
+        customizeSocialButtons : function (){
+            var currentUrl = encoder.encode(document.URL);
+            var currentHashTag = encoder.encode(this.hashtag);
+
+            var facebookLink = $("#facebookLink");
+            facebookLink.attr("href","http://www.facebook.com/sharer/sharer.php?u="+currentUrl);
+
+            var twitterLink = $("#twitterLink");
+            twitterLink.attr("href","https://twitter.com/intent/tweet?text="+currentHashTag+"&url="+currentUrl);
+
+            var googleLink = $("#googleLink");
+            googleLink.attr("href","https://plus.google.com/share?url="+currentUrl);
+
+            var linkedinLink = $("#linkedinLink");
+            linkedinLink.attr("href","http://www.linkedin.com/shareArticle?mini=true&url="+currentUrl);
+        },
+
         generateJQMobileElement : function(className){
             //Managing specific style from ViewCallbacks
             oldClassName = currentClassName;
-            currentClassName = className;
+            currentClassName = className?className:null;
             this.setSpecificStyle();
 
+            //Remove loading image
+            jqueryMobile.loading('hide');
+
             this.currentPage.trigger("create");
+        },
+
+        /**
+         * Changes current page CSS class to render according to business rules
+         */
+        setSpecificStyle: function() {
+            if(oldClassName) {
+                this.currentPage.removeClass(oldClassName);
+                $("header div").removeClass(oldClassName);
+                $("#navBar *").removeClass(oldClassName + "Inverse");
+                $("#footer *").removeClass(oldClassName + "Inverse");
+            }
+            if(currentClassName) {
+                this.currentPage.addClass(currentClassName);
+                $("header div").addClass(currentClassName);
+                $("#navBar *").addClass(currentClassName + "Inverse");
+                $("#footer *").addClass(currentClassName + "Inverse");
+            }
         }
     };
 });

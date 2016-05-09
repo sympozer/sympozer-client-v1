@@ -9,27 +9,23 @@
  *				-> All the routes that the app will use. Each route is configured to display a specific view, if a template exist for this view name (see /templates)
  it is rendered, otherwise a generic view is used. The commands we want to send are specified in a "command" array to explicit which command has to be sent when the route is catched
 
- *   TODO:
- *   - place all category hierarchy constructing data in this file and document the process
- *   - add a "modules" object that contains the configuration of the different modules (vote)
- 
  *   Tags:  JSON, ENDPOINT, SPARQL
  **/
 define([], function() {
         return {
             "app" : {
                 "appLogo" : "Sympozer_logo.png",
-//                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/conference-event",
-                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/presentation-event",
-                "sessionEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/session-event",
+//                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
+                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event",
+                "sessionEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/session-event",
                 "styleMatching": {
-                    "http://data.semanticweb.org/conference/category/poster-event": "poster",
-                    "http://data.semanticweb.org/conference/category/track-event": "research",
-                    "http://data.semanticweb.org/conference/category/demo-event": "demo",
-                    "http://data.semanticweb.org/conference/category/workshop-event": "workshop",
-                    "http://data.semanticweb.org/conference/category/tutorial-event": "tutorial",
-                    "http://data.semanticweb.org/conference/category/in-use-event": "inUse",
-                    "http://data.semanticweb.org/conference/category/keynote-event": "keynote"
+                    "http://data.semanticweb.org/conference/eswc/2015/category/poster-event": "poster",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/track-event": "research",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/demo-event": "demo",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/workshop-event": "workshop",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/tutorial-event": "tutorial",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/in-use-event": "inUse",
+                    "http://data.semanticweb.org/conference/eswc/2015/category/keynote-event": "keynote"
                 },
                 "imageFolder": "data/images/", //Needs a trailing slash
                 "whatsNextDelay": {"hours":2} //MomentJS notation
@@ -40,18 +36,18 @@ define([], function() {
             },
             //Defnition of the conference
             "conference" : {
-                "name": "14th ISWC2015",
-                "acronym": "ISWC2015",
-                "logoUri": "data/images/logo_ISWC2015.png",
-                "website": "http://iswc2015.semanticweb.org/",
-                "baseUri": "http://data.semanticweb.org/conference/iswc/2015",
-                "updateUri": "http://wit.istc.cnr.it/iswc2015/data",
-                "versionUri": "http://wit.istc.cnr.it/iswc2015/data/version",
+                "name": "12th ESWC2015",
+                "acronym": "ESWC2015",
+                "logoUri": "data/images/miniLogo_eswc15_red_0.png",
+                "website": "http://2015.eswc-conferences.org/",
+                "baseUri": "http://data.semanticweb.org/conference/eswc/2015",
+                "updateUri": "http://wit.istc.cnr.it/eswc2015/data",
+                "versionUri": "http://wit.istc.cnr.it/eswc2015/data/version",
                 "lang" : "EN",
                 "momentLang" : "EN_us",
                 "storage": "on",
                 "timeZone": {
-                    "name": "data/data_ISWC2015.json", //"Europe/Ljubljana",
+                    "name": "data/data_ESWC2015.json", //"Europe/Ljubljana",
                     "standardOffset": "+01",
                     "daylightOffset": "+02",
                     "changeToDaylightMonth": "3",
@@ -60,8 +56,8 @@ define([], function() {
             },
 
             //Defnition of the datasources
-            // uri : uri to access the service
-            // crossDomainMode : ("CORS" or "JSONP") cross-domain technique to use on the service
+            // uri : It correspond to the uri to be used to access the service
+            // crossDomainMode : "CORS" or "JSONP" explicits the cross domain technique to be used on the service
             // commands : Name of the json var that implements all the commands that can be used on the service
             "datasources" : {
                 "DblpDatasource" : {
@@ -74,12 +70,17 @@ define([], function() {
                     "crossDomainMode" : "JSONP",
                     "commands" : "DDGoCommandStore"
                 },
-                "GoogleDataSource" : {
+                "GoogleDatasource" : {
                     "uri" : "https://ajax.googleapis.com/ajax/services/search/web",
                     "crossDomainMode" : "JSONP",
                     "commands" : "GoogleCommandStore"
                 },
-                "localDatasource" : {
+                "GoogleKGDatasource" : {
+                    "uri" : "https://kgsearch.googleapis.com/v1/entities:search",
+                    "crossDomainMode" : "CORS",
+                    "commands" : "GoogleKGCommandStore"
+                },
+                "LocalDatasource" : {
                     "uri" : "local:/embedded",
                     //local configuration
                     "local": true,
@@ -99,23 +100,47 @@ define([], function() {
                 }
             },
             //Declaration of all the routes to be used by the router
-            // hash : url to be catched by the router
+            // hash : url to be caught by the router
             // view : the name of the view to display when catching the route (if a template in /templates matches the name, it is used, otherwise a generic view is used)
             // title : the title to display on the header when showing the view
             // commands : array of datasource/name to precise which command of which datasource to send when catching the route
             "routes" : {
                 "Home" : {
                     "hash" : "",
-                    "view" : "home",
+                    "view" : "homeTpl",
+                    "title" : "home",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
-                            "name" : "getConferenceEvent"
+                            "datasource" : "LocalDatasource",
+                            "name" : "getConferenceEvent",
+                            "nestedCommands": [
+                                {
+                                    datasource: "LocalDatasource",
+                                    name: "getLocationLink",
+                                    targetProperty: "locations"
+                                },
+                                {
+                                    datasource: "LocalDatasource",
+                                    name: "getEventLink",
+                                    targetProperty: "children"
+                                }
+                            ]
                         },
-//                        {
-//                            "datasource" : "localDatasource",
-//                            "name" : "getEventIcs"
-//                        },
+/*
+                        {
+                            "datasource" : "LocalDatasource",
+                            "name" : "getEventIcs",
+                            "nestedCommands": [{
+                                datasource: "LocalDatasource",
+                                name: "getCategoryLink",
+                                targetProperty: "categories"
+                            }, {
+                                datasource: "LocalDatasource",
+                                name: "getLocationLink",
+                                targetProperty: "location"
+                            }]
+                        },
+*/
                         {
                             "datasource" : "TwitterWidgetDatasource",
                             "name" : "getConferenceTimeline"
@@ -124,11 +149,11 @@ define([], function() {
                 },
                 "Schedule" : {
                     "hash" : "schedule/*locationLabel",
-                    "view" : "schedule",
+                    "view" : "scheduleTpl",
                     "title": "schedule",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getConferenceSchedule"
                         }/*,
                          {
@@ -139,22 +164,22 @@ define([], function() {
                 },
                 "WhatsNext" : {
                     "hash" : "whatsnext/",
-                    "view" : "whatsnext",
+                    "view" : "whatsnextTpl",
                     "title": "whatsnext",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getWhatsNext"
                         }
                     ]
                 },
                 "person-by-role" : {
                     "hash" : "person-by-role/:name/*uri",
-                    "view" : "person-by-role",
+                    "view" : "person-by-roleTpl",
                     "title": "allRole",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getPersonsByRole"
                         }
                     ]
@@ -183,61 +208,111 @@ define([], function() {
                 //},
                 "Events" : {
                     "hash" : "events",
-                    "view" : "events",
+                    "view" : "eventsTpl",
                     "title": "allEvent",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllEvents"
                         }
                     ]
                 },
                 "Event" : {
                     "hash" : "event/:name/*uri",
-                    "view" : "event",
+                    "view" : "eventTpl",
                     "title": "event",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
-                            "name" : "getEvent"
+                            "datasource" : "LocalDatasource",
+                            "name" : "getEvent",
+                            "nestedCommands": [{
+                                datasource: "LocalDatasource",
+                                name: "getRoleLink",
+                                targetProperty: "roles"
+                            }, {
+                                datasource: "LocalDatasource",
+                                name: "getEventLink",
+                                targetProperty: "children"
+                            }, {
+                                datasource: "LocalDatasource",
+                                name: "getEventLink",
+                                targetProperty: "parent"
+                            }, {
+                                datasource: "LocalDatasource",
+                                name: "getPublicationLink",
+                                targetProperty: "papers"
+                            }, {
+                                datasource: "LocalDatasource",
+                                name: "getCategoryLink",
+                                targetProperty: "categories"
+                            }, {
+                                datasource: "LocalDatasource",
+                                name: "getLocationLink",
+                                targetProperty: "locations"
+                            }]
                         }
-//                        ,
-//                        {
-//                            "datasource" : "localDatasource",
-//                            "name" : "getEventIcs"
-//                        }
+/*
+                        ,
+                        {
+                            "datasource" : "LocalDatasource",
+                            "name" : "getEventIcs",
+                            "nestedCommands": [{
+                                datasource: "LocalDatasource",
+                                name: "getCategoryLink",
+                                targetProperty: "categories"
+                            }, {
+                                datasource: "LocalDatasource",
+                                name: "getLocationLink",
+                                targetProperty: "location"
+                            }]
+                        }
+*/
                     ]
                 },
                 "Event-by-category" : {
                     "hash" : "event-by-category/:name/*uri",
-                    "view" : "event-by-category",
+                    "view" : "event-by-categoryTpl",
                     "title": "searchByCategory",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getCategory"
                         }
                     ]
                 },
                 "Events-by-location" : {
                     "hash" : "events-by-location/:name/*uri",
-                    "view" : "events-by-location",
+                    "view" : "events-by-locationTpl",
                     "title": "searchByLocation",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getLocation"
                         }
                     ]
                 },
                 "Publication" : {
                     "hash" : "publication/:name/*uri",
-                    "view" : "publication",
+                    "view" : "publicationTpl",
                     "title": "publication",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
-                            "name" : "getPublication"
+                            "datasource" : "LocalDatasource",
+                            "name" : "getPublication",
+                            "nestedCommands": [
+                                {
+                                    //Retrieve authors
+                                    datasource: "LocalDatasource",
+                                    name: "getPersonLink",
+                                    targetProperty: "authors"
+                                },
+                                {
+                                    //Retrieve presentation event
+                                    datasource: "LocalDatasource",
+                                    name: "getEventLink",
+                                    targetProperty: "presentedIn"
+                                }
+                            ]
                         },
                         {
                             "datasource" : "VotingSystemDatasource",
@@ -247,76 +322,102 @@ define([], function() {
                 },
                 "EventSearch" : {
                     "hash" : "search/event",
-                    "view" : "eventSearch",
+                    "view" : "eventSearchTpl",
                     "title": "searchEvent",
                     "commands" : [
                     ]
                 },
                 "PersonSearch" : {
                     "hash" : "search/person",
-                    "view" : "personSearch",
+                    "view" : "personSearchTpl",
                     "title": "Search person",
                     "commands" : [
                     ]
                 },
                 "PublicationSearch" : {
                     "hash" : "search/publication",
-                    "view" : "publicationSearch",
+                    "view" : "publicationSearchTpl",
                     "title": "searchPublication",
                     "commands" : [
                     ]
                 },
                 "Publications" : {
                     "hash" : "publications",
-                    "view" : "publications",
+                    "view" : "publicationsTpl",
                     "title": "allPublication",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllPublications"
                         }
                     ]
                 },
                 "Locations" : {
                     "hash" : "locations",
-                    "view" : "locations",
+                    "view" : "locationsTpl",
                     "title": "allLocation",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllLocations"
                         }
                     ]
                 },
                 "OrganizationSearch" : {
                     "hash" : "search/organization",
-                    "view" : "organizationSearch",
+                    "view" : "organizationSearchTpl",
                     "title": "searchOrganization",
                     "commands" : [
                     ]
                 },
                 "Persons" : {
                     "hash" : "persons",
-                    "view" : "persons",
+                    "view" : "personsTpl",
                     "title": "allPerson",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllPersons"
                         }
                     ]
                 },
                 "Person" : {
                     "hash" : "person/:name/*uri",
-                    "view" : "person",
+                    "view" : "personTpl",
                     "title": "person",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
-                            "name" : "getPerson"
+                            "datasource" : "LocalDatasource",
+                            "name" : "getPerson",
+                            "nestedCommands": [{
+                                //Retrieve organizations
+                                datasource: "LocalDatasource",
+                                name: "getOrganizationLink",
+                                targetProperty: "affiliation"
+                            }, {
+                                //Retrieve publications
+                                datasource: "LocalDatasource",
+                                name: "getPublicationLink",
+                                targetProperty: "made"
+                            }, {
+                                //Retrieve roles
+                                datasource: "LocalDatasource",
+                                name: "getRoleLink",
+                                targetProperty: "holdsRole"
+                            }
+//TODO
+/*
+                                , {
+                                //Retrieve homepage
+                                datasource: "GoogleDatasource",
+                                name: "getPersonFromOrganization",
+                                targetProperty: "homepage"
+                            }
+*/
+                            ]
                         },
                         {
-                            "datasource" : "GoogleDataSource",
+                            "datasource" : "GoogleDatasource",
                             "name" : "getAuthorPersonalPage"
                         },
                         {
@@ -327,29 +428,29 @@ define([], function() {
                 },
                 "Organizations" : {
                     "hash" : "organizations",
-                    "view" : "organizations",
+                    "view" : "organizationsTpl",
                     "title": "allOrganization",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllOrganizations"
                         }
                     ]
                 },
                 "Roles" : {
                     "hash" : "roles",
-                    "view" : "roles",
+                    "view" : "rolesTpl",
                     "title": "allRole",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllRoles"
                         }
                     ]
                 },
                 //"Topics" : {
                 //	"hash" : "topics",
-                //	"view" : "topics",
+                //	"view" : "topicsTpl",
                 //	"title": "allTopic",
                 //	"commands" : [
                 //		{
@@ -360,7 +461,7 @@ define([], function() {
                 //},
                 //"Topic" : {
                 //	"hash" : "topic/:name/*uri",
-                //	"view" : "topic",
+                //	"view" : "topicTpl",
                 //	"title": "topic",
                 //	"commands" : [
                 //		{
@@ -371,62 +472,72 @@ define([], function() {
                 //},
                 "Categories" : {
                     "hash" : "categories",
-                    "view" : "categories",
+                    "view" : "categoriesTpl",
                     "title": "allCategory",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllCategories"
                         }
                     ]
                 },
                 "CategoriesForPublications" : {
                     "hash" : "categories-for-publications",
-                    "view" : "categories",
+                    "view" : "categoriesTpl",
                     "title": "allCategory",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllCategoriesForPublications"
                         }
                     ]
                 },
                 "Category" : {
                     "hash" : "category/:name/*uri",
-                    "view" : "category",
+                    "view" : "categoryTpl",
                     "title": "category",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
-                            "name" : "getCategory"
+                            "datasource" : "LocalDatasource",
+                            "name" : "getCategory",
+                            "nestedCommands": [{
+                                datasource: "LocalDatasource",
+                                name: "getEventLink",
+                                targetProperty: "events"
+                            }]
                         }
                     ]
                 },
                 "Publications-by-category" : {
                     "hash" : "publications-by-category/:name/*uri",
-                    "view" : "category",
+                    "view" : "categoryTpl",
                     "title": "category",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
-                            "name" : "getCategoryForPublications"
+                            "datasource" : "LocalDatasource",
+                            "name" : "getCategoryForPublications",
+                            "nestedCommands": [{
+                                datasource: "LocalDatasource",
+                                name: "getPublicationLink",
+                                targetProperty: "publications"
+                            }]
                         }
                     ]
                 },
                 "Authors" : {
                     "hash" : "authors",
-                    "view" : "authors",
+                    "view" : "authorsTpl",
                     "title": "allAuthor",
                     "commands" : [
                         {
-                            "datasource" : "localDatasource",
+                            "datasource" : "LocalDatasource",
                             "name" : "getAllAuthors"
                         }
                     ]
                 },
                 "ExternPublication" : {
                     "hash" : "externPublication/*uri",
-                    "view" : "externPublication",
+                    "view" : "externPublicationTpl",
                     "title": "externalPublication",
                     "commands" : [
                         {
@@ -441,22 +552,35 @@ define([], function() {
                 },
                 "Organization" : {
                     "hash" : "organization/:name/*uri",
-                    "view" : "organization",
+                    "view" : "organizationTpl",
                     "title": "organization",
                     "commands" : [
+                        {
+                            "datasource" : "LocalDatasource",
+                            "name" : "getOrganization",
+                            "nestedCommands": [{
+                                datasource: "LocalDatasource",
+                                name: "getPersonLink",
+                                targetProperty: "members"
+                            }]
+                        },
+                        {
+                            "datasource" : "GoogleKGDatasource",
+                            "name" : "getResultOrganization"
+                        },
                         {
                             "datasource" : "DuckDuckGoDatasource",
                             "name" : "getResultOrganization"
                         },
                         {
-                            "datasource" : "localDatasource",
-                            "name" : "getOrganization"
+                            "datasource" : "GoogleDatasource",
+                            "name" : "getOrganizationPage"
                         }
                     ]
                 },
                 "Recommendation" : {
                     "hash" : "recommendation",
-                    "view" : "recommendation",
+                    "view" : "recommendationTpl",
                     "title": "recommendation",
                     "commands" : [
                         {
@@ -467,7 +591,7 @@ define([], function() {
                 },
                 "About" : {
                     "hash" : "about",
-                    "view" : "about",
+                    "view" : "aboutTpl",
                     "title": "About",
                     "commands" : []
                 }
