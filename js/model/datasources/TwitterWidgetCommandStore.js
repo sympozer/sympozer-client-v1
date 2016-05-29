@@ -28,8 +28,8 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'Tw
             },
 
             ViewCallBack: function (parameters) {
-                //Twitter timeline (not generic: extracted from ISWC2015 website)
-				parameters.contentEl.append('<div id="block-twitter-block-1" class="block block-twitter-block clearfix"><div class="content"><a href="https://twitter.com/iswc2015" class="twitter-timeline" data-widget-id="521651017213960192" data-chrome="nofooter" data-aria-polite="polite">Tweets by iswc2015</a></div></div>');
+                //Twitter timeline (not generic: extracted from ESWC2015 website)
+				parameters.contentEl.append('<div id="block-twitter-block-1" class="block block-twitter-block clearfix"><div class="content"><a href="https://twitter.com/" class="twitter-timeline" data-widget-id="373072714841333760" data-chrome="nofooter" data-aria-polite="polite">Tweets by #eswc2015</a></div></div>');
 				twitter.execute();
             }
         },

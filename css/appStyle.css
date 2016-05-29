@@ -2,6 +2,8 @@
 
 body *{
   text-shadow : none !important;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 H1 , H2 {
   font-size : 14pt !important;
@@ -81,7 +83,7 @@ p{
 
 /**********************   Content ************************/
 .page{
-  background: #f3f6f6 !important;
+  background: #fff !important;
   text-shadow : none !important;
   text-decoration : none !important;
 }

@@ -61,7 +61,11 @@ define(['jquery', 'jqueryMobile', 'encoder', 'ViewAdapterText', 'AbstractView', 
                 ViewAdapterText.generateContainer(this.currentPage,commandItem.name);
             },this);
 
-            this.addControlButton();
+			try {
+				this.addControlButton();				
+			} catch(error) {
+				console.log(error.message);
+			}
         },
 
         /**

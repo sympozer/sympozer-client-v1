@@ -9,30 +9,27 @@
  *				-> All the routes that the app will use. Each route is configured to display a specific view, if a template exist for this view name (see /templates)
  it is rendered, otherwise a generic view is used. The commands we want to send are specified in a "command" array to explicit which command has to be sent when the route is catched
 
- *   TODO:
- *   - place all category hierarchy constructing data in this file and document the process
- *   - add a "modules" object that contains the configuration of the different modules (vote)
- 
  *   Tags:  JSON, ENDPOINT, SPARQL
  **/
 define([], function() {
         return {
             "app" : {
                 "appLogo" : "Sympozer_logo.png",
-//                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/conference-event",
-                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/presentation-event",
-                "sessionEventCategory": "http:\/\/data.semanticweb.org\/conference\/category\/session-event",
-                "styleMatching": {
-                    "http://data.semanticweb.org/conference/category/poster-event": "poster",
-                    "http://data.semanticweb.org/conference/category/track-event": "research",
-                    "http://data.semanticweb.org/conference/category/demo-event": "demo",
-                    "http://data.semanticweb.org/conference/category/workshop-event": "workshop",
-                    "http://data.semanticweb.org/conference/category/tutorial-event": "tutorial",
-                    "http://data.semanticweb.org/conference/category/in-use-event": "inUse",
-                    "http://data.semanticweb.org/conference/category/keynote-event": "keynote"
+//                "conferenceEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/conference-event",
+                "presentationEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/presentation-event",
+                "sessionEventCategory": "http:\/\/data.semanticweb.org\/conference\/eswc\/2015\/category\/session-event",
+                styleMatching: {
+                    "http://data.semanticweb.org/ns/swc/ontology#PosterEvent": "poster",
+                    "http://data.semanticweb.org/ns/swc/ontology#SessionEvent": "session",
+//                    "http://data.semanticweb.org/ns/swc/ontology#SessionEvent": "research",
+//                    "http://data.semanticweb.org/conference/eswc/2015/category/in-use-event": "inUse",
+                    "http://data.semanticweb.org/ns/swc/ontology#DemoEvent": "demo",
+                    "http://data.semanticweb.org/ns/swc/ontology#WorkshopEvent": "workshop",
+                    "http://data.semanticweb.org/ns/swc/ontology#TutorialEvent": "tutorial",
+                    "http://data.semanticweb.org/ns/swc/ontology#KeynoteEvent": "keynote"
                 },
-                "imageFolder": "data/images/", //Needs a trailing slash
-                "whatsNextDelay": {"hours":2} //MomentJS notation
+				"imageFolder": "data/images/", //Needs a trailing slash
+                "whatsNextDelay": {"hours":24} //MomentJS notation
             },
             //User preferences
             "preferences": {
@@ -40,18 +37,17 @@ define([], function() {
             },
             //Defnition of the conference
             "conference" : {
-                "name": "14th ISWC2015",
-                "acronym": "ISWC2015",
-                "logoUri": "data/images/logo_ISWC2015.png",
-                "website": "http://iswc2015.semanticweb.org/",
-                "baseUri": "http://data.semanticweb.org/conference/iswc/2015",
-                "updateUri": "http://wit.istc.cnr.it/iswc2015/data",
-                "versionUri": "http://wit.istc.cnr.it/iswc2015/data/version",
+                "name": "13th ESWC2016",
+                "acronym": "ESWC2016",
+                "logoUri": "data/images/miniLogo_eswc16_red_0.png",
+                "website": "http://2016.eswc-conferences.org/",
+                "baseUri": "http://data.semanticweb.org/conference/eswc/2016",
+                "updateUri": "https://raw.githubusercontent.com/sympozer/datasets/master/ESWC2016/data_ESWC2016.json",
                 "lang" : "EN",
                 "momentLang" : "EN_us",
                 "storage": "on",
                 "timeZone": {
-                    "name": "data/data_ISWC2015.json", //"Europe/Ljubljana",
+                    "name": "Europe/Athens",
                     "standardOffset": "+01",
                     "daylightOffset": "+02",
                     "changeToDaylightMonth": "3",
@@ -60,8 +56,8 @@ define([], function() {
             },
 
             //Defnition of the datasources
-            // uri : uri to access the service
-            // crossDomainMode : ("CORS" or "JSONP") cross-domain technique to use on the service
+            // uri : It correspond to the uri to be used to access the service
+            // crossDomainMode : "CORS" or "JSONP" explicits the cross domain technique to be used on the service
             // commands : Name of the json var that implements all the commands that can be used on the service
             "datasources" : {
                 "DblpDatasource" : {
@@ -315,10 +311,10 @@ define([], function() {
                             "datasource" : "localDatasource",
                             "name" : "getPerson"
                         },
-                        {
-                            "datasource" : "GoogleDataSource",
-                            "name" : "getAuthorPersonalPage"
-                        },
+                        //{
+                        //    "datasource" : "GoogleDataSource",
+                        //    "name" : "getAuthorPersonalPage"
+                        //},
                         {
                             "datasource" : "DblpDatasource",
                             "name" : "getAuthorPublications"

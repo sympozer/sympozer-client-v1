@@ -22,14 +22,15 @@ define(['jquery', 'moment', 'labels', 'encoder', 'appConfig'], function ($, mome
          */
         constructMap: function (eventArray, propertyName) {
             var eventMap = {};
-            for (var i in eventArray) {
-                var event = eventArray[i];
-                var formattedDate = moment(event[propertyName]).format();
-                if (!eventMap[formattedDate]) {
-                    eventMap[formattedDate] = [];
-                }
-                eventMap[formattedDate].push(event);
-            }
+            eventArray.forEach(function(event) {
+				if(event) {
+					var formattedDate = moment(event[propertyName]).format();
+					if (!eventMap[formattedDate]) {
+						eventMap[formattedDate] = [];
+					}
+					eventMap[formattedDate].push(event);
+				}
+			});
             return eventMap;
         },
 

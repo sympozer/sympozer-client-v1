@@ -121,7 +121,11 @@ define(['jquery'], function($){
 					if(currentImage){
 						img = $('<img style="float:left; width: auto; height : 60px;" src='+currentImage+'><div>');
 					}else{
-						img = $('<i style="float:left" class="fa fa-question fa-3x"></i>');
+						if(option.defaultImage){
+							img = $('<img style="float:left; width: auto; height : 60px;" src='+option.defaultImage+'><div>');
+						}else{
+							img = $('<i style="float:left" class="fa fa-question fa-3x"></i>');
+						}
 					}
 					a.append(img);
 					

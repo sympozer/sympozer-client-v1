@@ -73,7 +73,7 @@ require.config({
         'ViewAdapterText': 'view/ViewAdapterText',
 //DAO
         'localDao': 'modules/LocalDAO',
-        'localData' : '../data/data_ISWC2015',
+        'localData' : '../data/data_ESWC2016',
 //Data sources
         'CommandStores': 'model/CommandStores',
         'DBLPCommandStore': 'model/datasources/DBLPCommandStore',

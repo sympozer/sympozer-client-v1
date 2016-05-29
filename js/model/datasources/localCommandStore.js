@@ -211,7 +211,8 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                                 type: "Node",
                                 labelCllbck: function (str) {
                                     return "person : " + str.id;
-                                }
+                                },
+								defaultImage: "data/images/defaultPerson.png"
                             }
                         );
                     }
@@ -285,7 +286,8 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                                 type: "Node",
                                 labelCllbck: function (str) {
                                     return "organization : " + str.id;
-                                }
+                                },
+								defaultImage: "data/images/defaultOrganization.png" 
                             }
                         );
                     }
@@ -1204,7 +1206,8 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                                     newEventlink.append('<h3>' + bigEvents[eventType][i].name + '</h3>');
                                     newEventlink.append('<p>' + labels[parameters.conference.lang].event.startAt + ' : <strong>' + moment(bigEvents[eventType][i].startsAt).format('hh:mm a') + '</strong></p>');
                                     newEventlink.append('<p>' + labels[parameters.conference.lang].event.last + ' : <strong>' + lasts + '</strong></p>');
-                                    newEventlink.append('<p>' + bigEvents[eventType][i].location + '</p>');
+									if(bigEvents[eventType][i].location)
+										newEventlink.append('<p>' + bigEvents[eventType][i].location + '</p>');
 
                                     var newLi = $('<li data-inset="true" ></li>');
                                     newLi.append(newEventlink);
