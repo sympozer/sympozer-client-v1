@@ -738,10 +738,11 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                         var eventCategory = null;
                         if (parameters.JSONdata.presentedIn && _.size(parameters.JSONdata.presentedIn.startsAt) > 0) {
                             parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].publication.presentedIn + '</h2>'));
-                            var presentationEventDesc = moment(parameters.JSONdata.presentedIn.startsAt).format('LLLL') + ' ' + labels[parameters.conference.lang].publication.locationPrefix + ' ' + parameters.JSONdata.presentedIn.location;
+                            var presentationEventDesc = moment(parameters.JSONdata.presentedIn.startsAt).format('LLLL');
+							//avoid "in null" if no location
+							if(parameters.JSONdata.presentedIn.location)
+								presentationEventDesc += ' ' + labels[parameters.conference.lang].publication.locationPrefix + ' ' + parameters.JSONdata.presentedIn.location;
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(parameters.JSONdata.presentedIn.name) + '/' + Encoder.encode(parameters.JSONdata.presentedIn.id), presentationEventDesc, {tiny: true});
-                            //TODO: remove this:
-                            console.log("Presented in: " + parameters.JSONdata.presentedIn.name + "\nPresented in category: " + parameters.JSONdata.presentedIn.mainCategory);
 
                             //Get main category for styling
                             eventCategory = appConfig.app.styleMatching[parameters.JSONdata.presentedIn.mainCategory];
