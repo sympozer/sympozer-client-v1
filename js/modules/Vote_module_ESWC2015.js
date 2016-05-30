@@ -4,7 +4,7 @@
 define(['jquery'], function($){
     var votingSystem = {
         config: {
-            url: 'http://wit.istc.cnr.it/eswc2015/vote', //Unused by now (until I find a proper way to inject it in the vote function)
+            url: ' http://w3id.org/clodg/eswc2016/vote', //Unused by now (until I find a proper way to inject it in the vote function)
             tracks: ['poster', 'demo']
         },
         isVotingTrack: function(trackName) {
@@ -15,7 +15,7 @@ define(['jquery'], function($){
             return false;
         },
         vote: function (paperTrack, paperId) {
-            var url = 'http://wit.istc.cnr.it/eswc2015/vote';
+            var url = ' http://w3id.org/clodg/eswc2016/vote';
             var persCode = $('#personalCode').val().trim();
             if (persCode == '') {
                 $('#msg').html('Warning! Please enter your personal code!');

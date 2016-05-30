@@ -273,6 +273,73 @@ define(['jquery', 'moment', 'labels', 'encoder', 'appConfig'], function ($, mome
                 }
             }
             return content;
+        },
+
+        /**
+         * Generates a schedule view for several commands (conference schedule, sub-events...)
+         * @param eventArray Ordered array of events obtained with doubleSortEventsInArray
+         * @param arrayName Common text that will be displayed on each event view (or null)
+         * @param language Available language in the labels file
+         * @returns {*|jQuery|HTMLElement} that can be added to the view element using jQuery's html() or append() functions
+         */
+        renderAsEventList: function(eventArray, arrayName, language) {
+            var content = $("<div data-role='collapsible-set' data-inset='false'></div>");
+            var currentUl = $('<ul data-role="listview" data-inset="true" ></ul>');
+            content.append(currentUl);
+
+            for (var startAt in eventArray) {
+
+                var currentDay = moment(startAt).format('MMMM Do');
+
+                var startTime = moment(startAt).format('h:mm a');
+
+                currentUl.append("<li data-role='list-divider' >" + labels[language].event.startAt + " " + startTime + ", " + currentDay + "</li>");
+
+                for (var endAt in eventArray[startAt]) {
+
+                    var lasts = moment(startAt).from(moment(endAt), true);
+
+                    var bigEvents = eventArray[startAt][endAt].bigEvents;
+                    for (var eventType in bigEvents) {
+
+                        for (var i = 0; i < bigEvents[eventType].length; i++) {
+                            var newEventlink = $('<a href="#event/' + Encoder.encode(bigEvents[eventType][i].name) + '/' + Encoder.encode(bigEvents[eventType][i].id) + '">');
+
+                            var newLabel = $('<h3>' + bigEvents[eventType][i].name + '</h3>');
+                            newEventlink.append(newLabel);
+
+                            /*
+                             TODO: can only be fixed if nested queries can be sent on arrays (yet only map objects), since it requires categories to be expanded
+                             for(var catIndex in bigEvents[eventType][i].categories) {
+                             //TODO use category name instead of splitting the URI
+                             var labelCategory = labels[language].category[bigEvents[eventType][i].categories[catIndex].split("#")[1]] || "";
+                             var newCategory = $('<p>' + labelCategory + '</p>');
+                             newEventlink.append(newCategory);
+                             }
+                             */
+
+                            var newLast = $('<p>' + labels[language].event.last + ' : <strong>' + lasts + '</strong></p>');
+                            newEventlink.append(newLast);
+
+                            var moreInfoHtml = '';
+                            if (arrayName && arrayName != "") {
+                                moreInfoHtml = '<p>' + arrayName + '</p>';
+                            } else {
+                                if (bigEvents[eventType][i].location) {
+
+                                    moreInfoHtml += '<p>' + bigEvents[eventType][i].location + '</p>';
+                                }
+                            }
+                            newEventlink.append(moreInfoHtml);
+
+                            var newLi = $('<li data-inset="true" ></li>');
+                            newLi.append(newEventlink);
+                            currentUl.append(newLi);
+                        }
+                    }
+                }
+            }
+            return content;
         }
     };
 });

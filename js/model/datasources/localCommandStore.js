@@ -978,7 +978,7 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
 
                     if (eventInfo.homepage) {
                         parameters.contentEl.append($('<h2>' + labels[parameters.conference.lang].event.homepage + '</h2>'));
-                        parameters.contentEl.append($('<a href="' + eventInfo.eventHomepage + '">' + eventInfo.homepage + '</a>'));
+                        parameters.contentEl.append($('<a href="' + eventInfo.homepage + '">' + eventInfo.homepage + '</a>'));
                     }
 
 /*
@@ -1036,21 +1036,21 @@ define(['jquery', 'underscore', 'encoder', 'ViewAdapter', 'ViewAdapterText', 'mo
                         }
                     }
 
+                    if (_.size(eventInfo.children) > 0) {
+						var children='';
+						//Decide whether to render as a schedule (for multiple days) or a list based on the format of the keys of the children object.
+						var eventChildrenKeys = Object.keys(eventInfo.children);
+						if(eventChildrenKeys[0].split('T')[0] == eventChildrenKeys[eventChildrenKeys.length - 1].split('T')[0])
+							children = eventHelper.renderAsEventList(eventInfo.children, null, parameters.conference.lang);
+						else
+							children = eventHelper.renderAsSchedule(eventInfo.children, null, parameters.conference.lang);
+                        parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].event.subEvents + '</h2>');
+                        parameters.contentEl.append(children);
+                    }
+
                     if (eventInfo.parent) {
                         parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].event.parentEvent + '</h2>');
                             ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(eventInfo.parent.name) + "/" + Encoder.encode(eventInfo.parent.id), eventInfo.parent.name, {tiny: 'true'});
-                    }
-
-                    if (_.size(eventInfo.children) > 0) {
-                        var children = eventHelper.renderAsSchedule(eventInfo.children, eventInfo.mainCategory, parameters.conference.lang);
-                        parameters.contentEl.append('<h2>' + labels[parameters.conference.lang].event.subEvent + '</h2>');
-                        parameters.contentEl.append(children);
-/*
-                        for (var i = 0; i < eventInfo.children.length; i++) {
-                            var subEvent = eventInfo.children[i];
-                            ViewAdapterText.appendButton(parameters.contentEl, '#event/' + Encoder.encode(subEvent.name) + "/" + Encoder.encode(subEvent.id), subEvent.name, {tiny: 'true'});
-                        }
-*/
                     }
 
                     if (_.size(eventInfo.resources) > 0) {

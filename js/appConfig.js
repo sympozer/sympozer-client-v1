@@ -29,7 +29,7 @@ define([], function() {
                     "http://data.semanticweb.org/ns/swc/ontology#KeynoteEvent": "keynote"
                 },
 				"imageFolder": "data/images/", //Needs a trailing slash
-                "whatsNextDelay": {"hours":24} //MomentJS notation
+                "whatsNextDelay": {"hours":2} //MomentJS notation
             },
             //User preferences
             "preferences": {
@@ -196,12 +196,11 @@ define([], function() {
                         {
                             "datasource" : "localDatasource",
                             "name" : "getEvent"
+                        },
+                        {
+                            "datasource" : "localDatasource",
+                            "name" : "getEventIcs"
                         }
-//                        ,
-//                        {
-//                            "datasource" : "localDatasource",
-//                            "name" : "getEventIcs"
-//                        }
                     ]
                 },
                 "Event-by-category" : {

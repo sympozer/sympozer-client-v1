@@ -62,8 +62,8 @@ define([],function() {
                 'startAtLe' : 'Starts at',
                 'endAt' : 'Ends at',
                 'endAtLe' : 'Ends at',
-                'parentEvent' : 'Parent event',
-                'subEvent' : 'Sub events',
+                'parentEvent' : 'Part of', //More informative than parent event
+                'subEvents' : 'Contents', //More informative than sub-events
                 'duration' : 'Duration',
                 'location' : 'Location',
                 'description' : 'Description',
@@ -97,16 +97,16 @@ define([],function() {
                 'workshopEvent' : "Workshop",
                 'keynoteEvent' : "Keynote",
                 'tutorialEvent' : "Tutorial",
-                'posterEvent' : "Poster",
+                'posterEvent' : "Poster Track",
                 'phdSymposiumEvent' : "PhD symposium",
                 'challengeEvent' : "Challenge",
-                'plenaryEvent' : "Plenary",
-                'networkingEvent' : "Networking",
+                'plenaryEvent' : "Plenary Session",
+                'networkingEvent' : "Networking Event",
                 'presentationEvent' : "Presentation",
                 'breakEvent' : "Break",
-                'demoEvent' : "Demo",
-                'inUseEvent' : "In use",
-                'researchEvent' : "Research"
+                'demoEvent' : "Demo Track",
+                'inUseEvent' : "In use Track",
+                'researchEvent' : "Research Track"
             },
             'search' : {
                 'searchByName' :'by name',
@@ -223,8 +223,8 @@ define([],function() {
                 'startAtLe' : 'Débute le',
                 'endAt' : 'Finit à',
                 'endAtLe' : 'Finit le',
-                'parentEvent' : 'Événement parent',
-                'subEvent' : 'Sous événements',
+                'parentEvent' : 'Inclus dans',
+                'subEvents' : 'Contenu', //Plus informatif
                 'duration' : 'Durée',
                 'location' : 'Localisation',
                 'description' : 'Description',
