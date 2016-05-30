@@ -18,10 +18,10 @@ define(['jquery', 'underscore', 'tpl','labels'], function($, _, tpl, labels){
 
 			this.model = options.model;
 
-			this.headerTpl = _.template(tpl.get("header"));
-			this.navBarTpl = _.template(tpl.get("navBar"));
-			this.settingsPanelTpl = _.template(tpl.get("settingsPanel"));
-			this.bonusPanelTpl = _.template(tpl.get("bonusPanel"));
+			this.headerTpl = _.template(tpl.get("headerTpl"));
+			this.navBarTpl = _.template(tpl.get("navBarTpl"));
+			this.settingsPanelTpl = _.template(tpl.get("settingsPanelTpl"));
+			this.bonusPanelTpl = _.template(tpl.get("bonusPanelTpl"));
 
 			this.templateName = options.templateName;
 
@@ -30,7 +30,7 @@ define(['jquery', 'underscore', 'tpl','labels'], function($, _, tpl, labels){
 			}else{
 				this.contentTpl =  _.template('<article><section class="content"></section></article>');
 			}
-			this.footerTpl = _.template(tpl.get("footer"));
+			this.footerTpl = _.template(tpl.get("footerTpl"));
 		},
 
 		/** Rendering of the templates **/

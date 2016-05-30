@@ -19,11 +19,11 @@
     </script>
 </head><body style="background-color: rgb(116, 114, 103);">
 <div style="height: 500px; width: 100%; display: table-cell; vertical-align: middle; text-align: center; background-color: rgb(243, 246, 246);">
-    <img src="data/images/miniLogo_eswc15_red_0.png" style="display: inline;" height="50" width="auto;"> <img src="img/loader.gif" style="display: inline; margin-left: auto; margin-right: auto;" height="32" width="32">
+    <img src="img/loader.gif" style="display: inline; margin-left: auto; margin-right: auto;" height="32" width="32">
 </div>
 
 <!--All templates used by the client (loaded by lib/templateLoader.js-->
-<script type="text/template" id="bonusPanel">
+<script type="text/template" id="bonusPanelTpl">
     <div data-role="panel" id="bonusPanel" class="ui-responsive-panel" data-position="left" data-display="overlay">
         <h1><%= labels.socialBox.title %></h1>
         <div id="socialBox">
@@ -34,7 +34,7 @@
         </div>
     </div>
 </script>
-<script type="text/template" id="eventSearch">
+<script type="text/template" id="eventSearchTpl">
     <article id="eventSearch">
         <section class="content">
             <a href="#events" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
@@ -45,7 +45,7 @@
         </section>
     </article>
 </script>
-<script type="text/template" id="footer">
+<script type="text/template" id="footerTpl">
     <footer id="footer" data-role="footer" data-position="fixed" >
         <div data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" >
             <ul class="ui-grid">
@@ -56,7 +56,7 @@
         </div>
     </footer>
 </script>
-<script type="text/template" id="header">
+<script type="text/template" id="headerTpl">
     <header data-position="inline"  id="header">
         <div class="ui-grid-b ui-responsive">
             <div class="ui-block-a">
@@ -71,13 +71,13 @@
         </div>
     </header>
 </script>
-<script type="text/template" id="home">
+<script type="text/template" id="homeTpl">
     <article id="home">
         <section class="content">
         </section>
     </article>
 </script>
-<script type="text/template" id="navBar">
+<script type="text/template" id="navBarTpl">
     <nav data-role="navbar" class="ui-navbar ui-navbar-noicons" role="navigation" id="navBar">
         <ul>
             <li><a href="#schedule/"><i class="fa fa-calendar"></i>    <%= labels.navBar.schedule %></a></li>
@@ -87,15 +87,15 @@
         </ul>
     </nav>
 </script>
-<script type="text/template" id="organizationSearch">
-    <article id="personSearch">
+<script type="text/template" id="organizationSearchTpl">
+    <article id="organizationSearch">
         <section class="content">
             <a href="#organizations" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
             <a href="#persons"  data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByPerson %></a>
         </section>
     </article>
 </script>
-<script type="text/template" id="personSearch">
+<script type="text/template" id="personSearchTpl">
     <article id="personSearch">
         <section class="content">
             <a href="#persons" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByName %></a>
@@ -104,7 +104,7 @@
         </section>
     </article>
 </script>
-<script type="text/template" id="publicationSearch">
+<script type="text/template" id="publicationSearchTpl">
     <article id="publicationSearch">
         <section class="content">
             <a href="#publications" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.search.searchByTitle %></a>
@@ -114,7 +114,7 @@
         </section>
     </article>
 </script>
-<script type="text/template" id="schedule">
+<script type="text/template" id="scheduleTpl">
     <article>
         <section class="content">
             <a href="#search/event" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button"><%= labels.pageTitles.searchEvent %></a>
@@ -122,7 +122,7 @@
         </section>
     </article>
 </script>
-<script type="text/template" id="settingsPanel">
+<script type="text/template" id="settingsPanelTpl">
     <div data-role="panel" id="settingsPanel" class="ui-responsive-panel" data-position="right" data-display="overlay">
         <h1><%= labels.settingsPanel.title %></h1>
         <form>
@@ -141,7 +141,7 @@
         </div>
     </div>
 </script>
-<script type="text/template" id="about">
+<script type="text/template" id="aboutTpl">
     <article>
         <section class="content">
             <h2>About the ESWC2016 app</h2>
@@ -149,7 +149,13 @@
 			<p>Its data structure follows the <a href="http://data.semanticweb.org/ns/swc/swc_2009-05-09.html">Semantic Web Conference Ontology</a> and presents persons, organizations, publications and events of the conference. The application itself allows browsing these data. It is also a client-side mashup that enriches them using other data sources (Twitter, DBLP) or search engines (Google, DuckDuckgo).</p>
             <p>You can use it offline to browse the conference dataset. You will need an Internet connection for viewing data from online sources, as well as to vote for your preferred poster and demo.</p>
             <p>Periodically (but not too often), you can update the conference dataset in the settings panel.</p>
-            <h2>Contributors</h2>
+			<h3>Issues</h3>
+			<p>Do not hesitate to report issues on the following GitHub repositories:</p>
+			<ul>
+				<li><a href="https://github.com/sympozer/datasets/issues">problems with the data</a> (e.g. incorrect/missing information)</li>
+				<li><a href="https://github.com/sympozer/sympozer-client-v1/issues">problems with the app</a> (e.g. strange behaviors, typos in the titles, usability issues, suggestions of improvement...)</li>
+			</ul>
+            <h3>Contributors</h3>
             <a href="#person/Andrea%20Giovanni%20Nuzzolese/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Fandrea-giovanni-nuzzolese" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Andrea Giovanni Nuzzolese</a>
             <a href="#person/Anna%20Lisa%20Gentile/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Fanna-lisa-gentile" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Anna Lisa Gentile</a>
             <a href="#person/Lionel%20Medini/http%3A%2F%2Fdata.semanticweb.org%2Fperson%2Flionel-medini" data-role="button" data-icon="arrow-r" data-iconpos="right" class="button">Lionel Médini</a>
@@ -158,4 +164,5 @@
         </section>
     </article>
 </script>
-</body></html>
+</body>
+</html>

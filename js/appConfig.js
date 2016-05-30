@@ -39,7 +39,7 @@ define([], function() {
             "conference" : {
                 "name": "13th ESWC2016",
                 "acronym": "ESWC2016",
-                "logoUri": "data/images/miniLogo_eswc16_red_0.png",
+                "logoUri": "data/images/logo_eswc2016.png",
                 "website": "http://2016.eswc-conferences.org/",
                 "baseUri": "http://data.semanticweb.org/conference/eswc/2016",
                 "updateUri": "https://raw.githubusercontent.com/sympozer/datasets/master/ESWC2016/data_ESWC2016.json",
@@ -102,7 +102,7 @@ define([], function() {
             "routes" : {
                 "Home" : {
                     "hash" : "",
-                    "view" : "home",
+                    "view" : "homeTpl",
                     "commands" : [
                         {
                             "datasource" : "localDatasource",
@@ -120,7 +120,7 @@ define([], function() {
                 },
                 "Schedule" : {
                     "hash" : "schedule/*locationLabel",
-                    "view" : "schedule",
+                    "view" : "scheduleTpl",
                     "title": "schedule",
                     "commands" : [
                         {
@@ -135,7 +135,7 @@ define([], function() {
                 },
                 "WhatsNext" : {
                     "hash" : "whatsnext/",
-                    "view" : "whatsnext",
+                    "view" : "whatsnextTpl",
                     "title": "whatsnext",
                     "commands" : [
                         {
@@ -146,7 +146,7 @@ define([], function() {
                 },
                 "person-by-role" : {
                     "hash" : "person-by-role/:name/*uri",
-                    "view" : "person-by-role",
+                    "view" : "person-by-roleTpl",
                     "title": "allRole",
                     "commands" : [
                         {
@@ -179,7 +179,7 @@ define([], function() {
                 //},
                 "Events" : {
                     "hash" : "events",
-                    "view" : "events",
+                    "view" : "eventsTpl",
                     "title": "allEvent",
                     "commands" : [
                         {
@@ -190,7 +190,7 @@ define([], function() {
                 },
                 "Event" : {
                     "hash" : "event/:name/*uri",
-                    "view" : "event",
+                    "view" : "eventTpl",
                     "title": "event",
                     "commands" : [
                         {
@@ -205,7 +205,7 @@ define([], function() {
                 },
                 "Event-by-category" : {
                     "hash" : "event-by-category/:name/*uri",
-                    "view" : "event-by-category",
+                    "view" : "event-by-categoryTpl",
                     "title": "searchByCategory",
                     "commands" : [
                         {
@@ -216,7 +216,7 @@ define([], function() {
                 },
                 "Events-by-location" : {
                     "hash" : "events-by-location/:name/*uri",
-                    "view" : "events-by-location",
+                    "view" : "events-by-locationTpl",
                     "title": "searchByLocation",
                     "commands" : [
                         {
@@ -227,7 +227,7 @@ define([], function() {
                 },
                 "Publication" : {
                     "hash" : "publication/:name/*uri",
-                    "view" : "publication",
+                    "view" : "publicationTpl",
                     "title": "publication",
                     "commands" : [
                         {
@@ -242,28 +242,28 @@ define([], function() {
                 },
                 "EventSearch" : {
                     "hash" : "search/event",
-                    "view" : "eventSearch",
+                    "view" : "eventSearchTpl",
                     "title": "searchEvent",
                     "commands" : [
                     ]
                 },
                 "PersonSearch" : {
                     "hash" : "search/person",
-                    "view" : "personSearch",
-                    "title": "Search person",
+                    "view" : "personSearchTpl",
+                    "title": "Search a person",
                     "commands" : [
                     ]
                 },
                 "PublicationSearch" : {
                     "hash" : "search/publication",
-                    "view" : "publicationSearch",
+                    "view" : "publicationSearchTpl",
                     "title": "searchPublication",
                     "commands" : [
                     ]
                 },
                 "Publications" : {
                     "hash" : "publications",
-                    "view" : "publications",
+                    "view" : "publicationsTpl",
                     "title": "allPublication",
                     "commands" : [
                         {
@@ -274,7 +274,7 @@ define([], function() {
                 },
                 "Locations" : {
                     "hash" : "locations",
-                    "view" : "locations",
+                    "view" : "locationsTpl",
                     "title": "allLocation",
                     "commands" : [
                         {
@@ -285,14 +285,14 @@ define([], function() {
                 },
                 "OrganizationSearch" : {
                     "hash" : "search/organization",
-                    "view" : "organizationSearch",
+                    "view" : "organizationSearchTpl",
                     "title": "searchOrganization",
                     "commands" : [
                     ]
                 },
                 "Persons" : {
                     "hash" : "persons",
-                    "view" : "persons",
+                    "view" : "personsTpl",
                     "title": "allPerson",
                     "commands" : [
                         {
@@ -303,7 +303,7 @@ define([], function() {
                 },
                 "Person" : {
                     "hash" : "person/:name/*uri",
-                    "view" : "person",
+                    "view" : "personTpl",
                     "title": "person",
                     "commands" : [
                         {
@@ -322,7 +322,7 @@ define([], function() {
                 },
                 "Organizations" : {
                     "hash" : "organizations",
-                    "view" : "organizations",
+                    "view" : "organizationsTpl",
                     "title": "allOrganization",
                     "commands" : [
                         {
@@ -333,7 +333,7 @@ define([], function() {
                 },
                 "Roles" : {
                     "hash" : "roles",
-                    "view" : "roles",
+                    "view" : "rolesTpl",
                     "title": "allRole",
                     "commands" : [
                         {
@@ -344,7 +344,7 @@ define([], function() {
                 },
                 //"Topics" : {
                 //	"hash" : "topics",
-                //	"view" : "topics",
+                //	"view" : "topicsTpl",
                 //	"title": "allTopic",
                 //	"commands" : [
                 //		{
@@ -355,7 +355,7 @@ define([], function() {
                 //},
                 //"Topic" : {
                 //	"hash" : "topic/:name/*uri",
-                //	"view" : "topic",
+                //	"view" : "topicTpl",
                 //	"title": "topic",
                 //	"commands" : [
                 //		{
@@ -366,7 +366,7 @@ define([], function() {
                 //},
                 "Categories" : {
                     "hash" : "categories",
-                    "view" : "categories",
+                    "view" : "categoriesTpl",
                     "title": "allCategory",
                     "commands" : [
                         {
@@ -377,7 +377,7 @@ define([], function() {
                 },
                 "CategoriesForPublications" : {
                     "hash" : "categories-for-publications",
-                    "view" : "categories",
+                    "view" : "categoriesTpl",
                     "title": "allCategory",
                     "commands" : [
                         {
@@ -388,7 +388,7 @@ define([], function() {
                 },
                 "Category" : {
                     "hash" : "category/:name/*uri",
-                    "view" : "category",
+                    "view" : "categoryTpl",
                     "title": "category",
                     "commands" : [
                         {
@@ -399,7 +399,7 @@ define([], function() {
                 },
                 "Publications-by-category" : {
                     "hash" : "publications-by-category/:name/*uri",
-                    "view" : "category",
+                    "view" : "categoryTpl",
                     "title": "category",
                     "commands" : [
                         {
@@ -410,7 +410,7 @@ define([], function() {
                 },
                 "Authors" : {
                     "hash" : "authors",
-                    "view" : "authors",
+                    "view" : "authorsTpl",
                     "title": "allAuthor",
                     "commands" : [
                         {
@@ -421,7 +421,7 @@ define([], function() {
                 },
                 "ExternPublication" : {
                     "hash" : "externPublication/*uri",
-                    "view" : "externPublication",
+                    "view" : "externPublicationTpl",
                     "title": "externalPublication",
                     "commands" : [
                         {
@@ -436,7 +436,7 @@ define([], function() {
                 },
                 "Organization" : {
                     "hash" : "organization/:name/*uri",
-                    "view" : "organization",
+                    "view" : "organizationTpl",
                     "title": "organization",
                     "commands" : [
                         {
@@ -451,7 +451,7 @@ define([], function() {
                 },
                 "Recommendation" : {
                     "hash" : "recommendation",
-                    "view" : "recommendation",
+                    "view" : "recommendationTpl",
                     "title": "recommendation",
                     "commands" : [
                         {
@@ -462,7 +462,7 @@ define([], function() {
                 },
                 "About" : {
                     "hash" : "about",
-                    "view" : "about",
+                    "view" : "aboutTpl",
                     "title": "About",
                     "commands" : []
                 }
