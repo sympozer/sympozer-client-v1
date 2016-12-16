@@ -39,7 +39,7 @@ function ($, _, appConfig, labels, ViewAdapter, ViewAdapterText, votingSystem) {
                     var number = parameters.JSONdata.id.split("/")[parameters.JSONdata.id.split("/").length -1];
 
                     if(votingSystem.isVotingTrack(track)){
-                        parameters.contentEl.append($('<br><span><img src="img/vote.gif" style="width:30px;height:30px"/> <h2 style="display:inline;">Vote for best ' + track + '</h2></span>'));
+                        parameters.contentEl.append($('<br><span><img src="img/vote.gif" style="width:30px;height:30px"/> <h2 style="display:inline;">Vote for best ' + track + ' track award </h2></span>'));
                         parameters.contentEl.append($('<p>Attention! You can vote only once in the ' + track + ' category. Enter your personal code and press "Vote!" button.</p>'));
                         parameters.contentEl.append($('<input id="personalCode" type="text" size="10" value="code"/>'));
                         parameters.contentEl.append($('<p id="msg" style="color:red"></p>'));
